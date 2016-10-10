@@ -1,0 +1,9 @@
+2Flera consumers-
+	mutexes
+
+1testa med franco.py-
+
+2padding- //skulle kunna implimentera en variant
+
+1random - //skulle kunna implimentera utan beroenden.
+
