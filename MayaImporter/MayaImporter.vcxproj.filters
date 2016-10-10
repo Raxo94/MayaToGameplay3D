@@ -8,6 +8,9 @@
     <Filter Include="res\shaders">
       <UniqueIdentifier>{f54d3628-f193-4138-97ca-0ca3b34480d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CircleBuffer">
+      <UniqueIdentifier>{61fc523e-18f0-4dab-a993-61e41ba7b343}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="game.config" />
@@ -78,10 +81,22 @@
     <ClInclude Include="src\CustomRenderer.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="CircleBuffer\CircBuffer.h">
+      <Filter>CircleBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleBuffer\Mutex.h">
+      <Filter>CircleBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CustomRenderer.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleBuffer\CircBuffer.cpp">
+      <Filter>CircleBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleBuffer\Mutex.cpp">
+      <Filter>CircleBuffer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
