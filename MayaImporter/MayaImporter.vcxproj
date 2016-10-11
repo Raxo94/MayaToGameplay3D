@@ -186,6 +186,7 @@ xcopy ..\GamePlay-master\GamePlay-master\gameplay\res\ui res\ui\* /s /y /d</Comm
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CustomRenderer.cpp" />
+    <ClCompile Include="src\TempFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CustomRenderer.h" />

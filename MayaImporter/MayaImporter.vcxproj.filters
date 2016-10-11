@@ -8,6 +8,9 @@
     <Filter Include="res\shaders">
       <UniqueIdentifier>{f54d3628-f193-4138-97ca-0ca3b34480d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\H-Files">
+      <UniqueIdentifier>{6dbae22e-87e8-4037-bea8-96405097454e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="game.config" />
@@ -75,13 +78,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\CustomRenderer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\CustomRenderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\TempFunctions.cpp">
+      <Filter>src\H-Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\CustomRenderer.h">
+      <Filter>src\H-Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
