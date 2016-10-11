@@ -7,16 +7,14 @@ inline Node* getManualCamera()
 {
 	Node* cameraNode = Node::create("Camera");
 
-	//_scene->addNode(cameraNode);
-
 	cameraNode->setTranslationX(1.5);
 	cameraNode->setTranslationY(2.3);
 	cameraNode->setTranslationZ(7.2);
 
-	//Matrix roationMatrix;
-	//Quaternion Test(-0.142, 0.126, 0, 1);
-	//Matrix::createRotation(Test, &roationMatrix);
-	//cameraNode->setRotation(roationMatrix);
+	Matrix roationMatrix;
+	Quaternion Test(-0.142, 0.126, 0, 1);
+	Matrix::createRotation(Test, &roationMatrix);
+	cameraNode->setRotation(roationMatrix);
 
 	Camera* cam = cameraNode->getCamera();
 
