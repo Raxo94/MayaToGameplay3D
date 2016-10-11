@@ -299,7 +299,7 @@ void main::update(float elapsedTime)
 
 			Node* camNode = _scene->findNode(name);
 			if (camNode)
-				_scene->setActiveCamera(camNode->getCamera());
+				_scene->setActiveCamera(camNode->getCamera()); //Jesus they just replace the camera :0
 		}
 		else if (type == MessageType::mLight)
 		{

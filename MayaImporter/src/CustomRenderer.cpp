@@ -19,7 +19,51 @@ void CustomRenderer::initialize()
     Material* boxMaterial = boxModel->getMaterial();
 
     // Set the aspect ratio for the scene's camera to match the current resolution
-    _scene->getActiveCamera()->setAspectRatio(getAspectRatio());
+
+	
+	//Create Camera//
+	Node* cameraNode = Node::create("Camera");
+	_scene->addNode(cameraNode);
+	//cameraNode = _scene->getActiveCamera()->getNode();
+	
+	Node* OriginalNode = _scene->getActiveCamera()->getNode(); 
+	cameraNode->setTranslationX(1.5);
+	cameraNode->setTranslationY(2.3);
+	cameraNode->setTranslationZ(7.2);
+	
+	Matrix roationMatrix;
+	Quaternion Test(-0.142, 0.126, 0 ,1);
+	Matrix::createRotation(Test,&roationMatrix);
+	cameraNode->setRotation(roationMatrix);
+	
+	
+	Camera* cam = cameraNode->getCamera();
+	
+	cam = Camera::createPerspective(0, 0, 0, 0);
+	
+	
+
+
+	float camMatrix[4][4];
+	Matrix projectionMatrix(camMatrix[0][0], camMatrix[1][0], camMatrix[2][0], camMatrix[3][0],
+		camMatrix[0][1], camMatrix[1][1], camMatrix[2][1], camMatrix[3][1],
+		camMatrix[0][2], camMatrix[1][2], -camMatrix[2][2], -camMatrix[3][2],
+		camMatrix[0][3], camMatrix[1][3], camMatrix[2][3], camMatrix[3][3]);
+	
+
+	cam->setProjectionMatrix(_scene->getActiveCamera()->getProjectionMatrix()); //Here should be proj matrix above;
+	cam->setNearPlane(0.25);
+	cam->setFarPlane(100);
+	cam->setFieldOfView(27);
+
+	//cam->setZoomX(_scene->getActiveCamera()->getZoomX());
+	//cam->setZoomY ( _scene->getActiveCamera()->getZoomY());
+
+
+	cameraNode->setCamera(cam);
+	_scene->setActiveCamera(cam);
+	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+	
 }
 
 void CustomRenderer::finalize()
