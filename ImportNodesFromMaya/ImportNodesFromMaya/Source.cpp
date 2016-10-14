@@ -1,40 +1,42 @@
 #include <Windows.h>
 #include "Linker.h"
+#include "CircBuffer.h"
 
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_export_2_maya_mesh_writer_8cpp_example_html
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
 MCallbackIdArray idList;
 
+struct vertices
+{
+	float pos[3];
+};
+
 void getNodesInTheScene(MFnMesh &mesh)
 {
-	std::vector<float> points;
 	MFloatPointArray pts;
 	MIntArray adjacentVertexList;
 	unsigned int i;
-	int j;
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
 	//unsigned int numPolys = mesh.numPolygons();
+	std::vector<vertices> points;
 
 	//multiply by 3 to make sure x,y and z is equal to one point
-	points.resize(pts.length() * 3);
+	points.resize(pts.length());
 
 	//store points in float vector
 	for (i = 0; i < pts.length(); i++) {
-		size_t local = i * 3;
-		points[local] = pts[i].x;
-		points[local + 1] = pts[i].y;
-		points[local + 2] = pts[i].z;
 
-		MString v = "";
-		v += points[i];
-		
-		MGlobal::displayInfo("points array: " + v + " points axes: " + pts[i].x + " " + pts[i].y + " " + pts[i].z);
+		//size_t local = i * 3;
+		points.at(i).pos[0] = pts[i].x;
+		points.at(i).pos[1] = pts[i].y;
+		points.at(i).pos[2] = pts[i].z;
 
-		adjacentVertexList.append(points[i]);
-
+		//adjacentVertexList.append(points[i]);*/
 		//MIntArray polyVerts = mesh.getPolygonVertices(i, adjacentVertexList);
 
 		//MString n = "";
@@ -43,30 +45,34 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 	}
 
-	MFloatVectorArray normal;
-	MFloatVector translation;
-	MVector vertexNormal;
+	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
 
-	MVector avarageNormal(0, 0, 0);
-	/*mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);*/
+	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
+	
+	//MFloatVectorArray normal;
+	//MFloatVector translation;
+	//MVector vertexNormal;
 
-	//norPoints.resize(adjacentVertexList.length() * 3);
-	for (i = 0; i < adjacentVertexList.length(); i++) {
+	//MVector avarageNormal(0, 0, 0);
+	///*mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);*/
 
-		mesh.getVertexNormal(adjacentVertexList[i], vertexNormal, MSpace::kWorld);
-		avarageNormal += vertexNormal;
+	////norPoints.resize(adjacentVertexList.length() * 3);
+	//for (i = 0; i < adjacentVertexList.length(); i++) {
 
-		MString n = "";
-		n += vertexNormal[i];
-		MGlobal::displayInfo("normals: " + n);
+	//	mesh.getVertexNormal(adjacentVertexList[i], vertexNormal, MSpace::kWorld);
+	//	avarageNormal += vertexNormal;
 
-	}
+	//	MString n = "";
+	//	n += vertexNormal[i];
+	//	MGlobal::displayInfo("normals: " + n);
 
-	if (avarageNormal.length() < 0.001) {
-		avarageNormal = MVector(0.0, 1.0, 0.0);
-	}
-	else avarageNormal.normalize();
-	translation = avarageNormal;
+	//}
+
+	//if (avarageNormal.length() < 0.001) {
+	//	avarageNormal = MVector(0.0, 1.0, 0.0);
+	//}
+	//else avarageNormal.normalize();
+	//translation = avarageNormal;
 }
 
 void MNodeFunction(MObject &node, void* clientData)
@@ -77,7 +83,7 @@ void MNodeFunction(MObject &node, void* clientData)
 
 		MFnMesh mesh(node);
 		
-		getNodesInTheScene(mesh);
+		/*getNodesInTheScene(mesh);*/
 
 	}
 
@@ -92,12 +98,6 @@ EXPORT MStatus initializePlugin(MObject obj)
 	if (MFAIL(res)) {
 		CHECK_MSTATUS(res);
 	}
-
-	std::vector<float> points;
-	MFloatPointArray pts;
-	MIntArray adjacentVertexList;
-	unsigned int i;
-	int j;
 
 	MItDag it(MItDag::kBreadthFirst, MFn::kMesh);
 	while (it.isDone() == false)
