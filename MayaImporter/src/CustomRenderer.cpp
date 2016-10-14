@@ -4,12 +4,6 @@
 CustomRenderer game;
 
 
-struct Vertex
-{
-	Vector3 pos;
-	Vector3 norm;
-	Vector2 UV;
-};
 
 CustomRenderer::CustomRenderer()
     : _scene(NULL), _wireframe(false)
@@ -29,97 +23,15 @@ void CustomRenderer::initialize()
 	boxNode->setTranslationY(2.3);
 	boxNode->setTranslationZ(7.2);
 
-
+	//MESH
 	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
 	Material* boxMaterial = boxModel->getMaterial();
-	Mesh* boxMesh = boxModel->getMesh();
-	//boxNode->setDrawable(false);
-	
-	VertexFormat::Element elements[] = {
-		VertexFormat::Element(VertexFormat::POSITION, 3),
-		VertexFormat::Element(VertexFormat::NORMAL, 3),
-		VertexFormat::Element(VertexFormat::TEXCOORD0, 2)
-	};
-	int numVertecies = 3;
 
-	Node* MeshNode = Node::create("MeshNode");
-	Vector3 one(1, 0, 0);
-	Vector3 two(1, 3, 0);
-	Vector3 three(0, 0, 0);
-	Vector3 four(0, 3, 0);
-	
-	
-	Vertex* triangel = new Vertex();
-	Vertex temp1;
-	temp1.pos = Vector3(1, 0, 0);
-	temp1.norm = Vector3(0, 1, 0);
-	temp1.UV = Vector2(0, 0);
-
-	triangel[0] = temp1;
-
-	Vertex temp2;
-	temp2.pos = Vector3(1, 3, 0);
-	temp2.norm = Vector3(0, 1, 0);
-	temp2.UV = Vector2(0, 0);
-
-	triangel[1] = temp2;
-
-	Vertex temp3;
-	temp3.pos = Vector3(0, 0, 0);
-	temp3.norm = Vector3(0, 1, 0);
-	temp3.UV = Vector2(0, 0);
-	
-	triangel[2] = temp3;
-
-	
-		
-	
-	const VertexFormat vertFormat(elements, 3);
-	int vertCount = boxMesh->getVertexCount();
-
-	//Mesh* Quid = Mesh::createQuad(one,two,three,four); //This is the quad!
-	Mesh* Quid = Mesh::createMesh(vertFormat, numVertecies,false);
-	Quid->setVertexData(triangel);
-
-	/*float verteciesData[34];
-	float Positions[9] = { 1, 0, 0 , 1, 3, 0 ,  0, 0, 0};
-	float Normals[12] = {0,1,0 , 0,1,0 , 0,1,0};
-	float UVs[8] = {0,0 ,1,1 ,0,0};
-*/
-	
-
-	//for (size_t i = 0; i <3; i++)
-	//{
-	//	size_t VerticeDataOffset = i * 8;
-	//	size_t OthersOffset = i * 3;
-
-
-	//	for (size_t j = 0; j < 3; j++)
-	//	{
-	//		verteciesData[VerticeDataOffset + j] = Positions[(OthersOffset + j)];
-	//	}
-	//	VerticeDataOffset += 3;
-
-	//	for (size_t j = 0; j < 3; j++)
-	//	{
-	//		verteciesData[VerticeDataOffset + j] = Normals[(OthersOffset + j)];
-	//	}
-	//	VerticeDataOffset += 3;
-
-	//	for (size_t j = 0; j < 2; j++)
-	//	{
-	//		verteciesData[VerticeDataOffset + j] = UVs[(OthersOffset + j)];
-	//	}
-	//}
-	//
-	
-
-
-
-	Model* triModel = Model::create(Quid);
-	MeshNode->setDrawable(triModel);
-	_scene->addNode(MeshNode);
-	triModel->setMaterial(boxMaterial);
+	Node* meshNode = Node::create("MeshNode");
+	Model* model = getManualModel();
+	meshNode->setDrawable(model);
+	_scene->addNode(meshNode);
+	model->setMaterial(boxMaterial);
 
 
 	//CAMERA
