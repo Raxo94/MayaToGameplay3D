@@ -8,8 +8,8 @@ inline Node* getManualCamera()
 	Node* cameraNode = Node::create("Camera");
 
 	cameraNode->setTranslationX(1.5);
-	cameraNode->setTranslationY(2.3);
-	cameraNode->setTranslationZ(7.2);
+	cameraNode->setTranslationY(10.3);
+	cameraNode->setTranslationZ(20);
 
 	Matrix roationMatrix;
 	Quaternion Test(-0.142, 0.126, 0, 1);
