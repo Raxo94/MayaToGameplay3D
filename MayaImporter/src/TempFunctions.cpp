@@ -85,14 +85,21 @@ inline Model* getManualModel()
 
 	triangel[2] = temp3;
 
+	Vertex temp4;
+	temp3.pos = Vector3(0, 3, 0);
+	temp3.norm = Vector3(0, 1, 0);
+	temp3.UV = Vector2(0, 0);
+
+	triangel[3] = temp4;
 
 
 
-	const VertexFormat vertFormat(elements, 3);
+
+	const VertexFormat vertFormat(elements, numVertecies);
 
 	Mesh* mesh = Mesh::createMesh(vertFormat, numVertecies, false);
+	mesh->setPrimitiveType(Mesh::TRIANGLE_STRIP);
 	mesh->setVertexData(triangel);
-
 
 	Model* model = Model::create(mesh);
 	return model;
