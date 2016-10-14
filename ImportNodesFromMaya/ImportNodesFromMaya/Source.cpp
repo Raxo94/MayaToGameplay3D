@@ -30,6 +30,7 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 		MString v = "";
 		v += points[i];
+		
 		MGlobal::displayInfo("points array: " + v + " points axes: " + pts[i].x + " " + pts[i].y + " " + pts[i].z);
 
 		adjacentVertexList.append(points[i]);
