@@ -63,43 +63,56 @@ inline Model* getManualModel()
 	Vector3 four(0, 3, 0);
 
 
-	Vertex* triangel = new Vertex();
+	Vertex triangle[6];
+
 	Vertex temp1;
 	temp1.pos = Vector3(1, 0, 0);
 	temp1.norm = Vector3(0, 1, 0);
 	temp1.UV = Vector2(0, 0);
 
-	triangel[0] = temp1;
+	triangle[0] = temp1;
 
 	Vertex temp2;
 	temp2.pos = Vector3(1, 3, 0);
 	temp2.norm = Vector3(0, 1, 0);
 	temp2.UV = Vector2(0, 0);
 
-	triangel[1] = temp2;
+	triangle[1] = temp2;
 
 	Vertex temp3;
 	temp3.pos = Vector3(0, 0, 0);
 	temp3.norm = Vector3(0, 1, 0);
 	temp3.UV = Vector2(0, 0);
 
-	triangel[2] = temp3;
+	triangle[2] = temp3;
 
 	Vertex temp4;
 	temp3.pos = Vector3(0, 3, 0);
 	temp3.norm = Vector3(0, 1, 0);
 	temp3.UV = Vector2(0, 0);
 
-	triangel[3] = temp4;
+	triangle[3] = temp4;
 
+	Vertex temp5;
+	temp3.pos = Vector3(0, 0, 0);
+	temp3.norm = Vector3(0, 1, 0);
+	temp3.UV = Vector2(0, 0);
 
+	triangle[4] = temp5;
+
+	Vertex temp6;
+	temp1.pos = Vector3(1, 0, 0);
+	temp1.norm = Vector3(0, 1, 0);
+	temp1.UV = Vector2(0, 0);
+
+	triangle[5] = temp6;
 
 
 	const VertexFormat vertFormat(elements, numVertecies);
 
 	Mesh* mesh = Mesh::createMesh(vertFormat, numVertecies, false);
 	mesh->setPrimitiveType(Mesh::TRIANGLE_STRIP);
-	mesh->setVertexData(triangel);
+	mesh->setVertexData(triangle);
 
 	Model* model = Model::create(mesh);
 	return model;
