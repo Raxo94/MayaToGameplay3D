@@ -10,6 +10,8 @@
     </Filter>
     <Filter Include="src\H-Files">
       <UniqueIdentifier>{6dbae22e-87e8-4037-bea8-96405097454e}</UniqueIdentifier>
+    <Filter Include="CircleBuffer">
+      <UniqueIdentifier>{61fc523e-18f0-4dab-a993-61e41ba7b343}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,15 +80,26 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircleBuffer\CircBuffer.h">
+      <Filter>CircleBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleBuffer\Mutex.h">
+      <Filter>CircleBuffer</Filter>
+    </ClInclude>
     <ClCompile Include="src\CustomRenderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\TempFunctions.cpp">
       <Filter>src\H-Files</Filter>
+    <ClCompile Include="CircleBuffer\CircBuffer.cpp">
+      <Filter>CircleBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\CustomRenderer.h">
+    <ClCompile Include="CircleBuffer\Mutex.cpp">
+      <Filter>CircleBuffer</Filter>
+    </ClCompile>
       <Filter>src\H-Files</Filter>
     </ClInclude>
   </ItemGroup>

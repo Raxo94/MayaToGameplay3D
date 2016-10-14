@@ -185,10 +185,14 @@ xcopy ..\GamePlay-master\GamePlay-master\gameplay\res\ui res\ui\* /s /y /d</Comm
     <None Include="res\shaders\textured.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CircleBuffer\CircBuffer.cpp" />
+    <ClCompile Include="CircleBuffer\Mutex.cpp" />
     <ClCompile Include="src\CustomRenderer.cpp" />
     <ClCompile Include="src\TempFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircleBuffer\CircBuffer.h" />
+    <ClInclude Include="CircleBuffer\Mutex.h" />
     <ClInclude Include="src\CustomRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

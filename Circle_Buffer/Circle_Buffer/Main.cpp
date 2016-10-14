@@ -75,7 +75,7 @@ int main(size_t argc, char* argv[])
 		}		
 	}
 	delete[] message;
-	
+	getchar();
 }//ENDOFCODE
 
 
