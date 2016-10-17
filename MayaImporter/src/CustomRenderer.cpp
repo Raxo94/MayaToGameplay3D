@@ -29,7 +29,8 @@ void CustomRenderer::initialize()
 	Material* boxMaterial = boxModel->getMaterial();
 
 	Node* meshNode = Node::create("MeshNode");
-	Model* model = getManualModel();
+	//Model* model = getManualModel();
+	Model* model = createCubeMesh();
 	meshNode->setDrawable(model);
 	_scene->addNode(meshNode);
 	model->setMaterial(boxMaterial);
@@ -54,7 +55,7 @@ void CustomRenderer::finalize()
 void CustomRenderer::update(float elapsedTime)
 {
     // Rotate model
-   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)
