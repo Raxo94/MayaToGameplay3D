@@ -7,6 +7,7 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
 MCallbackIdArray idList;
+MObjectArray object[20];
 
 struct vertices
 {
@@ -30,7 +31,7 @@ void getNodesInTheScene(MFnMesh &mesh)
 	MVector vertexNormal;
 	MIntArray normalList, normalCount;
 	MFloatArray u, v;
-
+		
 	mesh.getNormalIds(normalCount, normalList);
 	mesh.getUVs(u, v, 0);
 
@@ -51,7 +52,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 	}
 
-
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
 	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
 
@@ -59,17 +59,20 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 void MNodeFunction(MObject &node, void* clientData)
 {
-	MStatus res = MS::kSuccess;
-
 	if (node.hasFn(MFn::kMesh)) {
-
 		MFnMesh mesh(node);
-		
-		/*getNodesInTheScene(mesh);*/
-
-	}
-
+		if (mesh.canBeWritten()) {
+			getNodesInTheScene(mesh);
+			}
+		}
 }
+
+//void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
+//{
+//	MStatus res = MS::kSuccess;
+//
+//	
+//}
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
@@ -90,16 +93,24 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 		it.next();
 	}
+	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
+	//
+	//if (res == MS::kSuccess) {
+	//	idList.append(timeId);
+	//	MGlobal::displayInfo("time callback Succeeded");
+	//}
+	//else {
+	//	MGlobal::displayInfo("time callback Failed");
+	//}
 
 	MCallbackId nodeId = MDGMessage::addNodeAddedCallback(MNodeFunction, kDefaultNodeType, NULL, &res);
 
-
 	if (res == MS::kSuccess) {
 		idList.append(nodeId);
-		MGlobal::displayInfo("added node callback Succeeded");
+		MGlobal::displayInfo("time callback Succeeded");
 	}
 	else {
-		MGlobal::displayInfo("added node callback Failed");
+		MGlobal::displayInfo("time callback Failed");
 	}
 
 	MGlobal::displayInfo("Maya plugin loaded!");
