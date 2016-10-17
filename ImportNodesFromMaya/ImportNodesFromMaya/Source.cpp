@@ -12,12 +12,12 @@ struct vertices
 {
 	float pos[3];
 	float nor[3];
+	float uv[2];
 };
 
 void getNodesInTheScene(MFnMesh &mesh)
 {
 	MFloatPointArray pts;
-	MIntArray adjacentVertexList;
 	unsigned int i;
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
@@ -25,42 +25,40 @@ void getNodesInTheScene(MFnMesh &mesh)
 	mesh.getPoints(pts, MSpace::kObject);
 	std::vector<vertices> points;
 
-	//multiply by 3 to make sure x,y and z is equal to one point
 	points.resize(pts.length());
 
-	//store points in float vector
-	for (i = 0; i < pts.length(); i++) {
+	MVector vertexNormal;
+	MIntArray normalList, normalCount;
+	MFloatArray u, v;
 
-		//size_t local = i * 3;
+	mesh.getNormalIds(normalCount, normalList);
+	mesh.getUVs(u, v, 0);
+
+	for (i = 0; i < points.size(); i++) {
+
 		points.at(i).pos[0] = pts[i].x;
 		points.at(i).pos[1] = pts[i].y;
 		points.at(i).pos[2] = pts[i].z;
 
-		//adjacentVertexList.append(points[i]);*/
-		//MIntArray polyVerts = mesh.getPolygonVertices(i, adjacentVertexList);
-
-	}
-
-	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-
-	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
-	
-	//MFloatVectorArray normal;
-	//MFloatVector translation;
-	MVector vertexNormal;
-	
-	//MVector avarageNormal(0, 0, 0);
-
-	mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kObject);
-
-	for (i = 0; i < points.size(); i++) {
-
-		//mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);
-	//	avarageNormal += vertexNormal;
+		mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
 
 		points.at(i).nor[0] = vertexNormal[0];
 		points.at(i).nor[1] = vertexNormal[1];
 		points.at(i).nor[2] = vertexNormal[2];
+
+		points.at(i).uv[0] = u[i];
+		points.at(i).uv[1] = v[i];
+
+		MString px = "";
+		px += points.at(i).pos[0];
+
+		MString py = "";
+		py += points.at(i).pos[1];
+
+		MString pz = "";
+		pz += points.at(i).pos[2];
+
+		MGlobal::displayInfo("pos in x: " + px + " pos in y: " + py + " pos in z: " + pz);
 
 		MString nx = "";
 		nx += points.at(i).nor[0];
@@ -73,13 +71,19 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 		MGlobal::displayInfo("normal in x: " + nx + " normal in y: " + ny + " normal in z: " + nz);
 
+		MString u = "";
+		u += points.at(i).uv[0];
+
+		MString v = "";
+		v += points.at(i).uv[1];
+
+		MGlobal::displayInfo("u coord: " + u + " v coord: " + v);
 	}
 
-	//if (avarageNormal.length() < 0.001) {
-	//	avarageNormal = MVector(0.0, 1.0, 0.0);
-	//}
-	//else avarageNormal.normalize();
-	//translation = avarageNormal;
+
+	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
+
 }
 
 void MNodeFunction(MObject &node, void* clientData)
