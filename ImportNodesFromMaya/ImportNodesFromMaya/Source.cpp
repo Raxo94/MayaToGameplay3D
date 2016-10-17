@@ -11,6 +11,7 @@ MCallbackIdArray idList;
 struct vertices
 {
 	float pos[3];
+	float nor[3];
 };
 
 void getNodesInTheScene(MFnMesh &mesh)
@@ -22,7 +23,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
-	//unsigned int numPolys = mesh.numPolygons();
 	std::vector<vertices> points;
 
 	//multiply by 3 to make sure x,y and z is equal to one point
@@ -39,10 +39,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 		//adjacentVertexList.append(points[i]);*/
 		//MIntArray polyVerts = mesh.getPolygonVertices(i, adjacentVertexList);
 
-		//MString n = "";
-		//n += polyVerts[i];
-		//MGlobal::displayInfo("normals: " + n);
-
 	}
 
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
@@ -51,22 +47,33 @@ void getNodesInTheScene(MFnMesh &mesh)
 	
 	//MFloatVectorArray normal;
 	//MFloatVector translation;
-	//MVector vertexNormal;
-
+	MVector vertexNormal;
+	
 	//MVector avarageNormal(0, 0, 0);
-	///*mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);*/
 
-	////norPoints.resize(adjacentVertexList.length() * 3);
-	//for (i = 0; i < adjacentVertexList.length(); i++) {
+	mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kObject);
 
-	//	mesh.getVertexNormal(adjacentVertexList[i], vertexNormal, MSpace::kWorld);
+	for (i = 0; i < points.size(); i++) {
+
+		//mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);
 	//	avarageNormal += vertexNormal;
 
-	//	MString n = "";
-	//	n += vertexNormal[i];
-	//	MGlobal::displayInfo("normals: " + n);
+		points.at(i).nor[0] = vertexNormal[0];
+		points.at(i).nor[1] = vertexNormal[1];
+		points.at(i).nor[2] = vertexNormal[2];
 
-	//}
+		MString nx = "";
+		nx += points.at(i).nor[0];
+
+		MString ny = "";
+		ny += points.at(i).nor[1];
+
+		MString nz = "";
+		nz += points.at(i).nor[2];
+
+		MGlobal::displayInfo("normal in x: " + nx + " normal in y: " + ny + " normal in z: " + nz);
+
+	}
 
 	//if (avarageNormal.length() < 0.001) {
 	//	avarageNormal = MVector(0.0, 1.0, 0.0);
