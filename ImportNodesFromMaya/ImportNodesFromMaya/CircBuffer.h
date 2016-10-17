@@ -58,7 +58,7 @@ public:
     // try to send a message through the buffer,
     // if returns true, then it succeeded, otherwise the message has not been sent.
     // it should return false if the buffer does not have enough space.
-	bool push(const char* msg, size_t length);
+	bool push(const void* msg, size_t length);
 
 
     // try to read a message from the buffer, and the implementation puts the content

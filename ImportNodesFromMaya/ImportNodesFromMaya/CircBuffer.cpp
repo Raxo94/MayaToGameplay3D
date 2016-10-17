@@ -109,7 +109,7 @@ size_t CircBufferFixed::CalculateFreeMemory()
 
 
 
-bool CircBufferFixed::push(const char * message, size_t length)
+bool CircBufferFixed::push(const void * message, size_t length)
 {
 
 	size_t padding = chunkSize - ((ClientPosition + sizeof(Header) + length) % chunkSize); //padding my way through the darkness.
@@ -144,14 +144,14 @@ bool CircBufferFixed::push(const char * message, size_t length)
 
 			ClientPosition = 0;
 			size_t Remaining = length - Rest;
-			memcpy(&MapPointer[ClientPosition], message + Rest, Remaining);
+			memcpy(&MapPointer[ClientPosition], (char*)message + Rest, Remaining);
 			ClientPosition = Remaining;
 		}
 		
 		ControlPointer[HEAD] = ClientPosition;
 		
 		
-		printf("%d  ", MessageCount);
+		//printf("%d  ", MessageCount);
 		//cout << (char*)message << endl;
 		
 		return true;
