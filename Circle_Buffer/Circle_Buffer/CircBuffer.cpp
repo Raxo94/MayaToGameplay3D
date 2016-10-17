@@ -87,6 +87,7 @@ void CircBufferFixed::UpdateControlBuffer()
 	}
 	else
 	{
+		ControlPointer[HEAD] = 0;
 		ControlPointer[TAIL] = 0;
 		ControlPointer[CLIENTCOUNT] += 1;
 	}
@@ -202,7 +203,7 @@ bool CircBufferFixed::pop(char * message)
 
 	
 	printf("%d  ", messageHeader->id);
-	//cout << (char*)message << endl;
+	cout << *(float*)message << endl;
 	
 	
 	return true;
