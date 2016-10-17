@@ -1,7 +1,9 @@
 #include "CustomRenderer.h"
-
+#include "TempFunctions.cpp"
 // Declare our game instance
 CustomRenderer game;
+
+
 
 CustomRenderer::CustomRenderer()
     : _scene(NULL), _wireframe(false)
@@ -14,12 +16,33 @@ void CustomRenderer::initialize()
     _scene = Scene::load("res/demo.scene");
 
     // Get the box model and initialize its material parameter values and bindings
-    Node* boxNode = _scene->findNode("box");
-    Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
-    Material* boxMaterial = boxModel->getMaterial();
+	Node* boxNode = _scene->findNode("box");
+	
 
-    // Set the aspect ratio for the scene's camera to match the current resolution
-    _scene->getActiveCamera()->setAspectRatio(getAspectRatio());
+	boxNode->setTranslationX(-3.5);
+	boxNode->setTranslationY(2.3);
+	boxNode->setTranslationZ(0.2);
+
+	//MESH
+	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
+	Material* boxMaterial = boxModel->getMaterial();
+
+	Node* meshNode = Node::create("MeshNode");
+	Model* model = getManualModel();
+	meshNode->setDrawable(model);
+	_scene->addNode(meshNode);
+	model->setMaterial(boxMaterial);
+
+
+	//CAMERA
+	Node* cameraNode = getManualCamera();
+	_scene->addNode(cameraNode);
+	Camera* cam = cameraNode->getCamera();
+
+
+	_scene->setActiveCamera(cam);
+	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+	
 }
 
 void CustomRenderer::finalize()
@@ -30,7 +53,7 @@ void CustomRenderer::finalize()
 void CustomRenderer::update(float elapsedTime)
 {
     // Rotate model
-    _scene->findNode("box")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)
