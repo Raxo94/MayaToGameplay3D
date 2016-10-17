@@ -1,5 +1,6 @@
 #include "CustomRenderer.h"
 #include "TempFunctions.cpp"
+#include "CircBuffer.h"
 // Declare our game instance
 CustomRenderer game;
 
