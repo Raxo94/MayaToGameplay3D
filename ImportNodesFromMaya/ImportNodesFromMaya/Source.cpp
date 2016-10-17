@@ -49,35 +49,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 		points.at(i).uv[0] = u[i];
 		points.at(i).uv[1] = v[i];
 
-		MString px = "";
-		px += points.at(i).pos[0];
-
-		MString py = "";
-		py += points.at(i).pos[1];
-
-		MString pz = "";
-		pz += points.at(i).pos[2];
-
-		MGlobal::displayInfo("pos in x: " + px + " pos in y: " + py + " pos in z: " + pz);
-
-		MString nx = "";
-		nx += points.at(i).nor[0];
-
-		MString ny = "";
-		ny += points.at(i).nor[1];
-
-		MString nz = "";
-		nz += points.at(i).nor[2];
-
-		MGlobal::displayInfo("normal in x: " + nx + " normal in y: " + ny + " normal in z: " + nz);
-
-		MString u = "";
-		u += points.at(i).uv[0];
-
-		MString v = "";
-		v += points.at(i).uv[1];
-
-		MGlobal::displayInfo("u coord: " + u + " v coord: " + v);
 	}
 
 
