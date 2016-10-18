@@ -23,10 +23,18 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
-	mesh.getPoints(pts, MSpace::kObject);
+	//mesh.getPoints(pts, MSpace::kObject);
 	std::vector<vertices> points;
 
-	points.resize(pts.length());
+	/*points.resize(pts.length());*/
+
+	////////////////////////////
+	MIntArray triangleCounts;
+	MIntArray triangleVertices;
+	mesh.getTriangles(triangleCounts, triangleVertices);
+
+	points.resize(triangleVertices.length());
+	////////////////////////////
 
 	MVector vertexNormal;
 	MIntArray normalList, normalCount;

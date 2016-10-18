@@ -33,9 +33,6 @@ CircBufferFixed::~CircBufferFixed()
 
 }
 
-
-
-
 bool CircBufferFixed::createMaping()
 {
 	//Message map
