@@ -86,6 +86,7 @@ void CircBufferFixed::UpdateControlBuffer()
 	}
 	else
 	{
+		ControlPointer[HEAD] = 0;
 		ControlPointer[TAIL] = 0;
 		ControlPointer[CLIENTCOUNT] += 1;
 	}
