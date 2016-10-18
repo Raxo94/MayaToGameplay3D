@@ -29,6 +29,7 @@ void CustomRenderer::initialize()
 	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
 	this->tempMaterial = boxModel->getMaterial();
 
+	
 	Node* meshNode = Node::create("MeshNode");
 	Model* model = createCubeMesh();
 	meshNode->setDrawable(model);
@@ -69,39 +70,28 @@ void CustomRenderer::update(float elapsedTime)
 
 		Vertex* vertexArray = (Vertex*)message;
 
-		int vertexCount = 36;
+		int vertexCount = ;
 
 		for ( size_t i = 0; i < vertexCount; i++)
 		{
+			//vertexArray[i].UV[0] = 0.0;
+			//vertexArray[i].UV[1] = 0.0;
 			vertexVector.push_back(vertexArray[i]);
 		}
 		
-		Node* meshNode = _scene->findNode("MeshNode");
-		if (meshNode)
-		{
-			
-			_scene->removeNode(meshNode); //HERE
-
-			Node* meshNode = Node::create("MeshNode");
-			Model* model = createDynamicMesh(vertexArray,vertexCount);
-			meshNode->setDrawable(model);
-			_scene->addNode(meshNode);
-			model->setMaterial(tempMaterial);
-
-		}
-		else
-		{
-			Node* meshNode = Node::create("MeshNode");
-			Model* model = createDynamicMesh(vertexArray, vertexCount);
-			meshNode->setDrawable(model);
-			_scene->addNode(meshNode);
-			model->setMaterial(tempMaterial);
-		}
+		_scene->removeNode(_scene->findNode("MeshNode"));
+		Node* meshNode1 = Node::create("MeshNode1");
+		
+		//_scene->removeNode(meshNode);
+		Model* model1 = createDynamicMesh(vertexArray, vertexCount);
+		meshNode1->setDrawable(model1);
+		_scene->addNode(meshNode1);
+		model1->setMaterial(tempMaterial);
 		
 	}
 
 
-   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)

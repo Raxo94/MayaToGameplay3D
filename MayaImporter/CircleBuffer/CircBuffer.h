@@ -18,6 +18,7 @@ class CircBufferFixed
 		size_t ClientRemaining;
 	};
 
+
 	struct Control // used for measuring ControllBuffer
 	{
 		size_t head;

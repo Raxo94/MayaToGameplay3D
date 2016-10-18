@@ -55,8 +55,8 @@ void getNodesInTheScene(MFnMesh &mesh)
 		points.at(i).nor[1] = vertexNormal[points.at(i).pos[1]];
 		points.at(i).nor[2] = vertexNormal[points.at(i).pos[2]];
 
-		points.at(i).uv[0] = u[i];
-		points.at(i).uv[1] = v[i];
+		points.at(i).uv[0] = 0.0;
+		points.at(i).uv[1] = 0.0;
 
 	}
 
