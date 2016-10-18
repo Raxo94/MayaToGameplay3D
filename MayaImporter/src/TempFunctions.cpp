@@ -99,20 +99,59 @@ inline Model* getManualModel()
 static Model* createCubeMesh(float size = 1.0f)
 {
 	float a = size * 0.5f;
+	unsigned int vertexCount = 24;
+	unsigned int indexCount = 36;
 
-
-	Vertex vertices[]
+	Vertex Vertices[]
 	{
-		{ {-a, -a,  a}, {0.0,  0.0,  1.0}, {0.0, 0.0} },
-		{ {a, -a,  a},  {0.0,  0.0,  1.0}, {1.0, 0.0} },
-		{ {-a,  a,  a}, {0.0,  0.0,  1.0}, {0.0, 1.0} },
-		{ {a,  a,  a},  {0.0,  0.0,  1.0}, {1.0, 1.0} },
-		{ {-a, a, a},   {0.0,  1.0,  0.0}, {0.0, 0.0} },
-		{ {a,  a, a},   {0.0,  1.0,  0.0}, {1.0, 0.0} },
-		{ {-a, a,-a},   {0.0,  1.0,  0.0}, {0.0, 1.0} }
+		{ {-a, -a,  a}, {0.0,  0.0,  1.0},  {0.0, 0.0} },
+		{ {a, -a,  a},  {0.0,  0.0,  1.0},  {1.0, 0.0} },
+		{ {-a,  a,  a}, {0.0,  0.0,  1.0},  {0.0, 1.0} },
+		{ {a,  a,  a},  {0.0,  0.0,  1.0},  {1.0, 1.0} },
+		{ {-a, a, a},   {0.0,  1.0,  0.0},  {0.0, 0.0} },
+		{ {a,  a, a},   {0.0,  1.0,  0.0},  {1.0, 0.0} },
+		{ {-a, a,-a},   {0.0,  1.0,  0.0},  {0.0, 1.0} },
+		{ {a, a, -a},   {0.0,  1.0,  0.0},  {1.0, 1.0} },
+		{ {-a, a,-a},   {0.0,  0.0, -1.0},  {0.0, 0.0} },
+		{ { a, a,-a},   { 0.0, 0.0, -1.0},  { 1.0,0.0} },
+		{ {-a,-a,-a},   { 0.0, 0.0, -1.0},  { 0.0,1.0} },
+		{ {a, -a,-a},   {0.0,  0.0, -1.0},  {1.0, 1.0} },
+		{ {-a, -a, -a}, {0.0, -1.0,  0.0},  {0.0, 0.0} },
+		{ {a, -a, -a},  {0.0, -1.0,  0.0},  {1.0, 0.0} },
+		{ {-a, -a,  a}, { 0.0, -1.0, 0.0},  {0.0, 1.0} },
+		{ {a, -a,  a},  {0.0, -1.0,  0.0},  {1.0, 1.0} },
+		{ {a, -a,  a},  {1.0,  0.0,  0.0},  {0.0, 0.0} },
+		{ {a, -a, -a},  {1.0,  0.0,  0.0},  {1.0, 0.0} },
+		{ {a,  a,  a},  {1.0,  0.0,  0.0},  {0.0, 1.0} },
+		{ {a,  a, -a},  {1.0,  0.0,  0.0},  {1.0, 1.0} },
+		{ {-a, -a, -a}, {-1.0,  0.0, 0.0},  {0.0,0.0 } },
+		{ {-a, -a,  a}, {-1.0,  0.0, 0.0},  {1.0,0.0 } },
+		{ {-a,  a, -a}, {-1.0,  0.0, 0.0},  {0.0, 1.0} },
+		{ {-a,  a,  a}, {-1.0,  0.0, 0.0},  {1.0, 1.0} }
 	};
 
-	float Vertices[] =
+	/*float vertices[24*8];
+	for (size_t i = 0; i < vertexCount; i++)
+	{
+		for (size_t i = 0; i < 3; i++)
+		{
+			vertices[(vertexCount*8)+i] = Vertices[vertexCount].pos[i];
+		}
+
+		for (size_t i = 0; i < 3; i++)
+		{
+			vertices[(vertexCount * 8) +3 + i ] = Vertices[vertexCount].norm[i];
+		}
+
+		for (size_t i = 0; i < 2; i++)
+		{
+			vertices[(vertexCount * 8) + 6 + i] = Vertices[vertexCount].UV[i];
+		}*/
+	
+	//}
+
+
+	float vertices[] =
 	{
 		-a, -a,  a,    0.0,  0.0,  1.0,   0.0, 0.0,
 		a, -a,  a,    0.0,  0.0,  1.0,   1.0, 0.0,
@@ -121,7 +160,7 @@ static Model* createCubeMesh(float size = 1.0f)
 		-a,  a,  a,    0.0,  1.0,  0.0,   0.0, 0.0,
 		a,  a,  a,    0.0,  1.0,  0.0,   1.0, 0.0,
 		-a,  a, -a,    0.0,  1.0,  0.0,   0.0, 1.0,
-		/*a,  a, -a,    0.0,  1.0,  0.0,   1.0, 1.0,
+		a,  a, -a,    0.0,  1.0,  0.0,   1.0, 1.0,
 		-a,  a, -a,    0.0,  0.0, -1.0,   0.0, 0.0,
 		a,  a, -a,    0.0,  0.0, -1.0,   1.0, 0.0,
 		-a, -a, -a,    0.0,  0.0, -1.0,   0.0, 1.0,
@@ -137,15 +176,14 @@ static Model* createCubeMesh(float size = 1.0f)
 		-a, -a, -a,   -1.0,  0.0,  0.0,   0.0, 0.0,
 		-a, -a,  a,   -1.0,  0.0,  0.0,   1.0, 0.0,
 		-a,  a, -a,   -1.0,  0.0,  0.0,   0.0, 1.0,
-		-a,  a,  a,   -1.0,  0.0,  0.0,   1.0, 1.0*/
+		-a,  a,  a,   -1.0,  0.0,  0.0,   1.0, 1.0
 	};
 
-	/*short indices[] =
+	short indices[] =
 	{
 		0, 1, 2, 2, 1, 3, 4, 5, 6, 6, 5, 7, 8, 9, 10, 10, 9, 11, 12, 13, 14, 14, 13, 15, 16, 17, 18, 18, 17, 19, 20, 21, 22, 22, 21, 23
-	};*/
-	unsigned int vertexCount = 4;
-	//unsigned int indexCount = 36;
+	};
+	
 	VertexFormat::Element elements[] =
 	{
 		VertexFormat::Element(VertexFormat::POSITION, 3),
@@ -161,8 +199,8 @@ static Model* createCubeMesh(float size = 1.0f)
 	}
 
 	mesh->setVertexData(vertices, 0, vertexCount);
-	//MeshPart* meshPart = mesh->addPart(Mesh::TRIANGLES, Mesh::INDEX16, indexCount, false);
-	//meshPart->setIndexData(indices, 0, indexCount);
+	MeshPart* meshPart = mesh->addPart(Mesh::TRIANGLES, Mesh::INDEX16, indexCount, false);
+	meshPart->setIndexData(indices, 0, indexCount);
 	
 	Model* model = Model::create(mesh);
 	return model;
