@@ -1,6 +1,6 @@
 #include "CustomRenderer.h"
 #include "TempFunctions.cpp"
-#include "CircBuffer.h"
+#include <Vector>
 // Declare our game instance
 CustomRenderer game;
 
@@ -19,6 +19,7 @@ void CustomRenderer::initialize()
     // Get the box model and initialize its material parameter values and bindings
 	Node* boxNode = _scene->findNode("box");
 	
+	//AllocConsole();
 
 	boxNode->setTranslationX(-3.5);
 	boxNode->setTranslationY(2.3);
@@ -26,14 +27,13 @@ void CustomRenderer::initialize()
 
 	//MESH
 	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
-	Material* boxMaterial = boxModel->getMaterial();
+	this->tempMaterial = boxModel->getMaterial();
 
 	Node* meshNode = Node::create("MeshNode");
-	//Model* model = getManualModel();
 	Model* model = createCubeMesh();
 	meshNode->setDrawable(model);
 	_scene->addNode(meshNode);
-	model->setMaterial(boxMaterial);
+	model->setMaterial(tempMaterial);
 
 
 	//CAMERA
@@ -44,6 +44,11 @@ void CustomRenderer::initialize()
 
 	_scene->setActiveCamera(cam);
 	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+
+
+	//Buffer
+	this-> message = new char[1 << 20 / 4];
+	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
 	
 }
 
@@ -54,8 +59,41 @@ void CustomRenderer::finalize()
 
 void CustomRenderer::update(float elapsedTime)
 {
+
+
+	
     // Rotate model
-   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+	if(circBuffer->pop(message))
+	{
+		std::vector<Vertex> vertexVector;
+
+		Vertex* vertexArray = (Vertex*)message;
+
+		int vertexCount = 8;
+
+		for ( size_t i = 0; i < vertexCount; i++)
+		{
+			vertexVector.push_back(vertexArray[i]);
+		}
+		
+		Node* meshNode = _scene->findNode("MeshNode");
+		if (meshNode)
+		{
+			bool alreadyExisting = true;
+			_scene->removeNode(meshNode); //HERE
+
+			Node* meshNode2 = Node::create("MeshNode2");
+			Model* model2 = createDynamicMesh(vertexArray,vertexCount);
+			meshNode2->setDrawable(model2);
+			_scene->addNode(meshNode2);
+			model2->setMaterial(tempMaterial);
+
+		}
+		
+	}
+
+
+   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)

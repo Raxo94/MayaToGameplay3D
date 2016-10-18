@@ -2,7 +2,7 @@
 #define CustomRenderer_H_
 
 #include "gameplay.h"
-
+#include "CircBuffer.h"
 using namespace gameplay;
 
 /**
@@ -11,7 +11,7 @@ using namespace gameplay;
 class CustomRenderer: public Game
 {
 public:
-
+	
     /**
      * Constructor.
      */
@@ -54,6 +54,9 @@ private:
     /**
      * Draws the scene each frame.
      */
+	char* message;
+	CircBufferFixed* circBuffer;
+	Material* tempMaterial;
     bool drawScene(Node* node);
 
     Scene* _scene;
