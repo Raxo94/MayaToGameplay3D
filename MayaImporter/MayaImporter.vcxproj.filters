@@ -92,14 +92,14 @@
     <ClCompile Include="src\CustomRenderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\TempFunctions.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="CircleBuffer\CircBuffer.cpp">
       <Filter>CircleBuffer</Filter>
     </ClCompile>
     <ClCompile Include="CircleBuffer\Mutex.cpp">
       <Filter>CircleBuffer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TempFunctions.cpp">
-      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

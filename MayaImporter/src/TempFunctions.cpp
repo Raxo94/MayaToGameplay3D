@@ -40,81 +40,168 @@ inline Node* getManualCamera()
 	return cameraNode;
 }
 
-struct Vertex
+struct Vertex2
 {
 	Vector3 pos;
 	Vector3 norm;
 	Vector2 UV;
 };
 
+struct Vertex
+{
+	float pos[3] ;
+	float norm[3] ;
+	float UV[3] ;
+};
 inline Model* getManualModel()
 {
 	VertexFormat::Element elements[] = {
 		VertexFormat::Element(VertexFormat::POSITION, 3),
 		VertexFormat::Element(VertexFormat::NORMAL, 3),
-		VertexFormat::Element(VertexFormat::TEXCOORD0, 2)
+		VertexFormat::Element(VertexFormat::COLOR, 2)
 	};
-	int numVertecies = 3;
 
+	unsigned int vertexCount = 3;
+	const VertexFormat vertFormat(elements, vertexCount);
 	
-	Vector3 one(1, 0, 0);
-	Vector3 two(1, 3, 0);
-	Vector3 three(0, 0, 0);
-	Vector3 four(0, 3, 0);
+	Vertex Vertices[5];
 
+	Vertices[0] = { { 0,0,0 },{ 0,1,0 },{ 255,0,0 } };
 
-	Vertex triangle[6];
+	Vertices[1] = { { 0,5,0 },{ 0,1,0 },{ 255,0,0 } };
 
-	Vertex temp1;
-	temp1.pos = Vector3(1, 0, 0);
-	temp1.norm = Vector3(0, 1, 0);
-	temp1.UV = Vector2(0, 0);
+	Vertices[2] = { { 3,0,0 },{ 0,1,0 },{ 0,0,0 } };
 
-	triangle[0] = temp1;
+	Vertices[3] = { { 0,0,0 },{ 0,1,0 },{ 0,0 } };
 
-	Vertex temp2;
-	temp2.pos = Vector3(1, 3, 0);
-	temp2.norm = Vector3(0, 1, 0);
-	temp2.UV = Vector2(0, 0);
+	Vertices[4] = { { -3,4,0 },{ 0,1,0 },{ 0,0 } };
 
-	triangle[1] = temp2;
+	Vertices[5] = { { -3,0,0 },{ 0,1,0 },{ 0,0 } };
 
-	Vertex temp3;
-	temp3.pos = Vector3(0, 0, 0);
-	temp3.norm = Vector3(0, 1, 0);
-	temp3.UV = Vector2(0, 0);
+	Mesh* mesh = Mesh::createMesh(vertFormat, vertexCount, true);
+	
+	if (mesh == NULL)
+	{
+		GP_ERROR("Failed to create mesh.");
+		return NULL;
+	}
 
-	triangle[2] = temp3;
-
-	Vertex temp4;
-	temp3.pos = Vector3(0, 3, 0);
-	temp3.norm = Vector3(0, 1, 0);
-	temp3.UV = Vector2(0, 0);
-
-	triangle[3] = temp4;
-
-	Vertex temp5;
-	temp3.pos = Vector3(0, 0, 0);
-	temp3.norm = Vector3(0, 1, 0);
-	temp3.UV = Vector2(0, 0);
-
-	triangle[4] = temp5;
-
-	Vertex temp6;
-	temp1.pos = Vector3(1, 0, 0);
-	temp1.norm = Vector3(0, 1, 0);
-	temp1.UV = Vector2(0, 0);
-
-	triangle[5] = temp6;
-
-
-	const VertexFormat vertFormat(elements, numVertecies);
-
-	Mesh* mesh = Mesh::createMesh(vertFormat, numVertecies, false);
-	mesh->setPrimitiveType(Mesh::TRIANGLE_STRIP);
-	mesh->setVertexData(triangle);
+	mesh->setPrimitiveType(Mesh::TRIANGLES);
+	mesh->setVertexData(Vertices); //
 
 	Model* model = Model::create(mesh);
 	return model;
+
+
+}
+
+
+static Model* createCubeMesh(float size = 1.0f)
+{
+	float a = size * 0.5f;
+	unsigned int vertexCount = 24;
+	unsigned int indexCount = 36;
+
+	Vertex Vertices[]
+	{
+		{ {-a, -a,  a}, {0.0,  0.0,  1.0},  {0.0, 0.0} },
+		{ {a, -a,  a},  {0.0,  0.0,  1.0},  {1.0, 0.0} },
+		{ {-a,  a,  a}, {0.0,  0.0,  1.0},  {0.0, 1.0} },
+		{ {a,  a,  a},  {0.0,  0.0,  1.0},  {1.0, 1.0} },
+		{ {-a, a, a},   {0.0,  1.0,  0.0},  {0.0, 0.0} },
+		{ {a,  a, a},   {0.0,  1.0,  0.0},  {1.0, 0.0} },
+		{ {-a, a,-a},   {0.0,  1.0,  0.0},  {0.0, 1.0} },
+		{ {a, a, -a},   {0.0,  1.0,  0.0},  {1.0, 1.0} },
+		{ {-a, a,-a},   {0.0,  0.0, -1.0},  {0.0, 0.0} },
+		{ { a, a,-a},   { 0.0, 0.0, -1.0},  { 1.0,0.0} },
+		{ {-a,-a,-a},   { 0.0, 0.0, -1.0},  { 0.0,1.0} },
+		{ {a, -a,-a},   {0.0,  0.0, -1.0},  {1.0, 1.0} },
+		{ {-a, -a, -a}, {0.0, -1.0,  0.0},  {0.0, 0.0} },
+		{ {a, -a, -a},  {0.0, -1.0,  0.0},  {1.0, 0.0} },
+		{ {-a, -a,  a}, { 0.0, -1.0, 0.0},  {0.0, 1.0} },
+		{ {a, -a,  a},  {0.0, -1.0,  0.0},  {1.0, 1.0} },
+		{ {a, -a,  a},  {1.0,  0.0,  0.0},  {0.0, 0.0} },
+		{ {a, -a, -a},  {1.0,  0.0,  0.0},  {1.0, 0.0} },
+		{ {a,  a,  a},  {1.0,  0.0,  0.0},  {0.0, 1.0} },
+		{ {a,  a, -a},  {1.0,  0.0,  0.0},  {1.0, 1.0} },
+		{ {-a, -a, -a}, {-1.0,  0.0, 0.0},  {0.0,0.0 } },
+		{ {-a, -a,  a}, {-1.0,  0.0, 0.0},  {1.0,0.0 } },
+		{ {-a,  a, -a}, {-1.0,  0.0, 0.0},  {0.0, 1.0} },
+		{ {-a,  a,  a}, {-1.0,  0.0, 0.0},  {1.0, 1.0} }
+	};
+
+	/*float vertices[24*8];
+	for (size_t i = 0; i < vertexCount; i++)
+	{
+		for (size_t i = 0; i < 3; i++)
+		{
+			vertices[(vertexCount*8)+i] = Vertices[vertexCount].pos[i];
+		}
+
+		for (size_t i = 0; i < 3; i++)
+		{
+			vertices[(vertexCount * 8) +3 + i ] = Vertices[vertexCount].norm[i];
+		}
+
+		for (size_t i = 0; i < 2; i++)
+		{
+			vertices[(vertexCount * 8) + 6 + i] = Vertices[vertexCount].UV[i];
+		}*/
 	
+	//}
+
+
+	float vertices[] =
+	{
+		-a, -a,  a,    0.0,  0.0,  1.0,   0.0, 0.0,
+		a, -a,  a,    0.0,  0.0,  1.0,   1.0, 0.0,
+		-a,  a,  a,    0.0,  0.0,  1.0,   0.0, 1.0,
+		a,  a,  a,    0.0,  0.0,  1.0,   1.0, 1.0,
+		-a,  a,  a,    0.0,  1.0,  0.0,   0.0, 0.0,
+		a,  a,  a,    0.0,  1.0,  0.0,   1.0, 0.0,
+		-a,  a, -a,    0.0,  1.0,  0.0,   0.0, 1.0,
+		a,  a, -a,    0.0,  1.0,  0.0,   1.0, 1.0,
+		-a,  a, -a,    0.0,  0.0, -1.0,   0.0, 0.0,
+		a,  a, -a,    0.0,  0.0, -1.0,   1.0, 0.0,
+		-a, -a, -a,    0.0,  0.0, -1.0,   0.0, 1.0,
+		a, -a, -a,    0.0,  0.0, -1.0,   1.0, 1.0,
+		-a, -a, -a,    0.0, -1.0,  0.0,   0.0, 0.0,
+		a, -a, -a,    0.0, -1.0,  0.0,   1.0, 0.0,
+		-a, -a,  a,    0.0, -1.0,  0.0,   0.0, 1.0,
+		a, -a,  a,    0.0, -1.0,  0.0,   1.0, 1.0,
+		a, -a,  a,    1.0,  0.0,  0.0,   0.0, 0.0,
+		a, -a, -a,    1.0,  0.0,  0.0,   1.0, 0.0,
+		a,  a,  a,    1.0,  0.0,  0.0,   0.0, 1.0,
+		a,  a, -a,    1.0,  0.0,  0.0,   1.0, 1.0,
+		-a, -a, -a,   -1.0,  0.0,  0.0,   0.0, 0.0,
+		-a, -a,  a,   -1.0,  0.0,  0.0,   1.0, 0.0,
+		-a,  a, -a,   -1.0,  0.0,  0.0,   0.0, 1.0,
+		-a,  a,  a,   -1.0,  0.0,  0.0,   1.0, 1.0
+	};
+
+	short indices[] =
+	{
+		0, 1, 2, 2, 1, 3, 4, 5, 6, 6, 5, 7, 8, 9, 10, 10, 9, 11, 12, 13, 14, 14, 13, 15, 16, 17, 18, 18, 17, 19, 20, 21, 22, 22, 21, 23
+	};
+	
+	VertexFormat::Element elements[] =
+	{
+		VertexFormat::Element(VertexFormat::POSITION, 3),
+		VertexFormat::Element(VertexFormat::NORMAL, 3),
+		VertexFormat::Element(VertexFormat::TEXCOORD0, 2)
+	};
+	Mesh* mesh = Mesh::createMesh(VertexFormat(elements, 3), vertexCount, false);
+	
+	if (mesh == NULL)
+	{
+		GP_ERROR("Failed to create mesh.");
+		return NULL;
+	}
+
+	mesh->setVertexData(vertices, 0, vertexCount);
+	MeshPart* meshPart = mesh->addPart(Mesh::TRIANGLES, Mesh::INDEX16, indexCount, false);
+	meshPart->setIndexData(indices, 0, indexCount);
+	
+	Model* model = Model::create(mesh);
+	return model;
 }
