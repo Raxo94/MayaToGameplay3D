@@ -53,7 +53,7 @@ void getNodesInTheScene(MFnMesh &mesh)
 	}
 
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
+	circPtr->push(points.data(), sizeof(float) * 8 * points.size());
 
 }
 
