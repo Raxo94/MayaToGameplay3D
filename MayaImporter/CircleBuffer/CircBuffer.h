@@ -10,6 +10,8 @@ using namespace std;
 class CircBufferFixed
 {
 	enum { HEAD, TAIL, CLIENTCOUNT };
+
+
 	struct Header // Header for messages in circularBuffer 
 	{
 		size_t id;
@@ -17,6 +19,7 @@ class CircBufferFixed
 		size_t padding;
 		size_t ClientRemaining;
 	};
+
 
 	struct Control // used for measuring ControllBuffer
 	{

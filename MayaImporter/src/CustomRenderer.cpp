@@ -29,6 +29,7 @@ void CustomRenderer::initialize()
 	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
 	this->tempMaterial = boxModel->getMaterial();
 
+	
 	Node* meshNode = Node::create("MeshNode");
 	Model* model = createCubeMesh();
 	meshNode->setDrawable(model);
@@ -69,26 +70,21 @@ void CustomRenderer::update(float elapsedTime)
 
 		Vertex* vertexArray = (Vertex*)message;
 
-		int vertexCount = 8;
+		int vertexCount = 36;
 
 		for ( size_t i = 0; i < vertexCount; i++)
 		{
 			vertexVector.push_back(vertexArray[i]);
 		}
 		
-		Node* meshNode = _scene->findNode("MeshNode");
-		if (meshNode)
-		{
-			bool alreadyExisting = true;
-			_scene->removeNode(meshNode); //HERE
+		
 
-			Node* meshNode2 = Node::create("MeshNode2");
-			Model* model2 = createDynamicMesh(vertexArray,vertexCount);
-			meshNode2->setDrawable(model2);
-			_scene->addNode(meshNode2);
-			model2->setMaterial(tempMaterial);
-
-		}
+		Node* meshNode1 = Node::create("MeshNode1");
+		Model* model1 = createDynamicMesh(vertexArray, vertexCount);
+		meshNode1->setDrawable(model1);
+		_scene->addNode(meshNode1);
+		model1->setMaterial(tempMaterial);
+		//_scene->removeNode(_scene->findNode("MeshNode"));
 		
 	}
 
