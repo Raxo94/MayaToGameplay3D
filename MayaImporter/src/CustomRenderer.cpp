@@ -70,23 +70,21 @@ void CustomRenderer::update(float elapsedTime)
 
 		Vertex* vertexArray = (Vertex*)message;
 
-		int vertexCount = ;
+		int vertexCount = 36;
 
 		for ( size_t i = 0; i < vertexCount; i++)
 		{
-			//vertexArray[i].UV[0] = 0.0;
-			//vertexArray[i].UV[1] = 0.0;
 			vertexVector.push_back(vertexArray[i]);
 		}
 		
-		_scene->removeNode(_scene->findNode("MeshNode"));
-		Node* meshNode1 = Node::create("MeshNode1");
 		
-		//_scene->removeNode(meshNode);
+
+		Node* meshNode1 = Node::create("MeshNode1");
 		Model* model1 = createDynamicMesh(vertexArray, vertexCount);
 		meshNode1->setDrawable(model1);
 		_scene->addNode(meshNode1);
 		model1->setMaterial(tempMaterial);
+		//_scene->removeNode(_scene->findNode("MeshNode"));
 		
 	}
 

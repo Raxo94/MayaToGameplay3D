@@ -88,7 +88,6 @@ static Model* createCubeMesh(float size = 1.0f)
 		{ {-a,  a,  a}, {-1.0,  0.0, 0.0},  {1.0, 1.0} }
 	};
 
-	
 	VertexFormat::Element elements[] =
 	{
 		VertexFormat::Element(VertexFormat::POSITION, 3),
@@ -111,25 +110,8 @@ static Model* createCubeMesh(float size = 1.0f)
 }
 
 
-
-
-
-
-
-
-
 static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 {
-
-	struct message //Alltid
-	{
-		int size of array;
-		Vertex[] array;
-		
-		std::string typechange;
-
-
-	};
 	
 	VertexFormat::Element elements[] =
 	{

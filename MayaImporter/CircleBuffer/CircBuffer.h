@@ -10,6 +10,8 @@ using namespace std;
 class CircBufferFixed
 {
 	enum { HEAD, TAIL, CLIENTCOUNT };
+
+
 	struct Header // Header for messages in circularBuffer 
 	{
 		size_t id;
