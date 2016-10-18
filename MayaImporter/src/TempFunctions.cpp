@@ -159,26 +159,6 @@ static Model* createCubeMesh(float size = 1.0f)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 {
 	

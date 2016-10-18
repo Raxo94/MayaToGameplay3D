@@ -69,7 +69,7 @@ void CustomRenderer::update(float elapsedTime)
 
 		Vertex* vertexArray = (Vertex*)message;
 
-		int vertexCount = 8;
+		int vertexCount = 36;
 
 		for ( size_t i = 0; i < vertexCount; i++)
 		{
@@ -79,21 +79,29 @@ void CustomRenderer::update(float elapsedTime)
 		Node* meshNode = _scene->findNode("MeshNode");
 		if (meshNode)
 		{
-			bool alreadyExisting = true;
+			
 			_scene->removeNode(meshNode); //HERE
 
-			Node* meshNode2 = Node::create("MeshNode2");
-			Model* model2 = createDynamicMesh(vertexArray,vertexCount);
-			meshNode2->setDrawable(model2);
-			_scene->addNode(meshNode2);
-			model2->setMaterial(tempMaterial);
+			Node* meshNode = Node::create("MeshNode");
+			Model* model = createDynamicMesh(vertexArray,vertexCount);
+			meshNode->setDrawable(model);
+			_scene->addNode(meshNode);
+			model->setMaterial(tempMaterial);
 
+		}
+		else
+		{
+			Node* meshNode = Node::create("MeshNode");
+			Model* model = createDynamicMesh(vertexArray, vertexCount);
+			meshNode->setDrawable(model);
+			_scene->addNode(meshNode);
+			model->setMaterial(tempMaterial);
 		}
 		
 	}
 
 
-   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)
