@@ -7,17 +7,18 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
 MCallbackIdArray idList;
+MObjectArray object[20];
 
 struct vertices
 {
 	float pos[3];
 	float nor[3];
+	float uv[2];
 };
 
 void getNodesInTheScene(MFnMesh &mesh)
 {
 	MFloatPointArray pts;
-	MIntArray adjacentVertexList;
 	unsigned int i;
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
@@ -25,76 +26,53 @@ void getNodesInTheScene(MFnMesh &mesh)
 	mesh.getPoints(pts, MSpace::kObject);
 	std::vector<vertices> points;
 
-	//multiply by 3 to make sure x,y and z is equal to one point
 	points.resize(pts.length());
 
-	//store points in float vector
-	for (i = 0; i < pts.length(); i++) {
+	MVector vertexNormal;
+	MIntArray normalList, normalCount;
+	MFloatArray u, v;
+		
+	mesh.getNormalIds(normalCount, normalList);
+	mesh.getUVs(u, v, 0);
 
-		//size_t local = i * 3;
+	for (i = 0; i < points.size(); i++) {
+
 		points.at(i).pos[0] = pts[i].x;
 		points.at(i).pos[1] = pts[i].y;
 		points.at(i).pos[2] = pts[i].z;
 
-		//adjacentVertexList.append(points[i]);*/
-		//MIntArray polyVerts = mesh.getPolygonVertices(i, adjacentVertexList);
-
-	}
-
-	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-
-	circPtr->push(points.data(), sizeof(float) * 3 * points.size());
-	
-	//MFloatVectorArray normal;
-	//MFloatVector translation;
-	MVector vertexNormal;
-	
-	//MVector avarageNormal(0, 0, 0);
-
-	mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kObject);
-
-	for (i = 0; i < points.size(); i++) {
-
-		//mesh.getVertexNormal(adjacentVertexList.length(), vertexNormal, MSpace::kWorld);
-	//	avarageNormal += vertexNormal;
+		mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
 
 		points.at(i).nor[0] = vertexNormal[0];
 		points.at(i).nor[1] = vertexNormal[1];
 		points.at(i).nor[2] = vertexNormal[2];
 
-		MString nx = "";
-		nx += points.at(i).nor[0];
-
-		MString ny = "";
-		ny += points.at(i).nor[1];
-
-		MString nz = "";
-		nz += points.at(i).nor[2];
-
-		MGlobal::displayInfo("normal in x: " + nx + " normal in y: " + ny + " normal in z: " + nz);
+		points.at(i).uv[0] = u[i];
+		points.at(i).uv[1] = v[i];
 
 	}
 
-	//if (avarageNormal.length() < 0.001) {
-	//	avarageNormal = MVector(0.0, 1.0, 0.0);
-	//}
-	//else avarageNormal.normalize();
-	//translation = avarageNormal;
+	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	circPtr->push(points.data(), sizeof(float) * 8 * points.size());
+
 }
 
 void MNodeFunction(MObject &node, void* clientData)
 {
-	MStatus res = MS::kSuccess;
-
 	if (node.hasFn(MFn::kMesh)) {
-
 		MFnMesh mesh(node);
-		
-		/*getNodesInTheScene(mesh);*/
-
-	}
-
+		if (mesh.canBeWritten()) {
+			getNodesInTheScene(mesh);
+			}
+		}
 }
+
+//void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
+//{
+//	MStatus res = MS::kSuccess;
+//
+//	
+//}
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
@@ -115,16 +93,24 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 		it.next();
 	}
+	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
+	//
+	//if (res == MS::kSuccess) {
+	//	idList.append(timeId);
+	//	MGlobal::displayInfo("time callback Succeeded");
+	//}
+	//else {
+	//	MGlobal::displayInfo("time callback Failed");
+	//}
 
 	MCallbackId nodeId = MDGMessage::addNodeAddedCallback(MNodeFunction, kDefaultNodeType, NULL, &res);
 
-
 	if (res == MS::kSuccess) {
 		idList.append(nodeId);
-		MGlobal::displayInfo("added node callback Succeeded");
+		MGlobal::displayInfo("time callback Succeeded");
 	}
 	else {
-		MGlobal::displayInfo("added node callback Failed");
+		MGlobal::displayInfo("time callback Failed");
 	}
 
 	MGlobal::displayInfo("Maya plugin loaded!");
