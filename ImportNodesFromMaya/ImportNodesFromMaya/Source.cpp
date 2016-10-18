@@ -16,6 +16,13 @@ struct vertices
 	float uv[2];
 };
 
+struct HeaderType
+{
+	char message[256];
+	size_t vertexArray;
+	size_t vertexCount;
+};
+
 void getNodesInTheScene(MFnMesh &mesh)
 {
 	MFloatPointArray pts;
@@ -55,13 +62,21 @@ void getNodesInTheScene(MFnMesh &mesh)
 		points.at(i).nor[1] = vertexNormal[points.at(i).pos[1]];
 		points.at(i).nor[2] = vertexNormal[points.at(i).pos[2]];
 
-		points.at(i).uv[0] = u[i];
-		points.at(i).uv[1] = v[i];
+		points.at(i).uv[0] = 0.0;
+		points.at(i).uv[1] = 0.0;
 
 	}
 
+	//void* message = new char(1<<20 / 4);
+	//HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
+
+	//memcpy(message, &header, sizeof(HeaderType));
+	//memcpy(message, points.data(), sizeof(vertices) * points.size());
+
+	//CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	//circPtr->push(message, sizeof(HeaderType) + sizeof(vertices) * points.size());
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	circPtr->push(points.data(), sizeof(float) * 8 * points.size());
+	circPtr->push(points.data(), sizeof(vertices) * points.size());
 
 }
 
@@ -115,10 +130,10 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 	if (res == MS::kSuccess) {
 		idList.append(nodeId);
-		MGlobal::displayInfo("time callback Succeeded");
+		MGlobal::displayInfo("node callback Succeeded");
 	}
 	else {
-		MGlobal::displayInfo("time callback Failed");
+		MGlobal::displayInfo("node callback Failed");
 	}
 
 	MGlobal::displayInfo("Maya plugin loaded!");
