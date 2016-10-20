@@ -1,43 +1,17 @@
 #include <Windows.h>
 #include "Linker.h"
 #include "CircBuffer.h"
+#include "PluginDeclarations.h"
 
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_export_2_maya_mesh_writer_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
-MCallbackIdArray idList;
-MObjectArray object[20];
 
-struct vertices
+void getMeshesInTheScene(MFnMesh &mesh)
 {
-	float pos[3];
-	float nor[3];
-	float uv[2];
-};
-
-struct HeaderType
-{
-	char messageType[256];
-	size_t vertexArray;
-	size_t vertexCount;
-};
-
-void getNodesInTheScene(MFnMesh &mesh)
-{
-	MFloatPointArray pts;
-	unsigned int i;
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
-
-	std::vector<vertices> points;
-
-	MIntArray triangleCounts;
-	MIntArray triangleVertexIDs;
-	MVector vertexNormal;
-	MIntArray normalList, normalCount;
-	MFloatArray u, v;
-	MFloatVectorArray normals;
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
@@ -54,8 +28,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 		points.at(i).pos[0] = pts[triangleVertexIDs[i]].x;
 		points.at(i).pos[1] = pts[triangleVertexIDs[i]].y;
 		points.at(i).pos[2] = pts[triangleVertexIDs[i]].z;
-
-		//mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
 		
 		points.at(i).nor[0] = normals[triangleVertexIDs[i]].x;
 		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
@@ -74,8 +46,6 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
 	circPtr->push(message, sizeof(HeaderType) + sizeof(vertices) * points.size());
-	//CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	//circPtr->push(points.data(), sizeof(vertices) * points.size());
 
 }
 
@@ -84,7 +54,7 @@ void MNodeFunction(MObject &node, void* clientData)
 	if (node.hasFn(MFn::kMesh)) {
 		MFnMesh mesh(node);
 		if (mesh.canBeWritten()) {
-			getNodesInTheScene(mesh);
+			getMeshesInTheScene(mesh);
 			}
 		}
 }
@@ -98,8 +68,6 @@ void MNodeFunction(MObject &node, void* clientData)
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
-	//this indicates errors
-	MStatus res = MS::kSuccess;
 
 	MFnPlugin myPlugin(obj, "Maya Plugin", "1.0", "Any", &res);
 	if (MFAIL(res)) {
@@ -111,7 +79,7 @@ EXPORT MStatus initializePlugin(MObject obj)
 	{
 		MFnMesh mesh(it.currentItem());
 		
-		getNodesInTheScene(mesh);
+		getMeshesInTheScene(mesh);
 
 		it.next();
 	}

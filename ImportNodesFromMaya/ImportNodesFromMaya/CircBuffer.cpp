@@ -15,7 +15,6 @@ CircBufferFixed::CircBufferFixed(LPCWSTR buffName, const bool & isProducer, cons
 	this->ClientPosition = 0;
 	this->MessageCount = 0;
 	
-	
 	createMaping();
 	UpdateControlBuffer();
 }

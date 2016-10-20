@@ -154,6 +154,7 @@
     <ClInclude Include="CircBuffer.h" />
     <ClInclude Include="Linker.h" />
     <ClInclude Include="Mutex.h" />
+    <ClInclude Include="PluginDeclarations.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,5 +35,8 @@
     <ClInclude Include="Mutex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PluginDeclarations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
