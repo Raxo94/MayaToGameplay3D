@@ -1,7 +1,7 @@
 #pragma once
 #include "CircBuffer.h"
 #include <iostream>
-
+#include <Vector>
 using namespace std;
 
 struct HeaderType
@@ -23,10 +23,13 @@ class MayaData
 private:
 	char Name[256];
 	Vertex* vertexArray;
+	unsigned int vertexCount;
 	char* message;
 	CircBufferFixed* circBuffer;
 public:
 	bool read();
+	Vertex* GetVertexArray();
+	unsigned int GetVertexCount();
 	MayaData();
 	~MayaData();
 };

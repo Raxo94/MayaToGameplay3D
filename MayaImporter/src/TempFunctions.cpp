@@ -46,37 +46,39 @@ inline Node* getManualCamera()
 static Model* createCubeMesh(float size = 1.0f)
 {
 	float a = size * 0.5f;
+	float vertices[] =
+	{
+		-a, -a,  a,    0.0,  0.0,  1.0,   0.0, 0.0,
+		a, -a,  a,    0.0,  0.0,  1.0,   1.0, 0.0,
+		-a,  a,  a,    0.0,  0.0,  1.0,   0.0, 1.0,
+		a,  a,  a,    0.0,  0.0,  1.0,   1.0, 1.0,
+		-a,  a,  a,    0.0,  1.0,  0.0,   0.0, 0.0,
+		a,  a,  a,    0.0,  1.0,  0.0,   1.0, 0.0,
+		-a,  a, -a,    0.0,  1.0,  0.0,   0.0, 1.0,
+		a,  a, -a,    0.0,  1.0,  0.0,   1.0, 1.0,
+		-a,  a, -a,    0.0,  0.0, -1.0,   0.0, 0.0,
+		a,  a, -a,    0.0,  0.0, -1.0,   1.0, 0.0,
+		-a, -a, -a,    0.0,  0.0, -1.0,   0.0, 1.0,
+		a, -a, -a,    0.0,  0.0, -1.0,   1.0, 1.0,
+		-a, -a, -a,    0.0, -1.0,  0.0,   0.0, 0.0,
+		a, -a, -a,    0.0, -1.0,  0.0,   1.0, 0.0,
+		-a, -a,  a,    0.0, -1.0,  0.0,   0.0, 1.0,
+		a, -a,  a,    0.0, -1.0,  0.0,   1.0, 1.0,
+		a, -a,  a,    1.0,  0.0,  0.0,   0.0, 0.0,
+		a, -a, -a,    1.0,  0.0,  0.0,   1.0, 0.0,
+		a,  a,  a,    1.0,  0.0,  0.0,   0.0, 1.0,
+		a,  a, -a,    1.0,  0.0,  0.0,   1.0, 1.0,
+		-a, -a, -a,   -1.0,  0.0,  0.0,   0.0, 0.0,
+		-a, -a,  a,   -1.0,  0.0,  0.0,   1.0, 0.0,
+		-a,  a, -a,   -1.0,  0.0,  0.0,   0.0, 1.0,
+		-a,  a,  a,   -1.0,  0.0,  0.0,   1.0, 1.0
+	};
+	short indices[] =
+	{
+		0, 1, 2, 2, 1, 3, 4, 5, 6, 6, 5, 7, 8, 9, 10, 10, 9, 11, 12, 13, 14, 14, 13, 15, 16, 17, 18, 18, 17, 19, 20, 21, 22, 22, 21, 23
+	};
 	unsigned int vertexCount = 24;
 	unsigned int indexCount = 36;
-
-	Vertex vertices[]
-	{
-		{ {-a, -a,  a}, {0.0,  0.0,  1.0},  {0.0, 0.0} },
-		{ {a, -a,  a},  {0.0,  0.0,  1.0},  {1.0, 0.0} },
-		{ {-a,  a,  a}, {0.0,  0.0,  1.0},  {0.0, 1.0} },
-		{ {a,  a,  a},  {0.0,  0.0,  1.0},  {1.0, 1.0} },
-		{ {-a, a, a},   {0.0,  1.0,  0.0},  {0.0, 0.0} },
-		{ {a,  a, a},   {0.0,  1.0,  0.0},  {1.0, 0.0} },
-		{ {-a, a,-a},   {0.0,  1.0,  0.0},  {0.0, 1.0} },
-		{ {a, a, -a},   {0.0,  1.0,  0.0},  {1.0, 1.0} },
-		{ {-a, a,-a},   {0.0,  0.0, -1.0},  {0.0, 0.0} },
-		{ { a, a,-a},   { 0.0, 0.0, -1.0},  { 1.0,0.0} },
-		{ {-a,-a,-a},   { 0.0, 0.0, -1.0},  { 0.0,1.0} },
-		{ {a, -a,-a},   {0.0,  0.0, -1.0},  {1.0, 1.0} },
-		{ {-a, -a, -a}, {0.0, -1.0,  0.0},  {0.0, 0.0} },
-		{ {a, -a, -a},  {0.0, -1.0,  0.0},  {1.0, 0.0} },
-		{ {-a, -a,  a}, { 0.0, -1.0, 0.0},  {0.0, 1.0} },
-		{ {a, -a,  a},  {0.0, -1.0,  0.0},  {1.0, 1.0} },
-		{ {a, -a,  a},  {1.0,  0.0,  0.0},  {0.0, 0.0} },
-		{ {a, -a, -a},  {1.0,  0.0,  0.0},  {1.0, 0.0} },
-		{ {a,  a,  a},  {1.0,  0.0,  0.0},  {0.0, 1.0} },
-		{ {a,  a, -a},  {1.0,  0.0,  0.0},  {1.0, 1.0} },
-		{ {-a, -a, -a}, {-1.0,  0.0, 0.0},  {0.0,0.0 } },
-		{ {-a, -a,  a}, {-1.0,  0.0, 0.0},  {1.0,0.0 } },
-		{ {-a,  a, -a}, {-1.0,  0.0, 0.0},  {0.0, 1.0} },
-		{ {-a,  a,  a}, {-1.0,  0.0, 0.0},  {1.0, 1.0} }
-	};
-
 	VertexFormat::Element elements[] =
 	{
 		VertexFormat::Element(VertexFormat::POSITION, 3),
@@ -84,14 +86,15 @@ static Model* createCubeMesh(float size = 1.0f)
 		VertexFormat::Element(VertexFormat::TEXCOORD0, 2)
 	};
 	Mesh* mesh = Mesh::createMesh(VertexFormat(elements, 3), vertexCount, false);
-	
 	if (mesh == NULL)
 	{
 		GP_ERROR("Failed to create mesh.");
 		return NULL;
 	}
-
 	mesh->setVertexData(vertices, 0, vertexCount);
+	MeshPart* meshPart = mesh->addPart(Mesh::TRIANGLES, Mesh::INDEX16, indexCount, false);
+	meshPart->setIndexData(indices, 0, indexCount);
+
 	
 	
 	Model* model = Model::create(mesh);
@@ -129,7 +132,7 @@ static Material* createDefaultMaterial()
 	Material* material = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag"); //REMOVED"DIRECTIONAL_LIGHT_COUNT 1"
 
 	// These parameters are normally set in a .material file but this example sets them programmatically.
-	// Bind the uniform "u_worldViewProjectionMatrix" to use the WORLD_VIEW_PROJECTION_MATRIX from the scene's active camera and the node that the model belongs to.
+// Bind the uniform "u_worldViewProjectionMatrix" to use the WORLD_VIEW_PROJECTION_MATRIX from the scene's active camera and the node that the model belongs to.
 	material->setParameterAutoBinding("u_worldViewProjectionMatrix", "WORLD_VIEW_PROJECTION_MATRIX");
 	material->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", "INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX");
 	// Set the ambient color of the material.
