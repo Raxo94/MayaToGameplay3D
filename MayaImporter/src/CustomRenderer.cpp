@@ -80,10 +80,10 @@ void CustomRenderer::update(float elapsedTime)
 
 
 	
-    // Rotate model
-	//if(circBuffer->pop(message))
-	//{
-	//	std::vector<Vertex> vertexVector;
+    
+	if (mayaData->read());
+	{
+		//std::vector<Vertex> vertexVector;
 
 	//	Vertex* vertexArray = (Vertex*)message;
 
@@ -105,7 +105,8 @@ void CustomRenderer::update(float elapsedTime)
 	//	//Gör ett material.
 	//	//Testa att ta in med circle buffern.
 	//}
-
+		;
+	}
 
    _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
