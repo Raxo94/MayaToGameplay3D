@@ -10,7 +10,7 @@
 
 void getMeshesInTheScene(MFnMesh &mesh)
 {
-
+	
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
@@ -38,14 +38,24 @@ void getMeshesInTheScene(MFnMesh &mesh)
 
 	}
 
+	
 	char* message = new char[5000];
-	HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
+	size_t offset = 0;
 
-	memcpy(message, &header, sizeof(HeaderType));
-	memcpy(message + sizeof(HeaderType), points.data(), sizeof(vertices) * points.size());
+	int Type = MessageType::MayaMesh;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
+	memcpy( (message + offset), &header, sizeof(HeaderType));
+	offset += sizeof(HeaderType);
+
+	memcpy(message + offset, points.data(), sizeof(vertices) * points.size());
+	offset += sizeof(vertices) * points.size();
+
 
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	circPtr->push(message, sizeof(HeaderType) + (sizeof(vertices) * points.size()   ));
+	circPtr->push(message, offset);
 
 }
 

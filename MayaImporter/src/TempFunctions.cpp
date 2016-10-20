@@ -1,10 +1,10 @@
+#pragma once
+
 #include "gameplay.h"
 #include "MayaData.h"
 
-using namespace::gameplay;
+using namespace gameplay;
  
-
-
 
 inline Node* getManualCamera()
 {

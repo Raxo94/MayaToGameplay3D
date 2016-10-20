@@ -1,6 +1,8 @@
 #pragma once
 #include "Linker.h"
 
+enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
+
 struct vertices
 {
 	float pos[3];

@@ -5,22 +5,24 @@ bool MayaData::read()
 {
 	if (circBuffer->pop(message))
 	{
-		HeaderType* header;
-		header = (HeaderType*)message;
-		this->vertexCount = header->vertexCount;
+		size_t offset = 0;
 
-		memcpy(vertexArray, (message + sizeof(HeaderType)), sizeof(Vertex) * vertexCount);
-
-		std::vector<Vertex> vertexVector;
-
-		for (size_t i = 0; i < vertexCount; i++)
-			{
-				vertexVector.push_back(vertexArray[i]);
-			}
+		memcpy(&messageType, message, sizeof(int)); 
+		offset += sizeof(int);
 		
-		return true;
-	}
+		if (messageType == MessageType::MayaMesh)
+		{
+			HeaderType* header;
+			header = (HeaderType*)(message + offset);
+			offset += sizeof(HeaderType);
+			this->vertexCount = header->vertexCount;
 
+			memcpy(vertexArray, (message + offset), sizeof(Vertex) * vertexCount);
+			return true;
+
+		}
+
+	}
 	else
 		return false;
 }

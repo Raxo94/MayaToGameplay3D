@@ -33,8 +33,6 @@ void CustomRenderer::initialize()
 	//lightNode->release();
 	//light->release();
 
-	//Directional light
-
 	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
 	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
@@ -57,8 +55,6 @@ void CustomRenderer::initialize()
 	Node* cameraNode = getManualCamera();
 	_scene->addNode(cameraNode);
 	Camera* cam = cameraNode->getCamera();
-
-
 	_scene->setActiveCamera(cam);
 	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
 
@@ -77,17 +73,19 @@ void CustomRenderer::finalize()
 void CustomRenderer::update(float elapsedTime)
 {
 
-
-	
-    
 	if (mayaData->read())
 	{
-	_scene->removeNode(_scene->findNode("MeshNode"));
-	Node* meshNode1 = Node::create("MeshNode");
-	Model* model1 = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
-	meshNode1->setDrawable(model1);
-	_scene->addNode(meshNode1);
-	model1->setMaterial(createDefaultMaterial());
+		if (mayaData->messageType == MessageType::MayaMesh)
+		{
+			_scene->removeNode(_scene->findNode("MeshNode"));
+			Node* meshNode = Node::create("MeshNode"); //insert name here
+			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
+			_scene->addNode(meshNode);
+			model->setMaterial(createDefaultMaterial());
+			meshNode->setDrawable(model);
+			
+		} 
+	
 	}
 
    _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
