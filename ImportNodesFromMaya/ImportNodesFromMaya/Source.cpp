@@ -8,7 +8,7 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
 
-void getMeshesInTheScene(MFnMesh &mesh)
+void GetMeshes(MFnMesh &mesh)
 {
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
@@ -49,12 +49,17 @@ void getMeshesInTheScene(MFnMesh &mesh)
 
 }
 
+void GetCamera(MFnCamera &camera)
+{	
+	MGlobal::displayInfo("current camera: " + camera.name());
+}
+
 void MNodeFunction(MObject &node, void* clientData)
 {
 	if (node.hasFn(MFn::kMesh)) {
 		MFnMesh mesh(node);
 		if (mesh.canBeWritten()) {
-			getMeshesInTheScene(mesh);
+			GetMeshes(mesh);
 			}
 		}
 }
@@ -74,15 +79,25 @@ EXPORT MStatus initializePlugin(MObject obj)
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag it(MItDag::kBreadthFirst, MFn::kMesh);
-	while (it.isDone() == false)
+	MItDag itMesh(MItDag::kBreadthFirst, MFn::kMesh);
+	while (itMesh.isDone() == false)
 	{
-		MFnMesh mesh(it.currentItem());
-		
-		getMeshesInTheScene(mesh);
+		MFnMesh mesh(itMesh.currentItem());
+		GetMeshes(mesh);
 
-		it.next();
+		itMesh.next();
 	}
+
+	MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
+	while (itCamera.isDone() == false)
+	{
+		MFnCamera camera(itCamera.currentItem());
+
+		GetCamera(camera);
+
+		itCamera.next();
+	}
+
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
 	//if (res == MS::kSuccess) {
