@@ -1,6 +1,6 @@
 #include "CustomRenderer.h"
 #include "TempFunctions.cpp"
-#include <Vector>
+
 // Declare our game instance
 CustomRenderer game;
 
@@ -45,14 +45,13 @@ void CustomRenderer::initialize()
 	//Mesh
 	Node* meshNode = Node::create("MeshNode");
 	Model* model = createCubeMesh();
-
-
 	meshNode->setDrawable(model);
 	_scene->addNode(meshNode);
 	
 	//Material
 	Material* material(createDefaultMaterial());
 	model->setMaterial(material);
+	
 	
 	//CAMERA
 	Node* cameraNode = getManualCamera();
@@ -81,31 +80,14 @@ void CustomRenderer::update(float elapsedTime)
 
 	
     
-	if (mayaData->read());
+	if (mayaData->read())
 	{
-		//std::vector<Vertex> vertexVector;
-
-	//	Vertex* vertexArray = (Vertex*)message;
-
-	//	int vertexCount = 36;
-
-	//	for ( size_t i = 0; i < vertexCount; i++)
-	//	{
-	//		vertexVector.push_back(vertexArray[i]);
-	//	}
-	//	
-	//	
-
-	//	//Node* meshNode1 = Node::create("MeshNode1");
-	//	//Model* model1 = createDynamicMesh(vertexArray, vertexCount);
-	//	meshNode1->setDrawable(model1);
-	//	_scene->addNode(meshNode1);
-	//	model1->setMaterial(tempMaterial);
-	//	_scene->removeNode(_scene->findNode("MeshNode"));
-	//	//Gör ett material.
-	//	//Testa att ta in med circle buffern.
-	//}
-		;
+	_scene->removeNode(_scene->findNode("MeshNode"));
+	Node* meshNode1 = Node::create("MeshNode");
+	Model* model1 = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
+	meshNode1->setDrawable(model1);
+	_scene->addNode(meshNode1);
+	model1->setMaterial(createDefaultMaterial());
 	}
 
    _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
