@@ -1,5 +1,15 @@
 #pragma once
 #include "CircBuffer.h"
+#include <iostream>
+
+using namespace std;
+
+struct HeaderType
+{
+	char messageType[256];
+	size_t vertexArray;
+	size_t vertexCount;
+};
 
 struct Vertex
 {
@@ -16,7 +26,7 @@ private:
 	char* message;
 	CircBufferFixed* circBuffer;
 public:
-	void readMayaData();
+	bool read();
 	MayaData();
 	~MayaData();
 };

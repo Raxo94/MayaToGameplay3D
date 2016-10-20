@@ -104,6 +104,8 @@
     <ClCompile Include="CircleBuffer\Mutex.cpp">
       <Filter>CircleBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="src\MayaData.cpp" />
+    <ClCompile Include="src\MayaData.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -42,10 +42,10 @@ void getMeshesInTheScene(MFnMesh &mesh)
 	HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
 
 	memcpy(message, &header, sizeof(HeaderType));
-	memcpy((vertices*)message, points.data(), sizeof(vertices) * points.size());
+	//memcpy((vertices*)message, points.data(), sizeof(vertices) * points.size());
 
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	circPtr->push(message, sizeof(HeaderType) + sizeof(vertices) * points.size());
+	circPtr->push(message, sizeof(HeaderType));
 
 }
 

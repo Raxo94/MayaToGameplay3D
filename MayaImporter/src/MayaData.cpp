@@ -1,7 +1,15 @@
 #include "MayaData.h"
 
-void MayaData::readMayaData()
+bool MayaData::read()
 {
+	if (circBuffer->pop(message))
+	{
+		HeaderType* header;
+		header = (HeaderType*)message;
+		return true;
+	}
+	else
+		return false;
 }
 
 MayaData::MayaData()
