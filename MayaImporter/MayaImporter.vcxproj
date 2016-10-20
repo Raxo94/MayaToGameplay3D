@@ -188,13 +188,14 @@ xcopy ..\GamePlay-master\GamePlay-master\gameplay\res\ui res\ui\* /s /y /d</Comm
     <ClCompile Include="CircleBuffer\CircBuffer.cpp" />
     <ClCompile Include="CircleBuffer\Mutex.cpp" />
     <ClCompile Include="src\CustomRenderer.cpp" />
+    <ClCompile Include="src\MayaData.cpp" />
     <ClCompile Include="src\TempFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleBuffer\CircBuffer.h" />
     <ClInclude Include="CircleBuffer\Mutex.h" />
-    <ClInclude Include="MayaData.h" />
     <ClInclude Include="src\CustomRenderer.h" />
+    <ClInclude Include="src\MayaData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
