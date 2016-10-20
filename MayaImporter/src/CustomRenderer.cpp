@@ -13,30 +13,45 @@ CustomRenderer::CustomRenderer()
 
 void CustomRenderer::initialize()
 {
-    // Load game scene from file
-    _scene = Scene::load("res/demo.scene");
+	//AllocConsole();
+    _scene = Scene::load("res/demo.scene");  // Load game scene from file
 
     // Get the box model and initialize its material parameter values and bindings
 	Node* boxNode = _scene->findNode("box");
-	
-	//AllocConsole();
-
 	boxNode->setTranslationX(-3.5);
 	boxNode->setTranslationY(2.3);
 	boxNode->setTranslationZ(0.2);
-
-	//MESH
-	Model* boxModel = dynamic_cast<Model*>(boxNode->getDrawable());
-	this->tempMaterial = boxModel->getMaterial();
-
 	
+
+	//Light
+	//Node* lightNode = Node::create("pointLightShape1");
+	//Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
+	//lightNode->setLight(light);
+	//lightNode->translate(Vector3(0, 0, 0));
+	//_scene->addNode(lightNode);
+	//lightNode->release();
+	//light->release();
+
+	//directional light
+	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
+	Node* lightNode = _scene->addNode("light");
+	lightNode->setLight(light);
+	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
+
+
+
+	//Mesh
 	Node* meshNode = Node::create("MeshNode");
 	Model* model = createCubeMesh();
+
+
 	meshNode->setDrawable(model);
 	_scene->addNode(meshNode);
-	model->setMaterial(tempMaterial);
-
-
+	
+	//Material
+	Material* material(createDefaultMaterial());
+	model->setMaterial(material);
+	
 	//CAMERA
 	Node* cameraNode = getManualCamera();
 	_scene->addNode(cameraNode);
@@ -48,8 +63,8 @@ void CustomRenderer::initialize()
 
 
 	//Buffer
-	this-> message = new char[1 << 20 / 4];
-	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
+	//this-> message = new char[1 << 20 / 4];
+	//this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
 	
 }
 
@@ -64,32 +79,33 @@ void CustomRenderer::update(float elapsedTime)
 
 	
     // Rotate model
-	if(circBuffer->pop(message))
-	{
-		std::vector<Vertex> vertexVector;
+	//if(circBuffer->pop(message))
+	//{
+	//	std::vector<Vertex> vertexVector;
 
-		Vertex* vertexArray = (Vertex*)message;
+	//	Vertex* vertexArray = (Vertex*)message;
 
-		int vertexCount = 36;
+	//	int vertexCount = 36;
 
-		for ( size_t i = 0; i < vertexCount; i++)
-		{
-			vertexVector.push_back(vertexArray[i]);
-		}
-		
-		
+	//	for ( size_t i = 0; i < vertexCount; i++)
+	//	{
+	//		vertexVector.push_back(vertexArray[i]);
+	//	}
+	//	
+	//	
 
-		Node* meshNode1 = Node::create("MeshNode1");
-		Model* model1 = createDynamicMesh(vertexArray, vertexCount);
-		meshNode1->setDrawable(model1);
-		_scene->addNode(meshNode1);
-		model1->setMaterial(tempMaterial);
-		//_scene->removeNode(_scene->findNode("MeshNode"));
-		
-	}
+	//	//Node* meshNode1 = Node::create("MeshNode1");
+	//	//Model* model1 = createDynamicMesh(vertexArray, vertexCount);
+	//	meshNode1->setDrawable(model1);
+	//	_scene->addNode(meshNode1);
+	//	model1->setMaterial(tempMaterial);
+	//	_scene->removeNode(_scene->findNode("MeshNode"));
+	//	//Gör ett material.
+	//	//Testa att ta in med circle buffern.
+	//}
 
 
-   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)

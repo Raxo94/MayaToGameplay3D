@@ -1,4 +1,5 @@
 #include "gameplay.h"
+#include "MayaData.h"
 
 using namespace::gameplay;
  
@@ -40,19 +41,7 @@ inline Node* getManualCamera()
 	return cameraNode;
 }
 
-struct Vertex2
-{
-	Vector3 pos;
-	Vector3 norm;
-	Vector2 UV;
-};
 
-struct Vertex
-{
-	float pos[3] ;
-	float norm[3] ;
-	float UV[2] ;
-};
 
 static Model* createCubeMesh(float size = 1.0f)
 {
@@ -132,3 +121,34 @@ static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 	Model* model = Model::create(mesh);
 	return model;
 }
+
+
+static Material* createDefaultMaterial()
+{
+
+	Material* material = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag"); //REMOVED"DIRECTIONAL_LIGHT_COUNT 1"
+
+	// These parameters are normally set in a .material file but this example sets them programmatically.
+	// Bind the uniform "u_worldViewProjectionMatrix" to use the WORLD_VIEW_PROJECTION_MATRIX from the scene's active camera and the node that the model belongs to.
+	material->setParameterAutoBinding("u_worldViewProjectionMatrix", "WORLD_VIEW_PROJECTION_MATRIX");
+	material->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", "INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX");
+	// Set the ambient color of the material.
+	material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
+
+	// Bind the light's color and direction to the material.
+	//material->getParameter("u_directionalLightColor[0]")->setValue(lightNode->getLight()->getColor());
+	//material->getParameter("u_directionalLightDirection[0]")->bindValue(lightNode, &Node::getForwardVectorWorld);
+
+	// Load the texture from file.
+	Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true);
+	sampler->setFilterMode(Texture::LINEAR_MIPMAP_LINEAR, Texture::LINEAR);
+
+
+	material->getStateBlock()->setCullFace(true);
+	material->getStateBlock()->setDepthTest(true);
+	material->getStateBlock()->setDepthWrite(true);
+
+	return material;
+}
+
+

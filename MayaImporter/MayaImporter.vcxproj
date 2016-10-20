@@ -193,6 +193,7 @@ xcopy ..\GamePlay-master\GamePlay-master\gameplay\res\ui res\ui\* /s /y /d</Comm
   <ItemGroup>
     <ClInclude Include="CircleBuffer\CircBuffer.h" />
     <ClInclude Include="CircleBuffer\Mutex.h" />
+    <ClInclude Include="MayaData.h" />
     <ClInclude Include="src\CustomRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

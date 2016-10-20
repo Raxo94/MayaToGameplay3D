@@ -17,8 +17,8 @@ void main::initialize()
 	lightNode->setLight(light);
 	lightNode->translate(Vector3(0, 0, 0));
 	_scene->addNode(lightNode);
-	//lightNode->release();
-	//light->release();
+	lightNode->release();
+	light->release();
 }
 
 void main::finalize()
