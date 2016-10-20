@@ -18,7 +18,7 @@ struct vertices
 
 struct HeaderType
 {
-	char message[256];
+	char messageType[256];
 	size_t vertexArray;
 	size_t vertexCount;
 };
@@ -58,25 +58,25 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 		mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
 		
-		points.at(i).nor[0] = vertexNormal[points.at(i).pos[0]];
-		points.at(i).nor[1] = vertexNormal[points.at(i).pos[1]];
-		points.at(i).nor[2] = vertexNormal[points.at(i).pos[2]];
+		points.at(i).nor[0] = vertexNormal[triangleVertexIDs[i]];
+		points.at(i).nor[1] = vertexNormal[triangleVertexIDs[i]];
+		points.at(i).nor[2] = vertexNormal[triangleVertexIDs[i]];
 
-		points.at(i).uv[0] = 0.0;
-		points.at(i).uv[1] = 0.0;
+		points.at(i).uv[0] = u[triangleVertexIDs[i]];
+		points.at(i).uv[1] = v[triangleVertexIDs[i]];
 
 	}
 
-	//void* message = new char(1<<20 / 4);
-	//HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
+	char* message = new char[5000];
+	HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
 
-	//memcpy(message, &header, sizeof(HeaderType));
-	//memcpy(message, points.data(), sizeof(vertices) * points.size());
+	memcpy(message, &header, sizeof(HeaderType));
+	memcpy((vertices*)message, points.data(), sizeof(vertices) * points.size());
 
-	//CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	//circPtr->push(message, sizeof(HeaderType) + sizeof(vertices) * points.size());
 	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
-	circPtr->push(points.data(), sizeof(vertices) * points.size());
+	circPtr->push(message, sizeof(HeaderType) + sizeof(vertices) * points.size());
+	//CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	//circPtr->push(points.data(), sizeof(vertices) * points.size());
 
 }
 
