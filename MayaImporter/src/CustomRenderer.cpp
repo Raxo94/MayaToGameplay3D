@@ -24,6 +24,7 @@ void CustomRenderer::initialize()
 	
 
 	//Light
+
 	//Node* lightNode = Node::create("pointLightShape1");
 	//Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
 	//lightNode->setLight(light);
@@ -32,7 +33,8 @@ void CustomRenderer::initialize()
 	//lightNode->release();
 	//light->release();
 
-	//directional light
+	//Directional light
+
 	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
 	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
@@ -63,8 +65,8 @@ void CustomRenderer::initialize()
 
 
 	//Buffer
-	//this-> message = new char[1 << 20 / 4];
-	//this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
+	mayaData = new MayaData();
+	
 	
 }
 

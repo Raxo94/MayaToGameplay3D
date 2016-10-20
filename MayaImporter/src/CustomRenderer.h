@@ -2,7 +2,8 @@
 #define CustomRenderer_H_
 
 #include "gameplay.h"
-#include "CircBuffer.h"
+#include "MayaData.h"
+
 using namespace gameplay;
 
 /**
@@ -54,8 +55,7 @@ private:
     /**
      * Draws the scene each frame.
      */
-	char* message;
-	CircBufferFixed* circBuffer;
+	MayaData* mayaData;
 	Material* tempMaterial;
     bool drawScene(Node* node);
 

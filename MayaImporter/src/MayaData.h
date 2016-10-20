@@ -1,4 +1,5 @@
 #pragma once
+#include "CircBuffer.h"
 
 struct Vertex
 {
@@ -7,10 +8,15 @@ struct Vertex
 	float UV[2];
 };
 
-class mayaData
+class MayaData
 {
-public:
+private:
 	char Name[256];
 	Vertex* vertexArray;
-	
+	char* message;
+	CircBufferFixed* circBuffer;
+public:
+	void readMayaData();
+	MayaData();
+	~MayaData();
 };
