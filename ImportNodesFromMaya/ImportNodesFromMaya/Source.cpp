@@ -30,25 +30,24 @@ void getNodesInTheScene(MFnMesh &mesh)
 
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
-	mesh.getPoints(pts, MSpace::kObject);
 	std::vector<vertices> points;
 
-	/*points.resize(pts.length());*/
-
-	////////////////////////////
 	MIntArray triangleCounts;
 	MIntArray triangleVertexIDs;
-	mesh.getTriangles(triangleCounts, triangleVertexIDs);
-
-	points.resize(triangleVertexIDs.length());
-	////////////////////////////
-
 	MVector vertexNormal;
 	MIntArray normalList, normalCount;
 	MFloatArray u, v;
-		
-	mesh.getNormalIds(normalCount, normalList);
+	MFloatVectorArray normals;
+
+	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
+	mesh.getTriangles(triangleCounts, triangleVertexIDs);
+	mesh.getNormals(normals, MSpace::kObject);
+
+	points.resize(triangleVertexIDs.length());
+	
+	mesh.getNormalIds(normalCount, normalList);
+	
 
 	for (i = 0; i < triangleVertexIDs.length(); i++) {
 
@@ -56,11 +55,11 @@ void getNodesInTheScene(MFnMesh &mesh)
 		points.at(i).pos[1] = pts[triangleVertexIDs[i]].y;
 		points.at(i).pos[2] = pts[triangleVertexIDs[i]].z;
 
-		mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
+		//mesh.getVertexNormal(normalList[i], vertexNormal, MSpace::kObject);;
 		
-		points.at(i).nor[0] = vertexNormal[triangleVertexIDs[i]];
-		points.at(i).nor[1] = vertexNormal[triangleVertexIDs[i]];
-		points.at(i).nor[2] = vertexNormal[triangleVertexIDs[i]];
+		points.at(i).nor[0] = normals[triangleVertexIDs[i]].x;
+		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
+		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
 
 		points.at(i).uv[0] = u[triangleVertexIDs[i]];
 		points.at(i).uv[1] = v[triangleVertexIDs[i]];
