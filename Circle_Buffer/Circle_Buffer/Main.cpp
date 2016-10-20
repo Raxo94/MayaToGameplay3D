@@ -40,7 +40,7 @@ int main(size_t argc, char* argv[])
 	
 		for (size_t i = 1; i <= numMessages; i++)
 		{
-			std::chrono::milliseconds timespan(delay);
+			Sleep(delay);
 
 			if (random)
 			{
@@ -49,34 +49,33 @@ int main(size_t argc, char* argv[])
 
 				while (CircleBuffer.push(message, size) == false)
 				{	
-					//std::chrono::milliseconds timespan(1);
+					Sleep(1);
 				}
 				
 			}
 			else // IF NOT RANDOM	
 			{
 				gen_randomString(message, MsgSize);
-
 				while (CircleBuffer.push(message, MsgSize) == false)
-					std::chrono::milliseconds timespan(1);
+					Sleep(1);
 			}	
 		}
-	}
+	} //End of producer
 
 	else //IF CLIENT
 	{
 		for (size_t i = 1; i <= numMessages; i++)
 		{
-			std::chrono::milliseconds timespan(delay);
+			Sleep(delay);
 			while (CircleBuffer.pop(message) == false)
 			{
-				//std::chrono::milliseconds timespan(1);
+				Sleep(1);
 			}
 		}		
 	}
 	delete[] message;
 	getchar();
-}//ENDOFCODE
+}
 
 
 

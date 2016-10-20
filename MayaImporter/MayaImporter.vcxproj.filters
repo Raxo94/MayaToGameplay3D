@@ -87,6 +87,9 @@
     <ClInclude Include="CircleBuffer\Mutex.h">
       <Filter>CircleBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="MayaData.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\CustomRenderer.cpp">
