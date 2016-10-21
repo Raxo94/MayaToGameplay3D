@@ -28,5 +28,8 @@ MIntArray normalList, normalCount;
 MFloatArray u, v;
 MFloatVectorArray normals;
 
+MIntArray triangleCountsOffsets;
+MIntArray triangleIndices;
+
 unsigned int i;
 

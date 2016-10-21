@@ -15,6 +15,8 @@ void GetMeshes(MFnMesh &mesh)
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
+
+	mesh.getTriangleOffsets(triangleCountsOffsets, triangleIndices);
 	mesh.getTriangles(triangleCounts, triangleVertexIDs);
 	mesh.getNormals(normals, MSpace::kObject);
 
@@ -28,15 +30,45 @@ void GetMeshes(MFnMesh &mesh)
 		points.at(i).pos[0] = pts[triangleVertexIDs[i]].x;
 		points.at(i).pos[1] = pts[triangleVertexIDs[i]].y;
 		points.at(i).pos[2] = pts[triangleVertexIDs[i]].z;
-		
+
 		points.at(i).nor[0] = normals[triangleVertexIDs[i]].x;
 		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
 		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
 
-		points.at(i).uv[0] = u[triangleVertexIDs[i]];
-		points.at(i).uv[1] = v[triangleVertexIDs[i]];
+		points.at(i).uv[0] = u[triangleVertexIDs[triangleIndices[i]]];
+		points.at(i).uv[1] = v[triangleVertexIDs[triangleIndices[i]]];
+
+		MString index= "";
+		index += i;
+
+		MString vx = "";
+		MString vy = "";
+		MString vz = "";
+
+		vx += points.at(i).pos[0];
+		vy += points.at(i).pos[1];
+		vz += points.at(i).pos[2];
+
+		MString nx = "";
+		MString ny = "";
+		MString nz = "";
+
+		nx += points.at(i).nor[0];
+		ny += points.at(i).nor[1];
+		nz += points.at(i).nor[2];
+
+		MString u = "";
+		MString v = "";
+		u += points.at(i).uv[0];
+		v += points.at(i).uv[1];
+
+		MGlobal::displayInfo("VERTEX " + index + ": " + vx + " " + vy + " " + vz + "\n" +
+			"NORMAL " + index + ": " + nx + " " + ny + " " + nz + "\n" +
+			"UV " + index + ": " + u + " " + v);
 
 	}
+
+
 
 	char* message = new char[5000];
 	HeaderType header{"mesh", points.size() * sizeof(vertices), points.size()};
@@ -88,15 +120,15 @@ EXPORT MStatus initializePlugin(MObject obj)
 		itMesh.next();
 	}
 
-	MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
-	while (itCamera.isDone() == false)
-	{
-		MFnCamera camera(itCamera.currentItem());
+	//MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
+	//while (itCamera.isDone() == false)
+	//{
+	//	MFnCamera camera(itCamera.currentItem());
 
-		GetCamera(camera);
+	//	GetCamera(camera);
 
-		itCamera.next();
-	}
+	//	itCamera.next();
+	//}
 
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
