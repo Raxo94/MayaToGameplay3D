@@ -52,7 +52,7 @@ void GetMeshes(MFnMesh &mesh)
 	offset += sizeof(vertices) * points.size();
 
 
-	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	
 	circPtr->push(message, offset);
 
 }
@@ -97,8 +97,9 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
-	int messageSize = (1 << 20) / 4;
+	int messageSize = (1<<20)/4;
 	message = new char[messageSize];
+	circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
 	MFnPlugin myPlugin(obj, "Maya Plugin", "1.0", "Any", &res);
 	if (MFAIL(res)) {
 		CHECK_MSTATUS(res);
