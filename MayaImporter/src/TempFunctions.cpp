@@ -126,19 +126,28 @@ static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 }
 
 
-static Material* createDefaultMaterial()
+static Material* createDefaultMaterial(Scene* scene)
 {
 
-	Material* material = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag"); //REMOVED"DIRECTIONAL_LIGHT_COUNT 1"
+	Material* material = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag", "DIRECTIONAL_LIGHT_COUNT 1"); //REMOVED"DIRECTIONAL_LIGHT_COUNT 1"
 
 	// These parameters are normally set in a .material file but this example sets them programmatically.
-// Bind the uniform "u_worldViewProjectionMatrix" to use the WORLD_VIEW_PROJECTION_MATRIX from the scene's active camera and the node that the model belongs to.
+	// Bind the uniform "u_worldViewProjectionMatrix" to use the WORLD_VIEW_PROJECTION_MATRIX from the scene's active camera and the node that the model belongs to.
+	
+
+
 	material->setParameterAutoBinding("u_worldViewProjectionMatrix", "WORLD_VIEW_PROJECTION_MATRIX");
 	material->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", "INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX");
+
+
+
 	// Set the ambient color of the material.
 	material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
 
 	// Bind the light's color and direction to the material.
+	//Vector3 out;
+	
+	//material->getParameter("u_directionalLightColor[0]")->setValue(Properties::getColor("Yellow",out));
 	//material->getParameter("u_directionalLightColor[0]")->setValue(lightNode->getLight()->getColor());
 	//material->getParameter("u_directionalLightDirection[0]")->bindValue(lightNode, &Node::getForwardVectorWorld);
 
@@ -153,5 +162,40 @@ static Material* createDefaultMaterial()
 
 	return material;
 }
+
+
+//static Material* createDefaultMaterial2()
+//{
+//	
+//	Material* newMaterial = nullptr;
+//	if (ThisOurMaterial.diffuseTexFilePath.size() > 0)
+//		newMaterial = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag", "POINT_LIGHT_COUNT 1");
+//	else
+//		newMaterial = Material::create("res/shaders/colored.vert", "res/shaders/colored.frag", "POINT_LIGHT_COUNT 1");
+//	RenderState::StateBlock* block = RenderState::StateBlock::create();
+//	block->setCullFace(true);
+//	block->setDepthTest(true);
+//	newMaterial->setStateBlock(block);
+//	newMaterial->setParameterAutoBinding("u_worldViewMatrix", RenderState::AutoBinding::WORLD_VIEW_MATRIX);
+//	newMaterial->setParameterAutoBinding("u_worldViewProjectionMatrix", RenderState::AutoBinding::WORLD_VIEW_PROJECTION_MATRIX);
+//	newMaterial->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", RenderState::AutoBinding::INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX);
+//
+//	Node* lightNode = _scene->findNode("pointLightShape1");
+//	newMaterial->getParameter("u_pointLightColor[0]")->bindValue(lightNode->getLight(), &Light::getColor);
+//	newMaterial->getParameter("u_pointLightRangeInverse[0]")->bindValue(lightNode->getLight(), &Light::getRangeInverse);
+//	newMaterial->getParameter("u_pointLightPosition[0]")->bindValue(lightNode, &Node::getTranslationView);
+//
+//	if (texturePath)
+//		newMaterial->getParameter("u_diffuseTexture")->bindValue(&ourMaterialMap[name], &OurMaterial::getTexure);
+//	else
+//		newMaterial->getParameter("u_diffuseColor")->bindValue(&ourMaterialMap[name], &OurMaterial::getDiffuseColor);
+//
+//	newMaterial->getParameter("u_ambientColor")->bindValue(&ourMaterialMap[name], &OurMaterial::getAmbientColor);
+//
+//	Node* thisNode = _scene->findNode(it->first.data());
+//	Model* thisModel = static_cast<Model*>(thisNode->getDrawable());
+//	thisModel->setMaterial(newMaterial);
+//	
+//}
 
 

@@ -25,13 +25,13 @@ void CustomRenderer::initialize()
 
 	//Light
 
-	//Node* lightNode = Node::create("pointLightShape1");
-	//Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
-	//lightNode->setLight(light);
-	//lightNode->translate(Vector3(0, 0, 0));
-	//_scene->addNode(lightNode);
-	//lightNode->release();
-	//light->release();
+	/*Node* lightNode = Node::create("pointLightShape1");
+	Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
+	lightNode->setLight(light);
+	lightNode->translate(Vector3(0, 0, 0));
+	_scene->addNode(lightNode);
+	lightNode->release();
+	light->release();*/
 
 	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
 	Node* lightNode = _scene->addNode("light");
@@ -47,8 +47,9 @@ void CustomRenderer::initialize()
 	_scene->addNode(meshNode);
 	
 	//Material
-	Material* material(createDefaultMaterial());
+	Material* material(createDefaultMaterial(_scene));
 	model->setMaterial(material);
+	
 	
 	
 	//CAMERA
@@ -77,11 +78,21 @@ void CustomRenderer::update(float elapsedTime)
 	{
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
-			_scene->removeNode(_scene->findNode("MeshNode"));
-			Node* meshNode = Node::create("MeshNode"); //insert name here
+			Node* meshNode = _scene->findNode(mayaData->GetNodeName());
+			if (meshNode)
+			{
+				_scene->removeNode(_scene->findNode(mayaData->GetNodeName() ));
+				//more deleting needed probably
+				
+			}
+			else
+			{
+				meshNode = Node::create(mayaData->GetNodeName()); 
+			}
+
 			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
 			_scene->addNode(meshNode);
-			model->setMaterial(createDefaultMaterial());
+			model->setMaterial(createDefaultMaterial(_scene));
 			meshNode->setDrawable(model);
 			
 		} 

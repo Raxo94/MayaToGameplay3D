@@ -16,6 +16,7 @@ bool MayaData::read()
 			header = (HeaderType*)(message + offset);
 			offset += sizeof(HeaderType);
 			this->vertexCount = header->vertexCount;
+			this->NodeName = header->Name; //this shouldn't cause trouble if buffer works.
 
 			memcpy(vertexArray, (message + offset), sizeof(Vertex) * vertexCount);
 			return true;
@@ -35,6 +36,11 @@ Vertex * MayaData::GetVertexArray()
 unsigned int MayaData::GetVertexCount()
 {
 	return vertexCount;
+}
+
+char* MayaData::GetNodeName()
+{
+	return NodeName;
 }
 
 MayaData::MayaData()

@@ -23,7 +23,7 @@ struct Vertex
 class MayaData
 {
 private:
-	char NodeName[256];
+	char* NodeName;
 	Vertex* vertexArray;
 	unsigned int vertexCount;
 	char* message;
@@ -34,6 +34,8 @@ public:
 	int messageType;
 	Vertex* GetVertexArray();
 	unsigned int GetVertexCount();
+	char* GetNodeName();
+
 	MayaData();
 	~MayaData();
 };
