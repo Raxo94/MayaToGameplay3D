@@ -7,10 +7,8 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
-
 void GetMeshes(MFnMesh &mesh)
 {
-	
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
@@ -35,47 +33,12 @@ void GetMeshes(MFnMesh &mesh)
 		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
 		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
 
-		points.at(i).uv[0] = u[triangleVertexIDs[triangleIndices[i]]];
-		points.at(i).uv[1] = v[triangleVertexIDs[triangleIndices[i]]];
-
-		MString index= "";
-		index += i;
-
-		MString vx = "";
-		MString vy = "";
-		MString vz = "";
-
-		vx += points.at(i).pos[0];
-		vy += points.at(i).pos[1];
-		vz += points.at(i).pos[2];
-
-		MString nx = "";
-		MString ny = "";
-		MString nz = "";
-
-		nx += points.at(i).nor[0];
-		ny += points.at(i).nor[1];
-		nz += points.at(i).nor[2];
-
-		MString u = "";
-		MString v = "";
-		u += points.at(i).uv[0];
-		v += points.at(i).uv[1];
-
-		MGlobal::displayInfo("VERTEX " + index + ": " + vx + " " + vy + " " + vz + "\n" +
-			"NORMAL " + index + ": " + nx + " " + ny + " " + nz + "\n" +
-			"UV " + index + ": " + u + " " + v);
+		points.at(i).uv[0] = u[triangleVertexIDs[i]];
+		points.at(i).uv[1] = v[triangleVertexIDs[i]];
 
 	}
 
-<<<<<<< HEAD
-	
-=======
-
-
->>>>>>> getCameraFromMaya
-	char* message = new char[5000];
-	size_t offset = 0;
+	offset = 0;
 
 	int Type = MessageType::MayaMesh;
 	memcpy(message, &Type, sizeof(int));
@@ -89,7 +52,7 @@ void GetMeshes(MFnMesh &mesh)
 	offset += sizeof(vertices) * points.size();
 
 
-	CircBufferFixed *circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
+	
 	circPtr->push(message, offset);
 
 }
@@ -99,14 +62,30 @@ void GetCamera(MFnCamera &camera)
 	MGlobal::displayInfo("current camera: " + camera.name());
 }
 
-void MNodeFunction(MObject &node, void* clientData)
+void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
-	if (node.hasFn(MFn::kMesh)) {
-		MFnMesh mesh(node);
-		if (mesh.canBeWritten()) {
-			GetMeshes(mesh);
-			}
+	MFnMesh mesh(plug.node(), &res);
+
+	if (res == MS::kSuccess) {
+		GetMeshes(mesh);
+	}
+}
+
+void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
+{
+	if (child.hasFn(MFn::kMesh)) {
+		
+		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
+
+		if (res == MS::kSuccess) {
+			idList.append(meshCreateId);
+			MGlobal::displayInfo("mesh callback Succeeded");
 		}
+		else {
+			MGlobal::displayInfo("mesh callback Failed");
+		}
+
+	}
 }
 
 //void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
@@ -118,30 +97,28 @@ void MNodeFunction(MObject &node, void* clientData)
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
-
+<<<<<<< HEAD
+	int messageSize = (1 << 20) / 4;
+=======
+	int messageSize = (1<<20)/4;
+>>>>>>> 0913ca424b07b4251b424bfd6f149c0664dcf507
+	message = new char[messageSize];
+	circPtr = new CircBufferFixed(L"buff", true, 1 << 20, 256);
 	MFnPlugin myPlugin(obj, "Maya Plugin", "1.0", "Any", &res);
 	if (MFAIL(res)) {
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag itMesh(MItDag::kBreadthFirst, MFn::kMesh);
-	while (itMesh.isDone() == false)
+	MItDag it(MItDag::kBreadthFirst);
+	while (it.isDone() == false)
 	{
-		MFnMesh mesh(itMesh.currentItem());
-		GetMeshes(mesh);
-
-		itMesh.next();
+		if (it.currentItem().hasFn(MFn::kMesh))
+		{
+			MFnMesh mesh(it.currentItem());
+			GetMeshes(mesh);
+		}
+		it.next();
 	}
-
-	//MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
-	//while (itCamera.isDone() == false)
-	//{
-	//	MFnCamera camera(itCamera.currentItem());
-
-	//	GetCamera(camera);
-
-	//	itCamera.next();
-	//}
 
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
@@ -153,7 +130,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 	//	MGlobal::displayInfo("time callback Failed");
 	//}
 
-	MCallbackId nodeId = MDGMessage::addNodeAddedCallback(MNodeFunction, kDefaultNodeType, NULL, &res);
+	//MCallbackId nodeId = MDGMessage::addNodeAddedCallback(MNodeFunction, kDefaultNodeType, NULL, &res);
+	MCallbackId nodeId = MDagMessage::addChildAddedCallback(MNodeFunction, NULL, &res);
 
 	if (res == MS::kSuccess) {
 		idList.append(nodeId);
@@ -170,6 +148,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 EXPORT MStatus uninitializePlugin(MObject obj)
 {
+	delete[] message;
+
 	MFnPlugin plugin(obj);
 
 	MGlobal::displayInfo("Maya plugin unloaded!");
