@@ -25,18 +25,18 @@ void CustomRenderer::initialize()
 
 	//Light
 
-	/*Node* lightNode = Node::create("pointLightShape1");
+	Node* lightNode = Node::create("pointLightShape1");
 	Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
 	lightNode->setLight(light);
 	lightNode->translate(Vector3(0, 0, 0));
 	_scene->addNode(lightNode);
 	lightNode->release();
-	light->release();*/
+	light->release();
 
-	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
-	Node* lightNode = _scene->addNode("light");
-	lightNode->setLight(light);
-	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
+	//Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
+	//Node* lightNode = _scene->addNode("light");
+	//lightNode->setLight(light);
+	//SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
 
 
 
@@ -78,7 +78,17 @@ void CustomRenderer::update(float elapsedTime)
 	{
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
-			Node* meshNode = _scene->findNode(mayaData->GetNodeName());
+
+			Node* meshNode = _scene->findNode("MeshNode");
+			if (meshNode)
+			{
+				_scene->removeNode(_scene->findNode("MeshNode"));
+				//more deleting needed probably
+
+			}
+
+
+			meshNode = _scene->findNode(mayaData->GetNodeName());
 			if (meshNode)
 			{
 				_scene->removeNode(_scene->findNode(mayaData->GetNodeName() ));
@@ -91,6 +101,11 @@ void CustomRenderer::update(float elapsedTime)
 			}
 
 			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
+
+			meshNode->setTranslationX(0);
+			meshNode->setTranslationY(1);
+			meshNode->setTranslationZ(0);
+
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
 			meshNode->setDrawable(model);
@@ -99,7 +114,7 @@ void CustomRenderer::update(float elapsedTime)
 	
 	}
 
-   _scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
 }
 
 void CustomRenderer::render(float elapsedTime)

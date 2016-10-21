@@ -145,11 +145,6 @@ bool CircBufferFixed::push(const void * message, size_t length)
 		}
 		
 		ControlPointer[HEAD] = ClientPosition;
-		
-		
-		//printf("%d  ", MessageCount);
-		//cout << (char*)message << endl;
-		
 		return true;
 	}
 
@@ -195,11 +190,6 @@ bool CircBufferFixed::pop(char * message)
 		ControlPointer[TAIL] = ClientPosition;
 
 	mutex.unlock(); //Allow other clients to read
-
-	
-	printf("%d  ", messageHeader->id);
-	//cout << (char*)message << endl;
-	
 	
 	return true;
 	

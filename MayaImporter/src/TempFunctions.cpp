@@ -142,17 +142,21 @@ static Material* createDefaultMaterial(Scene* scene)
 
 
 	// Set the ambient color of the material.
-	material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
+	material->getParameter("u_ambientColor")->setValue(Vector3(0.7f, 0.7f, 0.7f));
 
 	// Bind the light's color and direction to the material.
 	//Vector3 out;
 	
 	//material->getParameter("u_directionalLightColor[0]")->setValue(Properties::getColor("Yellow",out));
+
+	//Node* lightNode = _scene->addNode("light");
+	//lightNode->setLight(light);
+
 	//material->getParameter("u_directionalLightColor[0]")->setValue(lightNode->getLight()->getColor());
 	//material->getParameter("u_directionalLightDirection[0]")->bindValue(lightNode, &Node::getForwardVectorWorld);
 
-	// Load the texture from file.
-	Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true);
+
+	Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true); 	// Load the texture from file.
 	sampler->setFilterMode(Texture::LINEAR_MIPMAP_LINEAR, Texture::LINEAR);
 
 
