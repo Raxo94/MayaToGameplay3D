@@ -117,24 +117,23 @@ EXPORT MStatus initializePlugin(MObject obj)
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag itMesh(MItDag::kBreadthFirst, MFn::kMesh);
-	while (itMesh.isDone() == false)
+	MItDag it(MItDag::kBreadthFirst);
+	while (it.isDone() == false)
 	{
-		MFnMesh mesh(itMesh.currentItem());
-		GetMeshes(mesh);
+		if (it.currentItem().hasFn(MFn::kMesh))
+		{
+			MFnMesh mesh(it.currentItem());
+			GetMeshes(mesh);
+		}
 
-		itMesh.next();
+		if (it.currentItem().hasFn(MFn::kCamera))
+		{
+			MFnCamera camera(it.currentItem());
+			GetCamera(camera);
+		}
+
+		it.next();
 	}
-
-	//MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
-	//while (itCamera.isDone() == false)
-	//{
-	//	MFnCamera camera(itCamera.currentItem());
-
-	//	GetCamera(camera);
-
-	//	itCamera.next();
-	//}
 
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
