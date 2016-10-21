@@ -45,13 +45,15 @@ char* MayaData::GetNodeName()
 
 MayaData::MayaData()
 {
-	this->message = new char[5000];
-	this->vertexArray = new Vertex[5000];
+	int messageSize = (1 << 20) / 4;
+	this->message = new char[messageSize];
+	this->vertexArray = new Vertex[messageSize];
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
 }
 
 MayaData::~MayaData()
 {
 	delete[] this->message;
+	delete[] this-> vertexArray;
 	delete   this->circBuffer;
 }

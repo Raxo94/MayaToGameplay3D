@@ -18,6 +18,7 @@ struct HeaderType
 };
 
 char* message;
+CircBufferFixed *circPtr;
 size_t offset = 0;
 MCallbackIdArray idList;
 MStatus res = MS::kSuccess;
