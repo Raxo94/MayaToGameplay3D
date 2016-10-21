@@ -7,6 +7,11 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
+//camera links
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m_ui_message_html
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m3d_view_html
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_move_tool_2move_tool_8cpp_example_html
+
 void GetMeshes(MFnMesh &mesh)
 {
 	MGlobal::displayInfo("current mesh: " + mesh.name());
@@ -57,22 +62,21 @@ void GetMeshes(MFnMesh &mesh)
 
 }
 
-void GetCamera(MFnCamera &camera)
-{	
-	MGlobal::displayInfo("current camera: " + camera.name());
-}
 
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
+
 	MFnMesh mesh(plug.node(), &res);
 
 	if (res == MS::kSuccess) {
+
 		GetMeshes(mesh);
 	}
 }
 
 void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 {
+
 	if (child.hasFn(MFn::kMesh)) {
 		
 		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
@@ -86,6 +90,12 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 		}
 
 	}
+
+}
+
+void GetCamera(MFnCamera &camera)
+{
+	MGlobal::displayInfo("current camera: " + camera.name());
 }
 
 //void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
@@ -113,6 +123,13 @@ EXPORT MStatus initializePlugin(MObject obj)
 			MFnMesh mesh(it.currentItem());
 			GetMeshes(mesh);
 		}
+
+		if (it.currentItem().hasFn(MFn::kCamera))
+		{
+			MFnCamera camera(it.currentItem());
+			GetCamera(camera);
+		}
+
 		it.next();
 	}
 
