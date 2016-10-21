@@ -67,8 +67,7 @@ void GetMeshes(MFnMesh &mesh)
 		//	"UV " + index + ": " + u + " " + v);
 
 	}
-	
-	message = new char[5000];
+
 	offset = 0;
 
 	int Type = MessageType::MayaMesh;
@@ -112,7 +111,7 @@ void MNodeFunction(MObject &node, void* clientData)
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
-
+	message = new char[5000];
 	MFnPlugin myPlugin(obj, "Maya Plugin", "1.0", "Any", &res);
 	if (MFAIL(res)) {
 		CHECK_MSTATUS(res);
