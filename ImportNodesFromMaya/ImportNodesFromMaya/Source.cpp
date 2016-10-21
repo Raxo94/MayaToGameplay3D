@@ -111,7 +111,8 @@ void MNodeFunction(MObject &node, void* clientData)
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
-	message = new char[5000];
+	int messageSize = 260000;
+	message = new char[messageSize];
 	MFnPlugin myPlugin(obj, "Maya Plugin", "1.0", "Any", &res);
 	if (MFAIL(res)) {
 		CHECK_MSTATUS(res);
@@ -163,6 +164,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 EXPORT MStatus uninitializePlugin(MObject obj)
 {
+	delete[] message;
+
 	MFnPlugin plugin(obj);
 
 	MGlobal::displayInfo("Maya plugin unloaded!");
