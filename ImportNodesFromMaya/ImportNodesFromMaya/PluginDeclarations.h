@@ -17,6 +17,8 @@ struct HeaderType
 	size_t vertexCount;
 };
 
+char* message;
+size_t offset = 0;
 MCallbackIdArray idList;
 MStatus res = MS::kSuccess;
 

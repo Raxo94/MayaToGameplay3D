@@ -67,11 +67,9 @@ void GetMeshes(MFnMesh &mesh)
 		//	"UV " + index + ": " + u + " " + v);
 
 	}
-
 	
-
-	char* message = new char[5000];
-	size_t offset = 0;
+	message = new char[5000];
+	offset = 0;
 
 	int Type = MessageType::MayaMesh;
 	memcpy(message, &Type, sizeof(int));
