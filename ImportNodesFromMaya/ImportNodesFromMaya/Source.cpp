@@ -8,13 +8,15 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
 
 
-void getMeshesInTheScene(MFnMesh &mesh)
+void GetMeshes(MFnMesh &mesh)
 {
 	
 	MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
+
+	mesh.getTriangleOffsets(triangleCountsOffsets, triangleIndices);
 	mesh.getTriangles(triangleCounts, triangleVertexIDs);
 	mesh.getNormals(normals, MSpace::kObject);
 
@@ -28,17 +30,46 @@ void getMeshesInTheScene(MFnMesh &mesh)
 		points.at(i).pos[0] = pts[triangleVertexIDs[i]].x;
 		points.at(i).pos[1] = pts[triangleVertexIDs[i]].y;
 		points.at(i).pos[2] = pts[triangleVertexIDs[i]].z;
-		
+
 		points.at(i).nor[0] = normals[triangleVertexIDs[i]].x;
 		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
 		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
 
-		points.at(i).uv[0] = u[triangleVertexIDs[i]];
-		points.at(i).uv[1] = v[triangleVertexIDs[i]];
+		points.at(i).uv[0] = u[triangleVertexIDs[triangleIndices[i]]];
+		points.at(i).uv[1] = v[triangleVertexIDs[triangleIndices[i]]];
+
+		MString index= "";
+		index += i;
+
+		MString vx = "";
+		MString vy = "";
+		MString vz = "";
+
+		vx += points.at(i).pos[0];
+		vy += points.at(i).pos[1];
+		vz += points.at(i).pos[2];
+
+		MString nx = "";
+		MString ny = "";
+		MString nz = "";
+
+		nx += points.at(i).nor[0];
+		ny += points.at(i).nor[1];
+		nz += points.at(i).nor[2];
+
+		MString u = "";
+		MString v = "";
+		u += points.at(i).uv[0];
+		v += points.at(i).uv[1];
+
+		MGlobal::displayInfo("VERTEX " + index + ": " + vx + " " + vy + " " + vz + "\n" +
+			"NORMAL " + index + ": " + nx + " " + ny + " " + nz + "\n" +
+			"UV " + index + ": " + u + " " + v);
 
 	}
 
 	
+
 	char* message = new char[5000];
 	size_t offset = 0;
 
@@ -59,12 +90,17 @@ void getMeshesInTheScene(MFnMesh &mesh)
 
 }
 
+void GetCamera(MFnCamera &camera)
+{	
+	MGlobal::displayInfo("current camera: " + camera.name());
+}
+
 void MNodeFunction(MObject &node, void* clientData)
 {
 	if (node.hasFn(MFn::kMesh)) {
 		MFnMesh mesh(node);
 		if (mesh.canBeWritten()) {
-			getMeshesInTheScene(mesh);
+			GetMeshes(mesh);
 			}
 		}
 }
@@ -84,15 +120,25 @@ EXPORT MStatus initializePlugin(MObject obj)
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag it(MItDag::kBreadthFirst, MFn::kMesh);
-	while (it.isDone() == false)
+	MItDag itMesh(MItDag::kBreadthFirst, MFn::kMesh);
+	while (itMesh.isDone() == false)
 	{
-		MFnMesh mesh(it.currentItem());
-		
-		getMeshesInTheScene(mesh);
+		MFnMesh mesh(itMesh.currentItem());
+		GetMeshes(mesh);
 
-		it.next();
+		itMesh.next();
 	}
+
+	//MItDag itCamera(MItDag::kBreadthFirst, MFn::kCamera);
+	//while (itCamera.isDone() == false)
+	//{
+	//	MFnCamera camera(itCamera.currentItem());
+
+	//	GetCamera(camera);
+
+	//	itCamera.next();
+	//}
+
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
 	//if (res == MS::kSuccess) {
