@@ -35,36 +35,36 @@ void GetMeshes(MFnMesh &mesh)
 		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
 		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
 
-		points.at(i).uv[0] = u[triangleVertexIDs[triangleIndices[i]]];
-		points.at(i).uv[1] = v[triangleVertexIDs[triangleIndices[i]]];
+		points.at(i).uv[0] = u[triangleVertexIDs[i]];
+		points.at(i).uv[1] = v[triangleVertexIDs[i]];
 
-		MString index= "";
-		index += i;
+		//MString index= "";
+		//index += i;
 
-		MString vx = "";
-		MString vy = "";
-		MString vz = "";
+		//MString vx = "";
+		//MString vy = "";
+		//MString vz = "";
 
-		vx += points.at(i).pos[0];
-		vy += points.at(i).pos[1];
-		vz += points.at(i).pos[2];
+		//vx += points.at(i).pos[0];
+		//vy += points.at(i).pos[1];
+		//vz += points.at(i).pos[2];
 
-		MString nx = "";
-		MString ny = "";
-		MString nz = "";
+		//MString nx = "";
+		//MString ny = "";
+		//MString nz = "";
 
-		nx += points.at(i).nor[0];
-		ny += points.at(i).nor[1];
-		nz += points.at(i).nor[2];
+		//nx += points.at(i).nor[0];
+		//ny += points.at(i).nor[1];
+		//nz += points.at(i).nor[2];
 
-		MString u = "";
-		MString v = "";
-		u += points.at(i).uv[0];
-		v += points.at(i).uv[1];
+		//MString u = "";
+		//MString v = "";
+		//u += points.at(i).uv[0];
+		//v += points.at(i).uv[1];
 
-		MGlobal::displayInfo("VERTEX " + index + ": " + vx + " " + vy + " " + vz + "\n" +
-			"NORMAL " + index + ": " + nx + " " + ny + " " + nz + "\n" +
-			"UV " + index + ": " + u + " " + v);
+		//MGlobal::displayInfo("VERTEX " + index + ": " + vx + " " + vy + " " + vz + "\n" +
+		//	"NORMAL " + index + ": " + nx + " " + ny + " " + nz + "\n" +
+		//	"UV " + index + ": " + u + " " + v);
 
 	}
 
