@@ -3,6 +3,12 @@
 #include "CircBuffer.h"
 #include "PluginDeclarations.h"
 
+#define	kVectorEpsilon 1.0e-3
+#define     TOP         0
+#define     FRONT       1
+#define     SIDE        2
+#define     PERSP       3
+
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_export_2_maya_mesh_writer_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
@@ -55,8 +61,6 @@ void GetMeshes(MFnMesh &mesh)
 
 	memcpy(message + offset, points.data(), sizeof(vertices) * points.size());
 	offset += sizeof(vertices) * points.size();
-
-
 	
 	circPtr->push(message, offset);
 
@@ -76,7 +80,6 @@ void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &
 
 void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 {
-
 	if (child.hasFn(MFn::kMesh)) {
 		
 		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
@@ -93,15 +96,51 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 }
 
-void GetCamera(MFnCamera &camera)
+void GetCamera(M3dView &camView)
 {
-	MGlobal::displayInfo("current camera: " + camera.name());
+	CameraHeader camHeader;
+
+	camView = M3dView::active3dView();
+	res = camView.getCamera(camera);
+	MFnCamera fnCam(camera);
+
+	MGlobal::displayInfo("Current camera name: " + fnCam.name());
+	
+	MSpace::Space space = MSpace::kWorld;
+
+	MVector upDirection = fnCam.upDirection(space);
+	MVector rightDirection = fnCam.rightDirection(space);
+	 
+	if (fnCam.isOrtho()) {
+	MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
+	camHeader.orthographic = true;
+
+		if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
+			currentView = TOP;
+		
+			MGlobal::displayInfo("TOP view");
+		}
+		else if (rightDirection.isEquivalent(MVector::xAxis, kVectorEpsilon)) {
+			currentView = FRONT;
+
+			MGlobal::displayInfo("FRONT view");
+		}
+		else {
+			currentView = SIDE;
+			MGlobal::displayInfo("SIDE view");
+		}
+	}
+	else {
+		currentView = PERSP;
+		MGlobal::displayInfo("PERSPECTIVE VIEW");
+		camHeader.orthographic = false;
+	}
+
 }
 
 //void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
 //{
 //	MStatus res = MS::kSuccess;
-//
 //	
 //}
 
@@ -118,20 +157,19 @@ EXPORT MStatus initializePlugin(MObject obj)
 	MItDag it(MItDag::kBreadthFirst);
 	while (it.isDone() == false)
 	{
-		if (it.currentItem().hasFn(MFn::kMesh))
-		{
+		if (it.currentItem().hasFn(MFn::kMesh)) {
 			MFnMesh mesh(it.currentItem());
 			GetMeshes(mesh);
 		}
 
-		if (it.currentItem().hasFn(MFn::kCamera))
-		{
-			MFnCamera camera(it.currentItem());
-			GetCamera(camera);
-		}
+		//if (it.currentItem().hasFn(MFn::kCamera)) {
+
+		//}
 
 		it.next();
 	}
+
+	GetCamera(camView);
 
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//

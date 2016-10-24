@@ -17,6 +17,11 @@ struct HeaderType
 	size_t vertexCount;
 };
 
+struct CameraHeader
+{
+	bool orthographic;
+};
+
 char* message;
 CircBufferFixed *circPtr;
 size_t offset = 0;
@@ -38,3 +43,6 @@ MIntArray triangleIndices;
 
 unsigned int i;
 
+int currentView;
+M3dView camView;
+MDagPath camera;
