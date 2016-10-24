@@ -112,6 +112,8 @@ size_t CircBufferFixed::CalculateFreeMemory()
 bool CircBufferFixed::push(const char * message, size_t length)
 {
 
+
+	ClientPosition = ControlPointer[HEAD];
 	size_t padding = chunkSize - ((ClientPosition + sizeof(Header) + length) % chunkSize); //padding my way through the darkness.
 	
 

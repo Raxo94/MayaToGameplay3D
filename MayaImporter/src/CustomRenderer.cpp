@@ -79,8 +79,8 @@ void CustomRenderer::update(float elapsedTime)
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
 
-			Node* meshNode = _scene->findNode("MeshNode");
-			if (meshNode)
+			Node* temp = _scene->findNode("MeshNode");
+			if (temp)
 			{
 				_scene->removeNode(_scene->findNode("MeshNode"));
 				//more deleting needed probably
@@ -88,8 +88,8 @@ void CustomRenderer::update(float elapsedTime)
 			}
 
 
-			meshNode = _scene->findNode(mayaData->GetNodeName());
-			if (meshNode)
+			temp = _scene->findNode(mayaData->GetNodeName());
+			if (temp)
 			{
 				_scene->removeNode(_scene->findNode(mayaData->GetNodeName() ));
 				//more deleting needed probably
@@ -97,18 +97,18 @@ void CustomRenderer::update(float elapsedTime)
 			}
 			else
 			{
-				meshNode = Node::create(mayaData->GetNodeName()); 
+				temp = Node::create(mayaData->GetNodeName()); 
 			}
 
 			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
 
-			meshNode->setTranslationX(0);
-			meshNode->setTranslationY(1);
-			meshNode->setTranslationZ(0);
+			temp->setTranslationX(0);
+			temp->setTranslationY(1);
+			temp->setTranslationZ(0);
 
-			_scene->addNode(meshNode);
+			_scene->addNode(temp);
 			model->setMaterial(createDefaultMaterial(_scene));
-			meshNode->setDrawable(model);
+			temp->setDrawable(model);
 			
 		} 
 	

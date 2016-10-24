@@ -20,6 +20,16 @@ struct Vertex
 	float UV[2];
 };
 
+struct MayaCamera
+{
+	//transform
+	bool isPerspective;
+	float projectionMatrix[16]; //matrix
+	float nearPlane;
+	float farPlane;
+	float fieldOfView;
+
+};
 class MayaData
 {
 private:
