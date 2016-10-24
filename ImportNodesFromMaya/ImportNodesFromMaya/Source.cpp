@@ -138,6 +138,10 @@ void GetCamera(M3dView &camView)
 
 }
 
+void StringFunc(const MString &panelName, void* clientdata)
+{
+	MGlobal::displayInfo("view changed");
+}
 //void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
 //{
 //	MStatus res = MS::kSuccess;
@@ -193,6 +197,17 @@ EXPORT MStatus initializePlugin(MObject obj)
 	}
 
 	MGlobal::displayInfo("Maya plugin loaded!");
+	MString PanelName;
+
+	MCallbackId viewId = MUiMessage::add3dViewPreRenderMsgCallback("panelName", StringFunc, NULL, &res);
+
+	if (res == MS::kSuccess) {
+		idList.append(viewId);
+		MGlobal::displayInfo("view callback Succeeded");
+	}
+	else {
+		MGlobal::displayInfo("view callback Failed");
+	}
 
 	return res;
 }
