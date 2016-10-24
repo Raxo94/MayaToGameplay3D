@@ -17,8 +17,9 @@ struct HeaderType
 	size_t vertexCount;
 };
 
-struct CameraHeader
+struct HeaderTypeCam
 {
+	char messageType[256];
 	bool orthographic;
 };
 

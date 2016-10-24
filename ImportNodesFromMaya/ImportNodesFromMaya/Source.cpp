@@ -103,7 +103,7 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 void GetCamera(M3dView &camView)
 {
-	CameraHeader camHeader;
+	HeaderTypeCam headerCam;
 
 	camView = M3dView::active3dView();
 	res = camView.getCamera(camera);
@@ -118,7 +118,7 @@ void GetCamera(M3dView &camView)
 	 
 	if (fnCam.isOrtho()) {
 	MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
-	camHeader.orthographic = true;
+	headerCam.orthographic = true;
 
 		if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
 			currentView = TOP;
@@ -138,8 +138,21 @@ void GetCamera(M3dView &camView)
 	else {
 		currentView = PERSP;
 		MGlobal::displayInfo("PERSPECTIVE VIEW");
-		camHeader.orthographic = false;
+		headerCam.orthographic = false;
 	}
+
+	//offset = 0;
+
+	//int Type = MessageType::MayaCamera;
+	//memcpy(message, &Type, sizeof(int));
+	//offset += sizeof(int);
+
+	//memcpy(&headerCam, fnCam.name().asChar(), sizeof(const char[256]));
+
+	//memcpy((message + offset), &headerCam, sizeof(HeaderTypeCam));
+	//offset += sizeof(HeaderTypeCam);
+
+	//memcpy(message + offset, sizeof(bool) * headerCam.orthographic);
 
 }
 
