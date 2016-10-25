@@ -17,11 +17,11 @@ struct HeaderType
 	size_t vertexCount;
 };
 
-struct HeaderTypeCam
+struct CameraHeader
 {
 	char messageType[256];
-	bool orthographic;
-	float projectionMatrix[4][4];
+	bool isPerspective;
+	float projectionMatrix[16];
 };
 
 char* message;

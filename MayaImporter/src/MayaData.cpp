@@ -24,13 +24,15 @@ bool MayaData::read()
 		}
 		else if (messageType == MessageType::MayaCamera)
 		{
-			HeaderTypeCam* camHeader;
-			camHeader = (HeaderTypeCam*)(message + offset); //typecastning the char message
-			offset += sizeof(HeaderTypeCam);
+			CameraHeader* camHeader;
+			camHeader = (CameraHeader*)(message + offset); //typecastning the char message
+			offset += sizeof(CameraHeader);
 			
 			camHeader->messageType;
-			isOrthographic = camHeader->orthographic;
+			isPerspective = camHeader->isPerspective;
+			memcpy(&projectionMatrix, &camHeader->projectionMatrix, sizeof(float) * 16);
 
+			projectionMatrix;
 		}
 
 

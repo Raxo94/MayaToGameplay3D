@@ -31,10 +31,11 @@ struct MayaCamera
 
 };
 
-struct HeaderTypeCam
+struct CameraHeader
 {
 	char messageType[256];
-	bool orthographic;
+	bool isPerspective;
+	float projectionMatrix[16];
 };
 
 class MayaData
@@ -47,7 +48,8 @@ private:
 	unsigned int vertexCount;
 
 	//Camera
-	bool isOrthographic;
+	bool isPerspective;
+	float projectionMatrix[16];
 
 	char* message;
 	CircBufferFixed* circBuffer;

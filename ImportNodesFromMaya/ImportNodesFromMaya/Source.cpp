@@ -103,7 +103,6 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 void GetCamera()
 {
-	HeaderTypeCam headerCam;
 	camView = M3dView::active3dView();
 
 	camView.getCamera(camera);
@@ -115,7 +114,7 @@ void GetCamera()
 
 	MVector rightDirection = fnCam.rightDirection(space);
 	if (fnCam.isOrtho()) {
-		camHeader.orthographic = true;
+		camHeader.isPerspective = false;
 		MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
 
 		if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
@@ -136,13 +135,28 @@ void GetCamera()
 	else {
 		currentView = PERSP;
 		MGlobal::displayInfo("PERSPECTIVE VIEW");
-		camHeader.orthographic = false;
+		camHeader.isPerspective = true;
 
 		projMatrix = fnCam.projectionMatrix();
 		memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
+
 	}
 
+	offset = 0;
+
+	int Type = MessageType::MayaCamera;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&camHeader, fnCam.name().asChar(), sizeof(const char[256]));
+
+	memcpy((message + offset), &camHeader, sizeof(CameraHeader));
+	offset += sizeof(CameraHeader);
+
+	//memcpy(message + offset, &headerCam.orthographic, sizeof(bool));
+
+	circPtr->push(message, offset);
 }
 
 void StringFunc(const MString &panelName, void* clientdata)
@@ -162,7 +176,7 @@ void StringFunc(const MString &panelName, void* clientdata)
 	if (activeCameraPanelName == panelName) {
 
 		if (fnCam.isOrtho()) {
-			camHeader.orthographic = true;
+			camHeader.isPerspective = false;
 			MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
 
 			//projMatrix = fnCam.projectionMatrix();
@@ -186,27 +200,13 @@ void StringFunc(const MString &panelName, void* clientdata)
 		else {
 			currentView = PERSP;
 			MGlobal::displayInfo("PERSPECTIVE VIEW");
-			camHeader.orthographic = false;
+			camHeader.isPerspective = true;
 			
 			//projMatrix = fnCam.projectionMatrix();
 			//memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
 		}
 
-	offset = 0;
-
-	int Type = MessageType::MayaCamera;
-	memcpy(message, &Type, sizeof(int));
-	offset += sizeof(int);
-
-	memcpy(&headerCam, fnCam.name().asChar(), sizeof(const char[256]));
-
-	memcpy((message + offset), &headerCam, sizeof(HeaderTypeCam));
-	offset += sizeof(HeaderTypeCam);
-
-	//memcpy(message + offset, &headerCam.orthographic, sizeof(bool));
-
-	circPtr->push(message, offset);
 
 	}
 	else {
@@ -214,11 +214,6 @@ void StringFunc(const MString &panelName, void* clientdata)
 	}
 
 }
-//void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
-//{
-//	MStatus res = MS::kSuccess;
-//	
-//}
 
 EXPORT MStatus initializePlugin(MObject obj)
 {
