@@ -137,26 +137,8 @@ void GetCamera()
 		MGlobal::displayInfo("PERSPECTIVE VIEW");
 		camHeader.isPerspective = true;
 
-		projMatrix = fnCam.projectionMatrix();
-		memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
-
-
 	}
 
-	offset = 0;
-
-	int Type = MessageType::MayaCamera;
-	memcpy(message, &Type, sizeof(int));
-	offset += sizeof(int);
-
-	memcpy(&camHeader, fnCam.name().asChar(), sizeof(const char[256]));
-
-	memcpy((message + offset), &camHeader, sizeof(CameraHeader));
-	offset += sizeof(CameraHeader);
-
-	//memcpy(message + offset, &headerCam.orthographic, sizeof(bool));
-
-	circPtr->push(message, offset);
 }
 
 void StringFunc(const MString &panelName, void* clientdata)
@@ -167,7 +149,7 @@ void StringFunc(const MString &panelName, void* clientdata)
 
 	camView.getCamera(camera);
 	MFnCamera fnCam(camera);
-
+	
 	MSpace::Space space = MSpace::kWorld;
 
 	MVector upDirection = fnCam.upDirection(space);
@@ -207,11 +189,40 @@ void StringFunc(const MString &panelName, void* clientdata)
 
 		}
 
-
 	}
 	else {
+
 		//do nothing
 	}
+
+	projMatrix = fnCam.projectionMatrix();
+
+	MObject parent = fnCam.parent(0);
+
+	if (parent.hasFn(MFn::kTransform))
+	{
+		MFnTransform transformParent(parent);
+
+		camHeader.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
+		camHeader.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
+		camHeader.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
+
+	}
+
+	memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
+
+	offset = 0;
+
+	int Type = MessageType::MayaCamera;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&camHeader, fnCam.name().asChar(), sizeof(const char[256]));
+
+	memcpy((message + offset), &camHeader, sizeof(CameraHeader));
+	offset += sizeof(CameraHeader);
+
+	circPtr->push(message, offset);
 
 }
 
@@ -233,26 +244,11 @@ EXPORT MStatus initializePlugin(MObject obj)
 			GetMeshes(mesh);
 		}
 
-		//if (it.currentItem().hasFn(MFn::kCamera)) {
-
-		//}
-
 		it.next();
 	}
 
 	GetCamera();
 
-	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
-	//
-	//if (res == MS::kSuccess) {
-	//	idList.append(timeId);
-	//	MGlobal::displayInfo("time callback Succeeded");
-	//}
-	//else {
-	//	MGlobal::displayInfo("time callback Failed");
-	//}
-
-	//MCallbackId nodeId = MDGMessage::addNodeAddedCallback(MNodeFunction, kDefaultNodeType, NULL, &res);
 	MCallbackId nodeId = MDagMessage::addChildAddedCallback(MNodeFunction, NULL, &res);
 
 	if (res == MS::kSuccess) {

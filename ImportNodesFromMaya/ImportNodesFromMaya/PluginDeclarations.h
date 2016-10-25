@@ -22,6 +22,7 @@ struct CameraHeader
 	char messageType[256];
 	bool isPerspective;
 	float projectionMatrix[16];
+	float translation[3];
 };
 
 char* message;
