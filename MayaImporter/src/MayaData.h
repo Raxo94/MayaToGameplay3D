@@ -1,7 +1,6 @@
 #pragma once
 #include "CircBuffer.h"
 #include <iostream>
-#include <Vector>
 using namespace std;
 
 enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
