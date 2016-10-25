@@ -21,6 +21,7 @@ struct HeaderTypeCam
 {
 	char messageType[256];
 	bool orthographic;
+	float projectionMatrix[4][4];
 };
 
 char* message;
@@ -44,6 +45,9 @@ MIntArray triangleIndices;
 
 unsigned int i;
 
+CameraHeader camHeader;
 int currentView;
 M3dView camView;
 MDagPath camera;
+
+MFloatMatrix projMatrix;
