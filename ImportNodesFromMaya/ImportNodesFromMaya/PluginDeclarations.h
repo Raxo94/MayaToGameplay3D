@@ -23,6 +23,7 @@ struct CameraHeader
 	bool isPerspective;
 	float projectionMatrix[16];
 	float translation[3];
+	float rotation[4];
 };
 
 char* message;
@@ -52,3 +53,6 @@ M3dView camView;
 MDagPath camera;
 
 MFloatMatrix projMatrix;
+MObject parent;
+double rotValues[4];
+
