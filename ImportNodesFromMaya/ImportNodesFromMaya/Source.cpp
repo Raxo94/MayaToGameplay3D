@@ -155,14 +155,13 @@ void StringFunc(const MString &panelName, void* clientdata)
 	MVector upDirection = fnCam.upDirection(space);
 	MVector rightDirection = fnCam.rightDirection(space);
 
+	//if panelName(if we are in ortho or persp) is equal to the active panel 
+	//check the view of the camera
 	if (activeCameraPanelName == panelName) {
 
 		if (fnCam.isOrtho()) {
 			camHeader.isPerspective = false;
 			MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
-
-			//projMatrix = fnCam.projectionMatrix();
-			//memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
 			if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
 				currentView = TOP;
@@ -183,9 +182,6 @@ void StringFunc(const MString &panelName, void* clientdata)
 			currentView = PERSP;
 			MGlobal::displayInfo("PERSPECTIVE VIEW");
 			camHeader.isPerspective = true;
-			
-			//projMatrix = fnCam.projectionMatrix();
-			//memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
 		}
 
@@ -196,9 +192,9 @@ void StringFunc(const MString &panelName, void* clientdata)
 	}
 
 	projMatrix = fnCam.projectionMatrix();
+	memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
-	MObject parent = fnCam.parent(0);
-
+	parent = fnCam.parent(0);
 	if (parent.hasFn(MFn::kTransform))
 	{
 		MFnTransform transformParent(parent);
@@ -206,10 +202,11 @@ void StringFunc(const MString &panelName, void* clientdata)
 		camHeader.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
 		camHeader.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
 		camHeader.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
+		
+		transformParent.getRotationQuaternion(rotValues[0], rotValues[1], rotValues[2], rotValues[3], MSpace::kTransform);
+		memcpy(&camHeader.rotation, &rotValues, sizeof(double) * 4);
 
 	}
-
-	memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
 	offset = 0;
 
