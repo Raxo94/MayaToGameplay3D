@@ -25,30 +25,23 @@ void CustomRenderer::initialize()
 
 	//Light
 
-	Node* lightNode = Node::create("pointLightShape1");
-	Light* light = Light::createPoint(Vector3(0.5f, 0.5f, 0.5f), 20);
+	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
+	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
-	lightNode->translate(Vector3(0, 0, 0));
-	_scene->addNode(lightNode);
-	lightNode->release();
-	light->release();
-
-	//Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
-	//Node* lightNode = _scene->addNode("light");
-	//lightNode->setLight(light);
-	//SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
-
+	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
 
 
 	//Mesh
-	Node* meshNode = Node::create("MeshNode");
+	/*Node* meshNode = Node::create("MeshNode");
 	Model* model = createCubeMesh();
 	meshNode->setDrawable(model);
-	_scene->addNode(meshNode);
+	_scene->addNode(meshNode);*/
+	
 	
 	//Material
-	Material* material(createDefaultMaterial(_scene));
+	/*Material* material(createDefaultMaterial(_scene));
 	model->setMaterial(material);
+	material->release();*/
 	
 	
 	
@@ -58,6 +51,7 @@ void CustomRenderer::initialize()
 	Camera* cam = cameraNode->getCamera();
 	_scene->setActiveCamera(cam);
 	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+	cam->release();
 
 
 	//Buffer
@@ -79,36 +73,25 @@ void CustomRenderer::update(float elapsedTime)
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
 
-			Node* temp = _scene->findNode("MeshNode");
-			if (temp)
-			{
-				_scene->removeNode(_scene->findNode("MeshNode"));
-				//more deleting needed probably
-
-			}
-
-
-			temp = _scene->findNode(mayaData->GetNodeName());
-			if (temp)
+			Node* meshNode = _scene->findNode(mayaData->GetNodeName());
+			if (meshNode)
 			{
 				_scene->removeNode(_scene->findNode(mayaData->GetNodeName() ));
-				//more deleting needed probably
-				
 			}
 			else
 			{
-				temp = Node::create(mayaData->GetNodeName()); 
+				meshNode = Node::create(mayaData->GetNodeName()); 
 			}
-
 			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
 
-			temp->setTranslationX(0);
-			temp->setTranslationY(1);
-			temp->setTranslationZ(0);
+			meshNode->setTranslationX(0);
+			meshNode->setTranslationY(1);
+			meshNode->setTranslationZ(0);
 
-			_scene->addNode(temp);
+			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
-			temp->setDrawable(model);
+			meshNode->setDrawable(model);
+			model->release();
 			
 		}
 		else if (mayaData->messageType == MessageType::MayaCamera)
@@ -117,8 +100,7 @@ void CustomRenderer::update(float elapsedTime)
 		}
 	
 	}
-
-   //_scene->findNode("MeshNode")->rotateY(MATH_DEG_TO_RAD((float)elapsedTime / 1000.0f * 180.0f));
+   
 }
 
 void CustomRenderer::render(float elapsedTime)
