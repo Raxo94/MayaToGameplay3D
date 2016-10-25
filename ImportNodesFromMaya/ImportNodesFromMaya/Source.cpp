@@ -197,9 +197,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 	}
 
 	MGlobal::displayInfo("Maya plugin loaded!");
-	MString PanelName;
 
-	MCallbackId viewId = MUiMessage::add3dViewPreRenderMsgCallback("panelName", StringFunc, NULL, &res);
+	MCallbackId viewId = MUiMessage::add3dViewPreRenderMsgCallback("panelModel1", StringFunc, NULL, &res);
 
 	if (res == MS::kSuccess) {
 		idList.append(viewId);
