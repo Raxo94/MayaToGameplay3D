@@ -205,8 +205,11 @@ void StringFunc(const MString &panelName, void* clientdata)
 		
 		transformParent.getRotationQuaternion(rotValues[0], rotValues[1], rotValues[2], rotValues[3], MSpace::kTransform);
 		memcpy(&camHeader.rotation, &rotValues, sizeof(double) * 4);
-
 	}
+
+	camHeader.nearPlane = fnCam.nearClippingPlane();
+	camHeader.farPlane = fnCam.farClippingPlane();
+	camHeader.fieldOfView = fnCam.horizontalFieldOfView();
 
 	offset = 0;
 

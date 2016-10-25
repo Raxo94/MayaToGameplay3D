@@ -24,6 +24,10 @@ struct CameraHeader
 	float projectionMatrix[16];
 	float translation[3];
 	float rotation[4];
+	float nearPlane;
+	float farPlane;
+	float fieldOfView;
+
 };
 
 char* message;
