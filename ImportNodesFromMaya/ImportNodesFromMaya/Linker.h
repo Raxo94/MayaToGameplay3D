@@ -4,6 +4,7 @@
 #define REQUIRE_IOSTREAM
 #define EXPORT __declspec(dllexport)
 
+#include <maya/MFloatMatrix.h>
 #include <maya/MFnPlugin.h>
 #include <maya/MFnMesh.h>
 #include <maya/MFnTransform.h>

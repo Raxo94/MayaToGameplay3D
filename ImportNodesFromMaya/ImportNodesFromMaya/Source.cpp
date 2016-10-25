@@ -96,28 +96,25 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 }
 
-void GetCamera(M3dView &camView)
+void GetCamera()
 {
-	CameraHeader camHeader;
-
 	camView = M3dView::active3dView();
-	res = camView.getCamera(camera);
+
+	camView.getCamera(camera);
 	MFnCamera fnCam(camera);
 
-	MGlobal::displayInfo("Current camera name: " + fnCam.name());
-	
 	MSpace::Space space = MSpace::kWorld;
 
 	MVector upDirection = fnCam.upDirection(space);
+
 	MVector rightDirection = fnCam.rightDirection(space);
-	 
 	if (fnCam.isOrtho()) {
-	MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
-	camHeader.orthographic = true;
+		camHeader.orthographic = true;
+		MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
 
 		if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
 			currentView = TOP;
-		
+
 			MGlobal::displayInfo("TOP view");
 		}
 		else if (rightDirection.isEquivalent(MVector::xAxis, kVectorEpsilon)) {
@@ -134,13 +131,67 @@ void GetCamera(M3dView &camView)
 		currentView = PERSP;
 		MGlobal::displayInfo("PERSPECTIVE VIEW");
 		camHeader.orthographic = false;
+
+		projMatrix = fnCam.projectionMatrix();
+		memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
+
 	}
 
 }
 
 void StringFunc(const MString &panelName, void* clientdata)
 {
-	MGlobal::displayInfo("view changed");
+	MString activeCameraPanelName;
+	activeCameraPanelName = MGlobal::executeCommandStringResult("getPanel -wf");
+	camView = M3dView::active3dView();
+
+	camView.getCamera(camera);
+	MFnCamera fnCam(camera);
+
+	MSpace::Space space = MSpace::kWorld;
+
+	MVector upDirection = fnCam.upDirection(space);
+	MVector rightDirection = fnCam.rightDirection(space);
+
+	if (activeCameraPanelName == panelName) {
+
+		if (fnCam.isOrtho()) {
+			camHeader.orthographic = true;
+			MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
+
+			//projMatrix = fnCam.projectionMatrix();
+			//memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
+
+			if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
+				currentView = TOP;
+
+				MGlobal::displayInfo("TOP view");
+			}
+			else if (rightDirection.isEquivalent(MVector::xAxis, kVectorEpsilon)) {
+				currentView = FRONT;
+
+				MGlobal::displayInfo("FRONT view");
+			}
+			else {
+				currentView = SIDE;
+				MGlobal::displayInfo("SIDE view");
+			}
+		}
+		else {
+			currentView = PERSP;
+			MGlobal::displayInfo("PERSPECTIVE VIEW");
+			camHeader.orthographic = false;
+			
+			//projMatrix = fnCam.projectionMatrix();
+			//memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
+
+		}
+
+	}
+	else {
+		//do nothing
+	}
+
 }
 //void timeElapsedFunction(float elapsedTime, float lastTime, void *clientData)
 //{
@@ -173,7 +224,7 @@ EXPORT MStatus initializePlugin(MObject obj)
 		it.next();
 	}
 
-	GetCamera(camView);
+	GetCamera();
 
 	//MCallbackId timeId = MTimerMessage::addTimerCallback(5, timeElapsedFunction, NULL, &res);
 	//
@@ -196,17 +247,23 @@ EXPORT MStatus initializePlugin(MObject obj)
 		MGlobal::displayInfo("node callback Failed");
 	}
 
-	MGlobal::displayInfo("Maya plugin loaded!");
-
-	MCallbackId viewId = MUiMessage::add3dViewPreRenderMsgCallback("panelModel1", StringFunc, NULL, &res);
+	MCallbackId viewId1 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel1", StringFunc, NULL, &res);
+	MCallbackId viewId2 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel2", StringFunc, NULL, &res);
+	MCallbackId viewId3 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel3", StringFunc, NULL, &res);
+	MCallbackId viewId4 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel4", StringFunc, NULL, &res);
 
 	if (res == MS::kSuccess) {
-		idList.append(viewId);
+		idList.append(viewId1);
+		idList.append(viewId2);
+		idList.append(viewId3);
+		idList.append(viewId4);
+
 		MGlobal::displayInfo("view callback Succeeded");
 	}
 	else {
 		MGlobal::displayInfo("view callback Failed");
 	}
+	MGlobal::displayInfo("Maya plugin loaded!");
 
 	return res;
 }
