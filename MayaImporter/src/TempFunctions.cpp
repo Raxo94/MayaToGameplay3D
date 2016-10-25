@@ -79,6 +79,37 @@ inline Node* createCamera()
 }
 
 
+inline Node* createMayaCamera(HeaderTypeCamera* Mcamera)
+{
+	Node* cameraNode = Node::create(Mcamera->messageType);
+
+	cameraNode->setTranslationX(Mcamera->translation[0]);
+	cameraNode->setTranslationY(Mcamera->translation[1]);
+	cameraNode->setTranslationZ(Mcamera->translation[2]);
+
+	Matrix roationMatrix;
+	Quaternion Test(Mcamera->rotation[0], Mcamera->rotation[1], Mcamera->rotation[2],Mcamera->rotation[3]);
+	//Quaternion Test(-0.142, 0.126, 0, 1);
+	Matrix::createRotation(Test, &roationMatrix);
+	cameraNode->setRotation(roationMatrix);
+
+	Camera* cam = cameraNode->getCamera();
+
+	cam = Camera::createPerspective(0, 0, 0, 0);
+	
+	cam->setProjectionMatrix(Mcamera->projectionMatrix);
+	
+
+
+	cam->setNearPlane(Mcamera->nearPlane);
+	cam->setFarPlane(Mcamera->farPlane);
+	cam->setFieldOfView(Mcamera->fieldOfView);
+
+	cameraNode->setCamera(cam);
+	return cameraNode;
+}
+
+
 
 static Model* createCubeMesh(float size = 1.0f)
 {

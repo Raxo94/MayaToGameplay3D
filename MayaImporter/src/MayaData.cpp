@@ -12,11 +12,11 @@ bool MayaData::read()
 		
 		if (messageType == MessageType::MayaMesh)
 		{
-			HeaderType* header;
-			header = (HeaderType*)(message + offset);
-			offset += sizeof(HeaderType);
+			HeaderTypeMesh* header;
+			header = (HeaderTypeMesh*)(message + offset);
+			offset += sizeof(HeaderTypeMesh);
 			this->vertexCount = header->vertexCount;
-			this->NodeName = header->Name; //this shouldn't cause trouble if buffer works.
+			this->NodeName = header->Name; 
 
 			memcpy(vertexArray, (message + offset), sizeof(Vertex) * vertexCount);
 			return true;
@@ -24,15 +24,11 @@ bool MayaData::read()
 		}
 		else if (messageType == MessageType::MayaCamera)
 		{
-			CameraHeader* camHeader;
-			camHeader = (CameraHeader*)(message + offset); //typecastning the char message
-			offset += sizeof(CameraHeader);
-			
-			camHeader->messageType;
-			isPerspective = camHeader->isPerspective;
-			memcpy(&projectionMatrix, &camHeader->projectionMatrix, sizeof(float) * 16);
+			//HeaderTypeCamera* camerU = (HeaderTypeCamera*)(message + offset);
+			memcpy(cam, (message + offset), sizeof(HeaderTypeCamera));
+			offset += sizeof(HeaderTypeCamera);
+			return true;
 
-			projectionMatrix;
 		}
 
 
@@ -62,6 +58,7 @@ MayaData::MayaData()
 	this->message = new char[messageSize];
 	this->vertexArray = new Vertex[messageSize];
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
+	this->cam = new HeaderTypeCamera;
 }
 
 MayaData::~MayaData()
@@ -69,4 +66,5 @@ MayaData::~MayaData()
 	delete[] this->message;
 	delete[] this-> vertexArray;
 	delete   this->circBuffer;
+	delete   this->cam;
 }

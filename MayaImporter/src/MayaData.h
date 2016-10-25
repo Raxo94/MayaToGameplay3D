@@ -5,7 +5,7 @@ using namespace std;
 
 enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
 
-struct HeaderType
+struct HeaderTypeMesh
 {
 	char   Name[256];
 	size_t vertexArray;
@@ -19,23 +19,22 @@ struct Vertex
 	float UV[2];
 };
 
-struct MayaCamera
+
+
+struct HeaderTypeCamera
 {
-	//transform
+	char messageType[256];
 	bool isPerspective;
-	float projectionMatrix[16]; //matrix
+	float projectionMatrix[16];
+	float translation[3];
+	double rotation[4];
 	float nearPlane;
 	float farPlane;
 	float fieldOfView;
 
 };
 
-struct CameraHeader
-{
-	char messageType[256];
-	bool isPerspective;
-	float projectionMatrix[16];
-};
+
 
 class MayaData
 {
@@ -55,6 +54,10 @@ private:
 
 
 public:
+	HeaderTypeCamera* cam;
+	HeaderTypeMesh mesh;
+
+
 	bool read();
 	int messageType;
 	Vertex* GetVertexArray();

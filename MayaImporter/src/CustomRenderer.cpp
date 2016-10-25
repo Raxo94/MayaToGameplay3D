@@ -96,7 +96,13 @@ void CustomRenderer::update(float elapsedTime)
 		}
 		else if (mayaData->messageType == MessageType::MayaCamera)
 		{
-
+			Node* camera = createMayaCamera(mayaData->cam);
+			
+			_scene->addNode(camera);
+			Camera* cam = camera->getCamera();
+			_scene->setActiveCamera(cam);
+			_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+			cam->release();
 		}
 	
 	}
