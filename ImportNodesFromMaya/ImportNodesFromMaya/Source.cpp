@@ -141,18 +141,20 @@ void GetCamera(M3dView &camView)
 		headerCam.orthographic = false;
 	}
 
-	//offset = 0;
+	offset = 0;
 
-	//int Type = MessageType::MayaCamera;
-	//memcpy(message, &Type, sizeof(int));
-	//offset += sizeof(int);
+	int Type = MessageType::MayaCamera;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
 
-	//memcpy(&headerCam, fnCam.name().asChar(), sizeof(const char[256]));
+	memcpy(&headerCam, fnCam.name().asChar(), sizeof(const char[256]));
 
-	//memcpy((message + offset), &headerCam, sizeof(HeaderTypeCam));
-	//offset += sizeof(HeaderTypeCam);
+	memcpy((message + offset), &headerCam, sizeof(HeaderTypeCam));
+	offset += sizeof(HeaderTypeCam);
 
-	//memcpy(message + offset, sizeof(bool) * headerCam.orthographic);
+	//memcpy(message + offset, &headerCam.orthographic, sizeof(bool));
+
+	circPtr->push(message, offset);
 
 }
 
