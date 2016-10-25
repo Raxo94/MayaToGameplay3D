@@ -110,7 +110,11 @@ void CustomRenderer::update(float elapsedTime)
 			model->setMaterial(createDefaultMaterial(_scene));
 			temp->setDrawable(model);
 			
-		} 
+		}
+		else if (mayaData->messageType == MessageType::MayaCamera)
+		{
+
+		}
 	
 	}
 

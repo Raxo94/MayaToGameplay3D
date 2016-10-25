@@ -30,14 +30,28 @@ struct MayaCamera
 	float fieldOfView;
 
 };
+
+struct HeaderTypeCam
+{
+	char messageType[256];
+	bool orthographic;
+};
+
 class MayaData
 {
 private:
 	char* NodeName;
+	
+	//Mesh
 	Vertex* vertexArray;
 	unsigned int vertexCount;
+
+	//Camera
+	bool isOrthographic;
+
 	char* message;
 	CircBufferFixed* circBuffer;
+
 
 public:
 	bool read();
@@ -45,6 +59,7 @@ public:
 	Vertex* GetVertexArray();
 	unsigned int GetVertexCount();
 	char* GetNodeName();
+
 
 	MayaData();
 	~MayaData();

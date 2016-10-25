@@ -22,6 +22,17 @@ bool MayaData::read()
 			return true;
 
 		}
+		else if (messageType == MessageType::MayaCamera)
+		{
+			HeaderTypeCam* camHeader;
+			camHeader = (HeaderTypeCam*)(message + offset); //typecastning the char message
+			offset += sizeof(HeaderTypeCam);
+			
+			camHeader->messageType;
+			isOrthographic = camHeader->orthographic;
+
+		}
+
 
 	}
 	else
