@@ -56,6 +56,7 @@ private:
     /**
      * Draws the scene each frame.
      */
+
 	MayaData* mayaData;
 	Material* tempMaterial;
     bool drawScene(Node* node);
