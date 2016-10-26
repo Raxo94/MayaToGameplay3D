@@ -13,7 +13,7 @@ struct vertices
 struct Transform
 {
 	float translation[3];
-	float scale[3];
+	double scale[3];
 	double rotation[4];
 };
 
@@ -69,4 +69,4 @@ MObject parentCamera;
 MObject parentMesh;
 double rotCoordCamera[4];
 double rotCoordMesh[4];
-
+double scaleMesh[3];

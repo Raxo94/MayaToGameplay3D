@@ -53,18 +53,8 @@ void GetMeshes(MFnMesh &mesh, MFnTransform &transform)
 	meshHeader.transform.translation[1] = transform.getTranslation(MSpace::kTransform).y;
 	meshHeader.transform.translation[2] = transform.getTranslation(MSpace::kTransform).z;
 
-	//MString tx = "";
-	//MString ty = "";
-	//MString tz = "";
-
-	//tx = transform.getTranslation(MSpace::kTransform).x;
-	//ty = transform.getTranslation(MSpace::kTransform).y;
-	//tz = transform.getTranslation(MSpace::kTransform).z;
-
-	//MGlobal::displayInfo(" Transform x: " + tx + " Transform y: " + ty + " Transform z: " + tz);
-	meshHeader.transform.scale[0] = 0.0;
-	meshHeader.transform.scale[1] = 0.0;
-	meshHeader.transform.scale[2] = 0.0;
+	transform.getScale(scaleMesh);
+	memcpy(&meshHeader.transform.scale, &scaleMesh, sizeof(double) * 3);
 
 	transform.getRotationQuaternion(rotCoordMesh[0], rotCoordMesh[1], rotCoordMesh[2], rotCoordMesh[3], MSpace::kTransform);
 	memcpy(&meshHeader.transform.rotation, &rotCoordMesh, sizeof(double) * 4);
