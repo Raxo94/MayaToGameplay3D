@@ -76,10 +76,13 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 	{
 
 		MFnTransform transform(plug.node(), &res);
-		MFnMesh mesh(plug.node());
+		//MFnMesh mesh(plug.node());
 
 		if (res == MS::kSuccess)
 		{
+
+			MObject child = transform.child(0);
+			MFnMesh mesh(child);
 
 			transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
 			transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;

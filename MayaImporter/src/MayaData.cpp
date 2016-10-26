@@ -27,6 +27,10 @@ bool MayaData::read()
 			return true;
 
 		}
+		else if (messageType == MessageType::MayaTransform)
+		{
+			transform = (HeaderTypeTransform*)(message + offset);
+		}
 
 
 	}

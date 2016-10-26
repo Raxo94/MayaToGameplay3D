@@ -29,20 +29,6 @@ void CustomRenderer::initialize()
 	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
 	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
-
-
-	//Mesh
-	/*Node* meshNode = Node::create("MeshNode");
-	Model* model = createCubeMesh();
-	meshNode->setDrawable(model);
-	_scene->addNode(meshNode);*/
-	
-	
-	//Material
-	/*Material* material(createDefaultMaterial(_scene));
-	model->setMaterial(material);
-	material->release();*/
-	
 	
 	
 	//CAMERA
@@ -50,7 +36,6 @@ void CustomRenderer::initialize()
 	_scene->addNode(cameraNode);
 	Camera* cam = cameraNode->getCamera();
 	_scene->setActiveCamera(cam);
-	//_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
 	cam->release();
 
 
@@ -100,6 +85,14 @@ void CustomRenderer::update(float elapsedTime)
 			Camera* cam = camera->getCamera();
 			_scene->setActiveCamera(cam);
 			cam->release();
+		}
+		else if (mayaData->messageType == MessageType::MayaTransform)
+		{
+			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
+			if (meshNode)
+			{
+				;
+			}
 		}
 	
 	}
