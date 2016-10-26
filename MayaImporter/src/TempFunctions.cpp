@@ -61,12 +61,13 @@ inline Node* createMayaCamera(HeaderTypeCamera* Mcamera)
 	Camera* cam = cameraNode->getCamera();
 
 
-	if (Mcamera->isPerspective = true)
+	if (Mcamera->isPerspective == true)
 	{
 		cam = Camera::createPerspective(0, 0, 0, 0);
 	}
 	else
 	{
+		cam->ORTHOGRAPHIC;
 		cam = Camera::createOrthographic(0, 0 ,0, 0, 0);
 	}
 	
