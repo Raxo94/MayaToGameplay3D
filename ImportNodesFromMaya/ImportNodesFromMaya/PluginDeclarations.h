@@ -10,20 +10,27 @@ struct vertices
 	float uv[2];
 };
 
-struct HeaderType
+struct Transform
+{
+	float translation[3];
+	float scale[3];
+	double rotation[4];
+};
+
+struct HeaderTypeMesh
 {
 	char messageType[256];
 	size_t vertexArray;
 	size_t vertexCount;
+	Transform transform;
 };
 
-struct CameraHeader
+struct HeaderTypeCamera
 {
 	char messageType[256];
 	bool isPerspective;
 	float projectionMatrix[16];
-	float translation[3];
-	double rotation[4];
+	Transform transform;
 	float nearPlane;
 	float farPlane;
 	float fieldOfView;
@@ -36,9 +43,11 @@ size_t offset = 0;
 MCallbackIdArray idList;
 MStatus res = MS::kSuccess;
 
+HeaderTypeMesh meshHeader;
+HeaderTypeCamera camHeader;
 MFloatPointArray pts;
-std::vector<vertices> points;
 
+std::vector<vertices> points;
 MIntArray triangleCounts;
 MIntArray triangleVertexIDs;
 MVector vertexNormal;
@@ -51,12 +60,13 @@ MIntArray triangleIndices;
 
 unsigned int i;
 
-CameraHeader camHeader;
 int currentView;
 M3dView camView;
 MDagPath camera;
 
 MFloatMatrix projMatrix;
-MObject parent;
-double rotValues[4];
+MObject parentCamera;
+MObject parentMesh;
+double rotCoordCamera[4];
+double rotCoordMesh[4];
 

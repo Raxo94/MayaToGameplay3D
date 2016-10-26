@@ -18,9 +18,9 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m3d_view_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_move_tool_2move_tool_8cpp_example_html
 
-void GetMeshes(MFnMesh &mesh)
+void GetMeshes(MFnMesh &mesh, MFnTransform &transform)
 {
-	MGlobal::displayInfo("current mesh: " + mesh.name());
+	/*MGlobal::displayInfo("current mesh: " + mesh.name());*/
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
@@ -49,6 +49,26 @@ void GetMeshes(MFnMesh &mesh)
 
 	}
 
+	meshHeader.transform.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+	meshHeader.transform.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+	meshHeader.transform.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+
+	//MString tx = "";
+	//MString ty = "";
+	//MString tz = "";
+
+	//tx = transform.getTranslation(MSpace::kTransform).x;
+	//ty = transform.getTranslation(MSpace::kTransform).y;
+	//tz = transform.getTranslation(MSpace::kTransform).z;
+
+	//MGlobal::displayInfo(" Transform x: " + tx + " Transform y: " + ty + " Transform z: " + tz);
+	meshHeader.transform.scale[0] = 0.0;
+	meshHeader.transform.scale[1] = 0.0;
+	meshHeader.transform.scale[2] = 0.0;
+
+	transform.getRotationQuaternion(rotCoordMesh[0], rotCoordMesh[1], rotCoordMesh[2], rotCoordMesh[3], MSpace::kTransform);
+	memcpy(&meshHeader.transform.rotation, &rotCoordMesh, sizeof(double) * 4);
+
 	offset = 0;
 
 	int Type = MessageType::MayaMesh;
@@ -56,13 +76,13 @@ void GetMeshes(MFnMesh &mesh)
 	offset += sizeof(int);
 
 
-	HeaderType header; //{ "sad", points.size() * sizeof(vertices), points.size() };
-	memcpy(&header, mesh.name().asChar(), sizeof(const char[256]));
-	header.vertexArray = points.size() * sizeof(vertices);
-	header.vertexCount = points.size();
+	HeaderTypeMesh meshHeader; //{ "sad", points.size() * sizeof(vertices), points.size() };
+	memcpy(&meshHeader, mesh.name().asChar(), sizeof(const char[256]));
+	meshHeader.vertexArray = points.size() * sizeof(vertices);
+	meshHeader.vertexCount = points.size();
 
-	memcpy( (message + offset), &header, sizeof(HeaderType));
-	offset += sizeof(HeaderType);
+	memcpy( (message + offset), &meshHeader, sizeof(HeaderTypeMesh));
+	offset += sizeof(HeaderTypeMesh);
 
 	memcpy(message + offset, points.data(), sizeof(vertices) * points.size());
 	offset += sizeof(vertices) * points.size();
@@ -71,15 +91,39 @@ void GetMeshes(MFnMesh &mesh)
 
 }
 
+//void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
+//{
+//	MFnTransform transform(plug.node());
+//
+//	transform.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+//	transform.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+//	transform.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+//
+//	MString tx = "";
+//	MString ty = "";
+//	MString tz = "";
+//
+//	tx = transform.getTranslation(MSpace::kTransform).x;
+//	ty = transform.getTranslation(MSpace::kTransform).y;
+//	tz = transform.getTranslation(MSpace::kTransform).z;
+//
+//	MGlobal::displayInfo(" Transform x: " + tx + " Transform y: " + ty + " Transform z: " + tz);
+//
+//	transform.getRotationQuaternion(rotCoordMesh[0], rotCoordMesh[1], rotCoordMesh[2], rotCoordMesh[3], MSpace::kTransform);
+//	memcpy(&meshHeader.transform.rotation, &rotCoordMesh, sizeof(double) * 4);
+//
+//}
 
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
 	MFnMesh mesh(plug.node(), &res);
+	MFnTransform transform(plug.node(), &res);
 
 	if (res == MS::kSuccess) {
 
-		GetMeshes(mesh);
+		GetMeshes(mesh, transform);
+		
 	}
 }
 
@@ -88,6 +132,20 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 	if (child.hasFn(MFn::kMesh)) {
 		
 		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
+
+		if (parent.hasFn(MFn::kTransform))
+		{
+			MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), CreateMeshCallback);
+
+			if (res == MS::kSuccess) {
+				idList.append(transformId);
+				MGlobal::displayInfo("mesh callback Succeeded");
+			}
+			else {
+				MGlobal::displayInfo("mesh callback Failed");
+			}
+
+		}
 
 		if (res == MS::kSuccess) {
 			idList.append(meshCreateId);
@@ -98,6 +156,19 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 		}
 
 	}
+
+	//if (child.hasFn(MFn::kTransform))
+	//{
+	//	MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
+
+	//	if (res == MS::kSuccess) {
+	//		idList.append(meshCreateId);
+	//		MGlobal::displayInfo("mesh callback Succeeded");
+	//	}
+	//	else {
+	//		MGlobal::displayInfo("mesh callback Failed");
+	//	}
+	//}
 
 }
 
@@ -194,17 +265,21 @@ void StringFunc(const MString &panelName, void* clientdata)
 	projMatrix = fnCam.projectionMatrix();
 	memcpy(&camHeader.projectionMatrix, &projMatrix, sizeof(float) * 16);
 
-	parent = fnCam.parent(0);
-	if (parent.hasFn(MFn::kTransform))
+	parentCamera = fnCam.parent(0);
+	if (parentCamera.hasFn(MFn::kTransform))
 	{
-		MFnTransform transformParent(parent);
+		MFnTransform transformParent(parentCamera);
 
-		camHeader.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
-		camHeader.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
-		camHeader.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
+		camHeader.transform.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
+		camHeader.transform.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
+		camHeader.transform.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
 		
-		transformParent.getRotationQuaternion(rotValues[0], rotValues[1], rotValues[2], rotValues[3], MSpace::kTransform);
-		memcpy(&camHeader.rotation, &rotValues, sizeof(double) * 4);
+		camHeader.transform.scale[0] = 0.0;
+		camHeader.transform.scale[1] = 0.0;
+		camHeader.transform.scale[2] = 0.0;
+
+		transformParent.getRotationQuaternion(rotCoordCamera[0], rotCoordCamera[1], rotCoordCamera[2], rotCoordCamera[3], MSpace::kTransform);
+		memcpy(&camHeader.transform.rotation, &rotCoordCamera, sizeof(double) * 4);
 	}
 
 	camHeader.nearPlane = fnCam.nearClippingPlane();
@@ -219,8 +294,8 @@ void StringFunc(const MString &panelName, void* clientdata)
 
 	memcpy(&camHeader, fnCam.name().asChar(), sizeof(const char[256]));
 
-	memcpy((message + offset), &camHeader, sizeof(CameraHeader));
-	offset += sizeof(CameraHeader);
+	memcpy((message + offset), &camHeader, sizeof(HeaderTypeCamera));
+	offset += sizeof(HeaderTypeCamera);
 
 	circPtr->push(message, offset);
 
@@ -241,7 +316,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 	{
 		if (it.currentItem().hasFn(MFn::kMesh)) {
 			MFnMesh mesh(it.currentItem());
-			GetMeshes(mesh);
+			MFnTransform transform(it.currentItem());
+			GetMeshes(mesh, transform);
 		}
 
 		it.next();
