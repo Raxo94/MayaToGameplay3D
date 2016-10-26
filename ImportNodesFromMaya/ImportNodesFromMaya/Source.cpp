@@ -108,15 +108,12 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
-	if (msg & MNodeMessage::AttributeMessage::kAttributeSet && !msg & MNodeMessage::AttributeMessage::kAttributeRemoved)
-	{
-		MFnMesh mesh(plug.node(), &res);
+	MFnMesh mesh(plug.node(), &res);
 
-		if (res == MS::kSuccess) {
+	if (res == MS::kSuccess) {
 
-			GetMeshes(mesh);
-			MGlobal::displayInfo("mesh function");
-		}
+		GetMeshes(mesh);
+		MGlobal::displayInfo("mesh function");
 	}
 }
 
