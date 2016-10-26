@@ -72,55 +72,51 @@ void GetMeshes(MFnMesh &mesh)
 
 void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
-	
-	//MFnTransform transform(plug.node(), &res);
-	//MFnMesh mesh(plug.node());
+	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
+	{
 
-	//if (res == MS::kSuccess)
-	//{
-	//	MGlobal::displayInfo("Transform function");
-	//	transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
-	//	transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;
-	//	transformHeader.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+		MFnTransform transform(plug.node(), &res);
+		MFnMesh mesh(plug.node());
 
-	//	transform.getScale(transformHeader.scale);
+		if (res == MS::kSuccess)
+		{
 
-	//	transform.getRotationQuaternion(transformHeader.rotation[0], transformHeader.rotation[1], transformHeader.rotation[2], transformHeader.rotation[3], MSpace::kTransform);
+			transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+			transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+			transformHeader.translation[2] = transform.getTranslation(MSpace::kTransform).z;
 
-	//	MString tx = "";
-	//	MString ty = "";
-	//	MString tz = "";
+			transform.getScale(transformHeader.scale);
 
-	//	tx = transform.getTranslation(MSpace::kTransform).x;
-	//	ty = transform.getTranslation(MSpace::kTransform).y;
-	//	tz = transform.getTranslation(MSpace::kTransform).z;
+			transform.getRotationQuaternion(transformHeader.rotation[0], transformHeader.rotation[1], transformHeader.rotation[2], transformHeader.rotation[3], MSpace::kTransform);
 
-	//	MGlobal::displayInfo("t x: " + tx + " t y:" + ty + " t z: " + tz);
+			offset = 0;
 
-	//	offset = 0;
+			int Type = MessageType::MayaTransform;
+			memcpy(message, &Type, sizeof(int));
+			offset += sizeof(int);
 
-	//	int Type = MessageType::MayaTransform;
-	//	memcpy(message, &Type, sizeof(int));
-	//	offset += sizeof(int);
+			memcpy(&transformHeader.meshName, mesh.name().asChar(), sizeof(const char[256]));
 
-	//	memcpy(&transformHeader.meshName, mesh.name().asChar(), sizeof(const char[256]));*/
+			memcpy((message + offset), &transformHeader, sizeof(HeaderTypeTransform));
+			offset += sizeof(HeaderTypeTransform);
 
-	//	memcpy((message + offset), &transformHeader, sizeof(HeaderTypeTransform));
-	//	offset += sizeof(HeaderTypeTransform);
-
-	//	circPtr->push(message, offset);
-	//}
+			circPtr->push(message, offset);
+		}
+	}
 }
 
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
-	
-	MFnMesh mesh(plug.node(), &res);
 
-	if (res == MS::kSuccess) {
+	if (msg & MNodeMessage::AttributeMessage::kAttributeSet && !msg & MNodeMessage::AttributeMessage::kAttributeRemoved)
+	{
+		MFnMesh mesh(plug.node(), &res);
 
-		GetMeshes(mesh);
-		MGlobal::displayInfo("mesh function");
+		if (res == MS::kSuccess) {
+
+			GetMeshes(mesh);
+			MGlobal::displayInfo("mesh function");
+		}
 	}
 }
 
