@@ -108,12 +108,15 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
-	MFnMesh mesh(plug.node(), &res);
+	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
+	{
+		MFnMesh mesh(plug.node(), &res);
 
-	if (res == MS::kSuccess) {
+		if (res == MS::kSuccess) {
 
-		GetMeshes(mesh);
-		MGlobal::displayInfo("mesh function");
+			GetMeshes(mesh);
+			MGlobal::displayInfo("mesh function");
+		}
 	}
 }
 
@@ -189,7 +192,7 @@ void GetCamera()
 
 }
 
-void StringFunc(const MString &panelName, void* clientdata)
+void UpdateCamera(const MString &panelName, void* clientdata)
 {
 	MString activeCameraPanelName;
 	activeCameraPanelName = MGlobal::executeCommandStringResult("getPanel -wf");
@@ -307,10 +310,10 @@ EXPORT MStatus initializePlugin(MObject obj)
 		MGlobal::displayInfo("node callback Failed");
 	}
 
-	MCallbackId viewId1 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel1", StringFunc, NULL, &res);
-	MCallbackId viewId2 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel2", StringFunc, NULL, &res);
-	MCallbackId viewId3 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel3", StringFunc, NULL, &res);
-	MCallbackId viewId4 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel4", StringFunc, NULL, &res);
+	MCallbackId viewId1 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel1", UpdateCamera, NULL, &res);
+	MCallbackId viewId2 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel2", UpdateCamera, NULL, &res);
+	MCallbackId viewId3 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel3", UpdateCamera, NULL, &res);
+	MCallbackId viewId4 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel4", UpdateCamera, NULL, &res);
 
 	if (res == MS::kSuccess) {
 		idList.append(viewId1);
