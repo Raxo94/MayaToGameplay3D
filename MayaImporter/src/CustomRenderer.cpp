@@ -29,20 +29,6 @@ void CustomRenderer::initialize()
 	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
 	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
-
-
-	//Mesh
-	/*Node* meshNode = Node::create("MeshNode");
-	Model* model = createCubeMesh();
-	meshNode->setDrawable(model);
-	_scene->addNode(meshNode);*/
-	
-	
-	//Material
-	/*Material* material(createDefaultMaterial(_scene));
-	model->setMaterial(material);
-	material->release();*/
-	
 	
 	
 	//CAMERA
@@ -50,7 +36,6 @@ void CustomRenderer::initialize()
 	_scene->addNode(cameraNode);
 	Camera* cam = cameraNode->getCamera();
 	_scene->setActiveCamera(cam);
-	//_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
 	cam->release();
 
 
@@ -84,7 +69,7 @@ void CustomRenderer::update(float elapsedTime)
 			
 			Model* model = createDynamicMesh(mayaData->mesh);
 
-			meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
+			//meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
 
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
@@ -100,6 +85,25 @@ void CustomRenderer::update(float elapsedTime)
 			Camera* cam = camera->getCamera();
 			_scene->setActiveCamera(cam);
 			cam->release();
+		}
+		else if (mayaData->messageType == MessageType::MayaTransform)
+		{
+			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
+			if (meshNode)
+			{
+				meshNode->setTranslationX(mayaData->transform->translation[0]);
+				meshNode->setTranslationY(mayaData->transform->translation[1]);
+				meshNode->setTranslationZ(mayaData->transform->translation[2]);
+
+				Matrix roationMatrix;
+				Quaternion Test(mayaData->transform->rotation[0], mayaData->transform->rotation[1], mayaData->transform->rotation[2], mayaData->transform->rotation[3]);
+				Matrix::createRotation(Test, &roationMatrix);
+				meshNode->setRotation(roationMatrix);
+
+				meshNode->setScale(mayaData->transform->scale[0], mayaData->transform->scale[1], mayaData->transform->scale[2]);
+				_scene->addNode(meshNode);
+				
+			}
 		}
 	
 	}

@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
+enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete };
 
 
 
@@ -38,6 +38,13 @@ struct HeaderTypeCamera
 
 };
 
+struct HeaderTypeTransform
+{
+	char meshName[256];
+	float translation[3];
+	double scale[3];
+	double rotation[4];
+};
 
 
 class MayaData
@@ -60,6 +67,7 @@ private:
 public:
 	HeaderTypeCamera* cam;
 	HeaderTypeMesh* mesh;
+	HeaderTypeTransform* transform;
 
 
 	bool read();

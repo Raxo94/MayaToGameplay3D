@@ -21,11 +21,15 @@ bool MayaData::read()
 		}
 		else if (messageType == MessageType::MayaCamera)
 		{
-			//HeaderTypeCamera* camerU = (HeaderTypeCamera*)(message + offset);
-			memcpy(cam, (message + offset), sizeof(HeaderTypeCamera));
-			offset += sizeof(HeaderTypeCamera);
+			//memcpy(cam, (message + offset), sizeof(HeaderTypeCamera));
+			cam = (HeaderTypeCamera*)(message + offset);
 			return true;
 
+		}
+		else if (messageType == MessageType::MayaTransform)
+		{
+			//memcpy(transform, (message + offset), sizeof(HeaderTypeTransform));
+			transform = (HeaderTypeTransform*)(message + offset);
 		}
 
 
@@ -57,6 +61,7 @@ MayaData::MayaData()
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
 	this->cam = new HeaderTypeCamera;
 	this->mesh = new HeaderTypeMesh;
+	this->transform = new HeaderTypeTransform;
 }
 
 MayaData::~MayaData()
@@ -66,4 +71,5 @@ MayaData::~MayaData()
 	delete   this->circBuffer;
 	delete   this->cam;
 	delete   this->mesh;
+	delete   this->transform;
 }
