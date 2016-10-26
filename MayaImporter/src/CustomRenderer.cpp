@@ -69,7 +69,7 @@ void CustomRenderer::update(float elapsedTime)
 			
 			Model* model = createDynamicMesh(mayaData->mesh);
 
-			meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
+			//meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
 
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
@@ -91,7 +91,18 @@ void CustomRenderer::update(float elapsedTime)
 			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
 			if (meshNode)
 			{
-				;
+				meshNode->setTranslationX(mayaData->transform->translation[0]);
+				meshNode->setTranslationY(mayaData->transform->translation[1]);
+				meshNode->setTranslationZ(mayaData->transform->translation[2]);
+
+				Matrix roationMatrix;
+				Quaternion Test(mayaData->transform->rotation[0], mayaData->transform->rotation[1], mayaData->transform->rotation[2], mayaData->transform->rotation[3]);
+				Matrix::createRotation(Test, &roationMatrix);
+				meshNode->setRotation(roationMatrix);
+
+				meshNode->setScale(mayaData->transform->scale[0], mayaData->transform->scale[1], mayaData->transform->scale[2]);
+				_scene->addNode(meshNode);
+				
 			}
 		}
 	
