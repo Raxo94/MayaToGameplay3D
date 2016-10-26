@@ -1,7 +1,7 @@
 #pragma once
 #include "Linker.h"
 
-enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
+enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete };
 
 struct vertices
 {
@@ -10,8 +10,9 @@ struct vertices
 	float uv[2];
 };
 
-struct Transform
+struct HeaderTypeTransform
 {
+	char meshName[256];
 	float translation[3];
 	double scale[3];
 	double rotation[4];
@@ -22,7 +23,6 @@ struct HeaderTypeMesh
 	char messageType[256];
 	size_t vertexArray;
 	size_t vertexCount;
-	Transform transform;
 };
 
 struct HeaderTypeCamera
@@ -30,7 +30,8 @@ struct HeaderTypeCamera
 	char messageType[256];
 	bool isPerspective;
 	float projectionMatrix[16];
-	Transform transform;
+	float translation[3];
+	double rotation[4];
 	float nearPlane;
 	float farPlane;
 	float fieldOfView;
@@ -45,6 +46,7 @@ MStatus res = MS::kSuccess;
 
 HeaderTypeMesh meshHeader;
 HeaderTypeCamera camHeader;
+HeaderTypeTransform transformHeader;
 MFloatPointArray pts;
 
 std::vector<vertices> points;
@@ -67,6 +69,4 @@ MDagPath camera;
 MFloatMatrix projMatrix;
 MObject parentCamera;
 MObject parentMesh;
-double rotCoordCamera[4];
-double rotCoordMesh[4];
-double scaleMesh[3];
+

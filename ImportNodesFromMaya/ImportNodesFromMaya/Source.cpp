@@ -18,9 +18,9 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m3d_view_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_move_tool_2move_tool_8cpp_example_html
 
-void GetMeshes(MFnMesh &mesh, MFnTransform &transform)
+void GetMeshes(MFnMesh &mesh)
 {
-	/*MGlobal::displayInfo("current mesh: " + mesh.name());*/
+	//MGlobal::displayInfo("current mesh: " + mesh.name());
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
@@ -49,16 +49,6 @@ void GetMeshes(MFnMesh &mesh, MFnTransform &transform)
 
 	}
 
-	meshHeader.transform.translation[0] = transform.getTranslation(MSpace::kTransform).x;
-	meshHeader.transform.translation[1] = transform.getTranslation(MSpace::kTransform).y;
-	meshHeader.transform.translation[2] = transform.getTranslation(MSpace::kTransform).z;
-
-	transform.getScale(scaleMesh);
-	memcpy(&meshHeader.transform.scale, &scaleMesh, sizeof(double) * 3);
-
-	transform.getRotationQuaternion(rotCoordMesh[0], rotCoordMesh[1], rotCoordMesh[2], rotCoordMesh[3], MSpace::kTransform);
-	memcpy(&meshHeader.transform.rotation, &rotCoordMesh, sizeof(double) * 4);
-
 	offset = 0;
 
 	int Type = MessageType::MayaMesh;
@@ -80,39 +70,57 @@ void GetMeshes(MFnMesh &mesh, MFnTransform &transform)
 
 }
 
-//void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
-//{
-//	MFnTransform transform(plug.node());
-//
-//	transform.translation[0] = transform.getTranslation(MSpace::kTransform).x;
-//	transform.translation[1] = transform.getTranslation(MSpace::kTransform).y;
-//	transform.translation[2] = transform.getTranslation(MSpace::kTransform).z;
-//
-//	MString tx = "";
-//	MString ty = "";
-//	MString tz = "";
-//
-//	tx = transform.getTranslation(MSpace::kTransform).x;
-//	ty = transform.getTranslation(MSpace::kTransform).y;
-//	tz = transform.getTranslation(MSpace::kTransform).z;
-//
-//	MGlobal::displayInfo(" Transform x: " + tx + " Transform y: " + ty + " Transform z: " + tz);
-//
-//	transform.getRotationQuaternion(rotCoordMesh[0], rotCoordMesh[1], rotCoordMesh[2], rotCoordMesh[3], MSpace::kTransform);
-//	memcpy(&meshHeader.transform.rotation, &rotCoordMesh, sizeof(double) * 4);
-//
-//}
+void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
+{
+	
+	//MFnTransform transform(plug.node(), &res);
+	//MFnMesh mesh(plug.node());
+
+	//if (res == MS::kSuccess)
+	//{
+	//	MGlobal::displayInfo("Transform function");
+	//	transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+	//	transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+	//	transformHeader.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+
+	//	transform.getScale(transformHeader.scale);
+
+	//	transform.getRotationQuaternion(transformHeader.rotation[0], transformHeader.rotation[1], transformHeader.rotation[2], transformHeader.rotation[3], MSpace::kTransform);
+
+	//	MString tx = "";
+	//	MString ty = "";
+	//	MString tz = "";
+
+	//	tx = transform.getTranslation(MSpace::kTransform).x;
+	//	ty = transform.getTranslation(MSpace::kTransform).y;
+	//	tz = transform.getTranslation(MSpace::kTransform).z;
+
+	//	MGlobal::displayInfo("t x: " + tx + " t y:" + ty + " t z: " + tz);
+
+	//	offset = 0;
+
+	//	int Type = MessageType::MayaTransform;
+	//	memcpy(message, &Type, sizeof(int));
+	//	offset += sizeof(int);
+
+	//	memcpy(&transformHeader.meshName, mesh.name().asChar(), sizeof(const char[256]));*/
+
+	//	memcpy((message + offset), &transformHeader, sizeof(HeaderTypeTransform));
+	//	offset += sizeof(HeaderTypeTransform);
+
+	//	circPtr->push(message, offset);
+	//}
+}
 
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
-
+	
 	MFnMesh mesh(plug.node(), &res);
-	MFnTransform transform(plug.node(), &res);
 
 	if (res == MS::kSuccess) {
 
-		GetMeshes(mesh, transform);
-		
+		GetMeshes(mesh);
+		MGlobal::displayInfo("mesh function");
 	}
 }
 
@@ -124,7 +132,7 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 
 		if (parent.hasFn(MFn::kTransform))
 		{
-			MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), CreateMeshCallback);
+			MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), GetTransform);
 
 			if (res == MS::kSuccess) {
 				idList.append(transformId);
@@ -145,19 +153,6 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 		}
 
 	}
-
-	//if (child.hasFn(MFn::kTransform))
-	//{
-	//	MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
-
-	//	if (res == MS::kSuccess) {
-	//		idList.append(meshCreateId);
-	//		MGlobal::displayInfo("mesh callback Succeeded");
-	//	}
-	//	else {
-	//		MGlobal::displayInfo("mesh callback Failed");
-	//	}
-	//}
 
 }
 
@@ -259,16 +254,11 @@ void StringFunc(const MString &panelName, void* clientdata)
 	{
 		MFnTransform transformParent(parentCamera);
 
-		camHeader.transform.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
-		camHeader.transform.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
-		camHeader.transform.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
-		
-		camHeader.transform.scale[0] = 0.0;
-		camHeader.transform.scale[1] = 0.0;
-		camHeader.transform.scale[2] = 0.0;
+		camHeader.translation[0] = transformParent.getTranslation(MSpace::kTransform).x;
+		camHeader.translation[1] = transformParent.getTranslation(MSpace::kTransform).y;
+		camHeader.translation[2] = transformParent.getTranslation(MSpace::kTransform).z;
 
-		transformParent.getRotationQuaternion(rotCoordCamera[0], rotCoordCamera[1], rotCoordCamera[2], rotCoordCamera[3], MSpace::kTransform);
-		memcpy(&camHeader.transform.rotation, &rotCoordCamera, sizeof(double) * 4);
+		transformParent.getRotationQuaternion(camHeader.rotation[0], camHeader.rotation[1], camHeader.rotation[2], camHeader.rotation[3], MSpace::kTransform);
 	}
 
 	camHeader.nearPlane = fnCam.nearClippingPlane();
@@ -306,7 +296,7 @@ EXPORT MStatus initializePlugin(MObject obj)
 		if (it.currentItem().hasFn(MFn::kMesh)) {
 			MFnMesh mesh(it.currentItem());
 			MFnTransform transform(it.currentItem());
-			GetMeshes(mesh, transform);
+			GetMeshes(mesh);
 		}
 
 		it.next();
