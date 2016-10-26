@@ -36,6 +36,8 @@ inline Node* getManualCamera()
 	cam->setNearPlane(0.25);
 	cam->setFarPlane(100);
 	cam->setFieldOfView(27);
+	cam->setAspectRatio((float)1280 / (float)720);
+
 
 	cameraNode->setCamera(cam);
 	return cameraNode;
@@ -72,6 +74,7 @@ inline Node* createMayaCamera(HeaderTypeCamera* Mcamera)
 	cam->setNearPlane(Mcamera->nearPlane);
 	cam->setFarPlane(Mcamera->farPlane);
 	cam->setFieldOfView(Mcamera->fieldOfView);
+	cam->setAspectRatio((float)1280 / (float)720);
 
 	cameraNode->setCamera(cam);
 	return cameraNode;
@@ -138,7 +141,7 @@ static Model* createCubeMesh(float size = 1.0f)
 }
 
 
-static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
+static Model* createDynamicMesh(HeaderTypeMesh* MayaMesh)
 {
 	
 	VertexFormat::Element elements[] =
@@ -147,7 +150,7 @@ static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 		VertexFormat::Element(VertexFormat::NORMAL, 3),
 		VertexFormat::Element(VertexFormat::TEXCOORD0, 2)
 	};
-	Mesh* mesh = Mesh::createMesh(VertexFormat(elements, 3), vertexCount, false);
+	Mesh* mesh = Mesh::createMesh(VertexFormat(elements, 3), MayaMesh->vertexCount, false);
 
 	if (mesh == NULL)
 	{
@@ -155,7 +158,7 @@ static Model* createDynamicMesh(Vertex* VertexArray, int vertexCount)
 		return NULL;
 	}
 
-	mesh->setVertexData(VertexArray, 0, vertexCount);
+	mesh->setVertexData(MayaMesh->vertexArray, 0, MayaMesh->vertexCount);
 
 	Model* model = Model::create(mesh);
 	return model;

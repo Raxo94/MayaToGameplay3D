@@ -21,7 +21,7 @@ struct HeaderTypeTransform
 struct HeaderTypeMesh
 {
 	char messageType[256];
-	size_t vertexArray;
+	vertices* vertexArray;
 	size_t vertexCount;
 };
 
