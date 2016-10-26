@@ -57,7 +57,7 @@ void GetMeshes(MFnMesh &mesh)
 
 	 //{ "sad", points.size() * sizeof(vertices), points.size() };
 	memcpy(&meshHeader, mesh.name().asChar(), sizeof(const char[256]));
-	meshHeader.vertexArray = points.size() * sizeof(vertices);
+	meshHeader.vertexArray = nullptr;
 	meshHeader.vertexCount = points.size();
 
 	memcpy( (message + offset), &meshHeader, sizeof(HeaderTypeMesh));

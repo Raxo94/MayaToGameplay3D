@@ -50,7 +50,7 @@ void CustomRenderer::initialize()
 	_scene->addNode(cameraNode);
 	Camera* cam = cameraNode->getCamera();
 	_scene->setActiveCamera(cam);
-	_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
+	//_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
 	cam->release();
 
 
@@ -73,20 +73,18 @@ void CustomRenderer::update(float elapsedTime)
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
 
-			Node* meshNode = _scene->findNode(mayaData->GetNodeName());
-			if (meshNode)
-			{
-				_scene->removeNode(_scene->findNode(mayaData->GetNodeName() ));
-			}
-			else
-			{
-				meshNode = Node::create(mayaData->GetNodeName()); 
-			}
-			Model* model = createDynamicMesh(mayaData->GetVertexArray(), mayaData->GetVertexCount());
+			Node* meshNode = _scene->findNode(mayaData->mesh->Name);
 
-			meshNode->setTranslationX(0);
-			meshNode->setTranslationY(1);
-			meshNode->setTranslationZ(0);
+			if (meshNode)
+				_scene->removeNode(_scene->findNode(mayaData->mesh->Name));
+
+			else
+				meshNode = Node::create(mayaData->mesh->Name);
+			
+			
+			Model* model = createDynamicMesh(mayaData->mesh);
+
+			meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
 
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
@@ -101,7 +99,6 @@ void CustomRenderer::update(float elapsedTime)
 			_scene->addNode(camera);
 			Camera* cam = camera->getCamera();
 			_scene->setActiveCamera(cam);
-			//_scene->getActiveCamera()->setAspectRatio(getAspectRatio()); // Set the aspect ratio for the scene's camera to match the current resolution
 			cam->release();
 		}
 	

@@ -5,12 +5,7 @@ using namespace std;
 
 enum MessageType { MayaMesh, MayaCamera, MayaMaterial, MayaNodeDelete };
 
-struct HeaderTypeMesh
-{
-	char   Name[256];
-	size_t vertexArray;
-	size_t vertexCount;
-};
+
 
 struct Vertex
 {
@@ -18,6 +13,15 @@ struct Vertex
 	float norm[3];
 	float UV[2];
 };
+
+
+struct HeaderTypeMesh
+{
+	char   Name[256];
+	Vertex* vertexArray;
+	size_t vertexCount;
+};
+
 
 
 
@@ -55,7 +59,7 @@ private:
 
 public:
 	HeaderTypeCamera* cam;
-	HeaderTypeMesh mesh;
+	HeaderTypeMesh* mesh;
 
 
 	bool read();
