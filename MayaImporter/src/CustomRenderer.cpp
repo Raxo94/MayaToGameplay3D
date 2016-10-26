@@ -13,18 +13,20 @@ CustomRenderer::CustomRenderer()
 
 void CustomRenderer::initialize()
 {
-	//AllocConsole();
-    _scene = Scene::load("res/demo.scene");  // Load game scene from file
 
-    // Get the box model and initialize its material parameter values and bindings
-	Node* boxNode = _scene->findNode("box");
-	boxNode->setTranslationX(-3.5);
-	boxNode->setTranslationY(2.3);
-	boxNode->setTranslationZ(0.2);
+	_scene = Scene::create();
+
+	//Mesh
+	Model* initialModel = createCubeMesh();
+	initialModel->setMaterial(createDefaultMaterial(_scene));
+	Node* initialMesh = Node::create("InitialMesh");
+	_scene->addNode(initialMesh);
+
+	initialMesh->setDrawable(initialModel);
 	
 
 	//Light
-
+	
 	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
 	Node* lightNode = _scene->addNode("light");
 	lightNode->setLight(light);
@@ -59,10 +61,8 @@ void CustomRenderer::update(float elapsedTime)
 		{
 
 			Node* meshNode = _scene->findNode(mayaData->mesh->Name);
-
 			if (meshNode)
 				_scene->removeNode(_scene->findNode(mayaData->mesh->Name));
-
 			else
 				meshNode = Node::create(mayaData->mesh->Name);
 			
