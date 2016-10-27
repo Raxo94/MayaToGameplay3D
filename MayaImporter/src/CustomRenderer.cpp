@@ -15,7 +15,7 @@ void CustomRenderer::initialize()
 {
 	//AllocConsole();
     _scene = Scene::load("res/demo.scene");  // Load game scene from file
-
+	setVsync(false);
     // Get the box model and initialize its material parameter values and bindings
 	Node* boxNode = _scene->findNode("box");
 	boxNode->setTranslationX(-3.5);
