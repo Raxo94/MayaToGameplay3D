@@ -60,20 +60,25 @@ inline Node* createMayaCamera(HeaderTypeCamera* Mcamera)
 
 	Camera* cam = cameraNode->getCamera();
 
-
-	if (Mcamera->isPerspective = true)
+	 
+	if (Mcamera->isPerspective == true)
 	{
 		cam = Camera::createPerspective(0, 0, 0, 0);
+		cam->setFieldOfView(Mcamera->fieldOfView);
 	}
 	else
 	{
+		cam->ORTHOGRAPHIC;
 		cam = Camera::createOrthographic(0, 0 ,0, 0, 0);
 	}
 	
+	Mcamera->projectionMatrix[10] *= -1;
+	Mcamera->projectionMatrix[14] *= -1;
+
 	cam->setProjectionMatrix(Mcamera->projectionMatrix);
 	cam->setNearPlane(Mcamera->nearPlane);
 	cam->setFarPlane(Mcamera->farPlane);
-	cam->setFieldOfView(Mcamera->fieldOfView);
+	
 	cam->setAspectRatio((float)1280 / (float)720);
 
 	cameraNode->setCamera(cam);

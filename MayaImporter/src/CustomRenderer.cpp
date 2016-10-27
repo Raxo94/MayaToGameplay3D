@@ -11,11 +11,16 @@ CustomRenderer::CustomRenderer()
 {
 }
 
+CustomRenderer::~CustomRenderer()
+{
+	delete mayaData;
+}
+
 void CustomRenderer::initialize()
 {
 	//AllocConsole();
     _scene = Scene::load("res/demo.scene");  // Load game scene from file
-
+	setVsync(false);
     // Get the box model and initialize its material parameter values and bindings
 	Node* boxNode = _scene->findNode("box");
 	boxNode->setTranslationX(-3.5);
@@ -69,7 +74,6 @@ void CustomRenderer::update(float elapsedTime)
 			
 			Model* model = createDynamicMesh(mayaData->mesh);
 
-			//meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
 
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));

@@ -134,7 +134,7 @@ xcopy ..\GamePlay-master\GamePlay-master\gameplay\res\ui res\ui\* /s /y /d</Comm
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;GP_USE_GAMEPAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\GamePlay-master\GamePlay-master\gameplay\src;..\GamePlay-master\GamePlay-master\external-deps\include;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\MayaToGameplay3D\MayaImporter\CircleBuffer;..\GamePlay-master\GamePlay-master\gameplay\src;..\GamePlay-master\GamePlay-master\external-deps\include;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

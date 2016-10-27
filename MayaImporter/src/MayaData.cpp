@@ -59,9 +59,9 @@ MayaData::MayaData()
 	this->message = new char[messageSize];
 	this->vertexArray = new Vertex[messageSize];
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
-	this->cam = new HeaderTypeCamera;
+	//this->cam = new HeaderTypeCamera;
 	this->mesh = new HeaderTypeMesh;
-	this->transform = new HeaderTypeTransform;
+	//this->transform = new HeaderTypeTransform;
 }
 
 MayaData::~MayaData()
@@ -69,7 +69,7 @@ MayaData::~MayaData()
 	delete[] this->message;
 	delete[] this-> vertexArray;
 	delete   this->circBuffer;
-	delete   this->cam;
+	//delete   this->cam;
 	delete   this->mesh;
-	delete   this->transform;
+	//delete   this->transform;
 }

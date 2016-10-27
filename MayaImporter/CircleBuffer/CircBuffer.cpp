@@ -17,6 +17,7 @@ CircBufferFixed::CircBufferFixed(LPCWSTR buffName, const bool & isProducer, cons
 	
 	createMaping();
 	UpdateControlBuffer();
+	ControlPointer[CLIENTCOUNT] = 1; //temporary set ClientCount to 1; as destructors are unreliable.
 }
 
 CircBufferFixed::~CircBufferFixed()

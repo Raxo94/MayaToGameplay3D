@@ -18,7 +18,7 @@ public:
      * Constructor.
      */
     CustomRenderer();
-
+	~CustomRenderer();
     /**
      * @see Game::keyEvent
      */
