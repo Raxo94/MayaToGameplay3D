@@ -46,6 +46,11 @@ struct HeaderTypeTransform
 	double rotation[4];
 };
 
+struct HeaderTypeMaterial
+{
+	char messageType[256];
+	float color[3];
+};
 
 class MayaData
 {
@@ -68,6 +73,7 @@ public:
 	HeaderTypeCamera* cam;
 	HeaderTypeMesh* mesh;
 	HeaderTypeTransform* transform;
+	HeaderTypeMaterial* material;
 
 
 	bool read();

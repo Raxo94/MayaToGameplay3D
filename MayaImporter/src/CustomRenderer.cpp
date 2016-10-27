@@ -19,23 +19,29 @@ CustomRenderer::~CustomRenderer()
 void CustomRenderer::initialize()
 {
 	//AllocConsole();
-    _scene = Scene::load("res/demo.scene");  // Load game scene from file
+   // _scene = Scene::load("res/demo.scene");  // Load game scene from file
+	_scene = Scene::create();
 	setVsync(false);
     // Get the box model and initialize its material parameter values and bindings
-	Node* boxNode = _scene->findNode("box");
-	boxNode->setTranslationX(-3.5);
-	boxNode->setTranslationY(2.3);
-	boxNode->setTranslationZ(0.2);
+	//Node* boxNode = _scene->findNode("box");
+
 	
 
 	//Light
 
 	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
-	Node* lightNode = _scene->addNode("light");
+	Node* lightNode = _scene->addNode("DirectionalLightShape1");
 	lightNode->setLight(light);
 	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
 	
-	
+	Node* lightNode2 = Node::create("pointLightShape1");
+	Light* light2 = Light::createPoint(Vector3(1.0f, 0.7f, 0.5f), 100);
+	lightNode2->setLight(light2);
+	lightNode2->translate(Vector3(0, 0, 0));
+	_scene->addNode(lightNode2);
+	lightNode2->release();
+	light2->release();
+
 	//CAMERA
 	Node* cameraNode = getManualCamera();
 	_scene->addNode(cameraNode);
@@ -43,6 +49,13 @@ void CustomRenderer::initialize()
 	_scene->setActiveCamera(cam);
 	cam->release();
 
+	//MESH
+	Node* meshNode = Node::create("Mesh1");
+	Model* model = createCubeMesh();
+	_scene->addNode(meshNode);
+	model->setMaterial(createDefaultMaterial(_scene));
+	meshNode->setDrawable(model);
+	model->release();
 
 	//Buffer
 	mayaData = new MayaData();
@@ -72,7 +85,7 @@ void CustomRenderer::update(float elapsedTime)
 				meshNode = Node::create(mayaData->mesh->Name);
 			
 			
-			Model* model = createDynamicMesh(mayaData->mesh);
+			Model* model = createMayaMesh(mayaData->mesh);
 
 
 			_scene->addNode(meshNode);
@@ -108,6 +121,31 @@ void CustomRenderer::update(float elapsedTime)
 				_scene->addNode(meshNode);
 				
 			}
+		}
+		else if (mayaData->messageType == MessageType::MayaMaterial)
+		{
+			mayaData->material;
+			Node* meshNode = _scene->findNode("Mesh1");
+			
+			char * asd = "Mesh1";
+			if (meshNode)
+			{
+				_scene->removeNode(meshNode);
+			/*	Model* model = static_cast<Model*>(meshNode->getDrawable());
+				model->setMaterial(createMayaMaterial(_scene, mayaData->material));
+				meshNode->setDrawable(model);
+				model->release();
+				_scene->addNode(meshNode);*/
+
+				Node* meshNode = Node::create("Mesh2");
+				Model* model = createCubeMesh();
+				_scene->addNode(meshNode);
+				model->setMaterial(createMayaMaterial(_scene,mayaData->material));
+				meshNode->setDrawable(model);
+				model->release();
+				
+			}
+
 		}
 	
 	}
