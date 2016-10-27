@@ -207,6 +207,8 @@ void GetCamera()
 void GetMaterial(MObject &iteratorNode)
 {
 	MFnDependencyNode materialNode(iteratorNode);
+	/*MFnMesh mesh(iteratorNode);*/
+	//MGlobal::displayInfo("mesh: " + mesh.name());
 
 	MPlug color = materialNode.findPlug("color", &res);
 
@@ -229,6 +231,7 @@ void GetMaterial(MObject &iteratorNode)
 	memcpy(message, &Type, sizeof(int));
 	offset += sizeof(int);
 
+///*	memcpy(&matHeader, .asChar(), sizeof(const char[256]))*/;
 	memcpy(&matHeader, materialNode.name().asChar(), sizeof(const char[256]));
 
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));

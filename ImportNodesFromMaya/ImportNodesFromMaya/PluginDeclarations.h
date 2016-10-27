@@ -41,6 +41,7 @@ struct HeaderTypeCamera
 struct HeaderTypeMaterial
 {
 	char messageType[256];
+	/*char meshName[256];*/
 	float color[3];
 };
 
