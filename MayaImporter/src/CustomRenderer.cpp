@@ -11,6 +11,11 @@ CustomRenderer::CustomRenderer()
 {
 }
 
+CustomRenderer::~CustomRenderer()
+{
+	delete mayaData;
+}
+
 void CustomRenderer::initialize()
 {
 	//AllocConsole();
@@ -69,7 +74,6 @@ void CustomRenderer::update(float elapsedTime)
 			
 			Model* model = createDynamicMesh(mayaData->mesh);
 
-			//meshNode->setTranslationX(0); meshNode->setTranslationY(1); meshNode->setTranslationZ(0);
 
 			_scene->addNode(meshNode);
 			model->setMaterial(createDefaultMaterial(_scene));
