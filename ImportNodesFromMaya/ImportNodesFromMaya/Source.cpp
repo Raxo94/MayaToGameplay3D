@@ -18,6 +18,12 @@
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m3d_view_html
 //http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_move_tool_2move_tool_8cpp_example_html
 
+//materail links
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__d3_d_viewport_renderer_2_d3_d_texture_item_8cpp_example_html //texture
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_file_texture_2file_texture_8cpp_example_html //attributes
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_gpu_cache_2gpu_cache_material_nodes_8h_example_html //surface material (blinn, lambert..)
+//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_bullet_2_attributes_writer_8cpp_example_html //hoe to use findplug
+
 void GetMeshes(MFnMesh &mesh)
 {
 	//MGlobal::displayInfo("current mesh: " + mesh.name());
@@ -48,7 +54,7 @@ void GetMeshes(MFnMesh &mesh)
 		points.at(i).uv[1] = v[triangleVertexIDs[i]];
 
 	}
-
+	
 	offset = 0;
 
 	int Type = MessageType::MayaMesh;
@@ -111,14 +117,17 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
-	if (msg & MNodeMessage::AttributeMessage::kAttributeSet)
-	{
+	if (msg & MNodeMessage::AttributeMessage::kAttributeSet) {
 		MFnMesh mesh(plug.node(), &res);
 
 		if (res == MS::kSuccess) {
 
 			GetMeshes(mesh);
-			MGlobal::displayInfo("mesh function");
+			
+			//MPlug outColor = MFnDependencyNode(plug.node()).findPlug("outColor", &res);
+
+			//outColor.connectedTo(connectionsToShader, false, true, &res);
+
 		}
 	}
 }
@@ -195,6 +204,48 @@ void GetCamera()
 
 }
 
+void GetMaterial(MObject &iteratorNode)
+{
+	MFnDependencyNode materialNode(iteratorNode);
+
+	MPlug color = materialNode.findPlug("color", &res);
+
+	if (iteratorNode.hasFn(MFn::kTextureList)) {
+		//if the node has a texture
+	}
+
+	else {
+
+		MObject data;
+		color.getValue(data);
+		MFnNumericData nData(data);
+		nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+
+	}
+
+	offset = 0;
+
+	int Type = MessageType::MayaMaterial;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&matHeader, materialNode.name().asChar(), sizeof(const char[256]));
+
+	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
+	offset += sizeof(HeaderTypeMaterial);
+
+	circPtr->push(message, offset);
+
+}
+void UpdateMaterial(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
+{
+	if (msg & MNodeMessage::AttributeMessage::kAttributeSet) {
+
+		GetMaterial(plug.node());
+
+	}
+
+}
 void UpdateCamera(const MString &panelName, void* clientdata)
 {
 	MString activeCameraPanelName;
@@ -294,11 +345,31 @@ EXPORT MStatus initializePlugin(MObject obj)
 	{
 		if (it.currentItem().hasFn(MFn::kMesh)) {
 			MFnMesh mesh(it.currentItem());
-			MFnTransform transform(it.currentItem());
 			GetMeshes(mesh);
 		}
 
 		it.next();
+	}
+
+	MItDependencyNodes itDepNode(MFn::kLambert);
+
+	while (itDepNode.isDone() == false)
+	{
+		MObject mNode = itDepNode.item();
+
+		GetMaterial(mNode);
+
+		MCallbackId MplugId = MNodeMessage::addAttributeChangedCallback(mNode, UpdateMaterial);
+
+		if (res == MS::kSuccess) {
+			idList.append(MplugId);
+			MGlobal::displayInfo("mesh callback Succeeded");
+		}
+		else {
+			MGlobal::displayInfo("mesh callback Failed");
+		}
+
+		itDepNode.next();
 	}
 
 	GetCamera();

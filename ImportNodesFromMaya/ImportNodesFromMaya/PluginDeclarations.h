@@ -38,6 +38,12 @@ struct HeaderTypeCamera
 
 };
 
+struct HeaderTypeMaterial
+{
+	char messageType[256];
+	float color[3];
+};
+
 char* message;
 CircBufferFixed *circPtr;
 size_t offset = 0;
@@ -47,8 +53,9 @@ MStatus res = MS::kSuccess;
 HeaderTypeMesh meshHeader;
 HeaderTypeCamera camHeader;
 HeaderTypeTransform transformHeader;
-MFloatPointArray pts;
+HeaderTypeMaterial matHeader;
 
+MFloatPointArray pts;
 std::vector<vertices> points;
 MIntArray triangleCounts;
 MIntArray triangleVertexIDs;
@@ -69,4 +76,3 @@ MDagPath camera;
 MFloatMatrix projMatrix;
 MObject parentCamera;
 MObject parentMesh;
-
