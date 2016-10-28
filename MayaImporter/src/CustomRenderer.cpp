@@ -29,13 +29,13 @@ void CustomRenderer::initialize()
 
 	//Light
 
-	Light* light = Light::createDirectional(0.75f, 0.75f, 0.75f);
+	Light* light = Light::createDirectional(1.0f, 1.0f, 1.0f);
 	Node* lightNode = _scene->addNode("DirectionalLightShape1");
 	lightNode->setLight(light);
 	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
 	
 	Node* lightNode2 = Node::create("pointLightShape1");
-	Light* light2 = Light::createPoint(Vector3(1.0f, 0.7f, 0.5f), 100);
+	Light* light2 = Light::createPoint(Vector3(1.0f, 1.0f, 1.0f), 100);
 	lightNode2->setLight(light2);
 	lightNode2->translate(Vector3(0, 0, 0));
 	_scene->addNode(lightNode2);
@@ -137,7 +137,7 @@ void CustomRenderer::update(float elapsedTime)
 				model->release();
 				_scene->addNode(meshNode);*/
 
-				Node* meshNode = Node::create("Mesh2");
+				Node* meshNode = Node::create("Mesh1");
 				Model* model = createCubeMesh();
 				_scene->addNode(meshNode);
 				model->setMaterial(createMayaMaterial(_scene,mayaData->material));
