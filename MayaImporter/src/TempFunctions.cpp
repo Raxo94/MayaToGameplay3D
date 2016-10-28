@@ -246,13 +246,13 @@ static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMateria
 	}
 	else
 	{
-		Material* material = Material::create("res/shaders/colored.vert", "res/shaders/colored.frag", "DIRECTIONAL_LIGHT_COUNT 1");
+		Material* material = Material::create("res/shaders/colored.vert", "res/shaders/colored.frag", "POINT_LIGHT_COUNT 1"/*, DIRECTIONAL_LIGHT_COUNT 1"*/);
 		material->setParameterAutoBinding("u_worldViewMatrix", RenderState::AutoBinding::WORLD_VIEW_MATRIX);
 		material->setParameterAutoBinding("u_worldViewProjectionMatrix", "WORLD_VIEW_PROJECTION_MATRIX");
 		material->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", "INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX");
 
 		// Set the ambient color of the material.
-		material->getParameter("u_ambientColor")->setValue(Vector3(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2]));
+		//material->getParameter("u_ambientColor")->setValue(Vector3(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2]));
 
 		Node* lightNode = scene->findNode("DirectionalLightShape1");
 		material->getParameter("u_DirectionalLightColor[0]")->bindValue(lightNode->getLight(), &Light::getColor);
@@ -266,7 +266,7 @@ static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMateria
 
 		//Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true); 	// Load the texture from file.
 		//sampler->setFilterMode(Texture::LINEAR_MIPMAP_LINEAR, Texture::LINEAR);
-		material->getParameter("u_diffuseColor")->setValue(Vector4(1, 1, 1, 1.0f));
+		material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2], 1.0f));
 
 
 

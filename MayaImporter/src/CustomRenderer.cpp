@@ -105,7 +105,7 @@ void CustomRenderer::update(float elapsedTime)
 		}
 		else if (mayaData->messageType == MessageType::MayaTransform)
 		{
-			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
+			Node* meshNode = _scene->findNode("Mesh1"); //change back here
 			if (meshNode)
 			{
 				meshNode->setTranslationX(mayaData->transform->translation[0]);
