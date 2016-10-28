@@ -31,7 +31,10 @@ bool MayaData::read()
 			//memcpy(transform, (message + offset), sizeof(HeaderTypeTransform));
 			transform = (HeaderTypeTransform*)(message + offset);
 		}
-
+		else if(messageType == MessageType::MayaMaterial)
+		{
+			material = (HeaderTypeMaterial*)(message + offset);
+		}
 
 	}
 	else
