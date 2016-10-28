@@ -249,9 +249,8 @@ void GetMaterial(MObject &iteratorNode)
 							MGlobal::displayInfo("mesh name: " + dagSetMemberNode.name());
 							MFnMesh mesh(dagSetMemberNode.object());
 
-							char MeshName[256];
-							memcpy(&MeshName, mesh.name().asChar(), sizeof(char[256]));
-							meshes.push_back(MeshName);
+							memcpy(&meshStruct, mesh.name().asChar(), sizeof(Meshes));
+							meshVector.push_back(meshStruct);
 							matHeader.amountOfMeshes += 1;
 						}
 					}
@@ -260,7 +259,6 @@ void GetMaterial(MObject &iteratorNode)
 			}
 		}
 	}
-
 
 	offset = 0;
 
@@ -272,7 +270,7 @@ void GetMaterial(MObject &iteratorNode)
 	memcpy(&matHeader.materialName, materialNode.name().asChar(), sizeof(const char[256]));
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
 	offset += sizeof(HeaderTypeMaterial);
-	memcpy(&message + offset, meshes.data(), sizeof(char[256])*meshes.size());
+	memcpy(&message + offset, meshVector.data(), sizeof(char[256]) * meshVector.size());
 
 	
 

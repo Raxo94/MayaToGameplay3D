@@ -47,6 +47,11 @@ struct HeaderTypeMaterial
 	float color[3];
 };
 
+struct Meshes
+{
+	char meshName[256];
+};
+
 char* message;
 CircBufferFixed *circPtr;
 size_t offset = 0;
@@ -80,4 +85,5 @@ MFloatMatrix projMatrix;
 MObject parentCamera;
 MObject parentMesh;
 
-vector<const char[256]> meshes;
+vector<Meshes> meshVector;
+Meshes meshStruct;
