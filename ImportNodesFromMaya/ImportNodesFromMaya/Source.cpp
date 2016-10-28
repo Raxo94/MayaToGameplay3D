@@ -123,10 +123,6 @@ void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &
 		if (res == MS::kSuccess) {
 
 			GetMeshes(mesh);
-			
-			//MPlug outColor = MFnDependencyNode(plug.node()).findPlug("outColor", &res);
-
-			//outColor.connectedTo(connectionsToShader, false, true, &res);
 
 		}
 	}
@@ -206,11 +202,16 @@ void GetCamera()
 
 void GetMaterial(MObject &iteratorNode)
 {
+	MPlugArray shadingGoupArray;
+	MPlugArray dagSetMemberConnections;
+	MPlugArray objInstArray;
 	MFnDependencyNode materialNode(iteratorNode);
-	/*MFnMesh mesh(iteratorNode);*/
-	//MGlobal::displayInfo("mesh: " + mesh.name());
 
-	MPlug color = materialNode.findPlug("color", &res);
+	MString materialName = materialNode.name();
+
+	MGlobal::displayInfo("material name: " + materialName);
+
+	MPlug color = materialNode.findPlug("outColor", &res);
 
 	if (iteratorNode.hasFn(MFn::kTextureList)) {
 		//if the node has a texture
@@ -222,8 +223,44 @@ void GetMaterial(MObject &iteratorNode)
 		color.getValue(data);
 		MFnNumericData nData(data);
 		nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
-
 	}
+
+	//find surfaceShader of the material
+	color.connectedTo(shadingGoupArray, false, true, &res); //true = connection to source (outColor) 
+
+	for (int i = 0; i < shadingGoupArray.length(); i++) {
+		if (shadingGoupArray[i].node().hasFn(MFn::kShadingEngine)) {
+			
+			MFnDependencyNode shadingNode(shadingGoupArray[i].node());
+
+			if (strcmp(shadingNode.name().asChar(), "initialParticleSE") != 0) {
+
+				MGlobal::displayInfo("Shading name: " + shadingNode.name()); //initialShadingGroup
+
+				MPlug dagSetMember = shadingNode.findPlug("dagSetMembers", &res);
+
+				for (int child = 0; child < dagSetMember.numElements(); child++) {
+					dagSetMember[child].connectedTo(dagSetMemberConnections, true, false, &res); //true = connection to destination
+					
+					for (int d = 0; d < dagSetMemberConnections.length(); d++) {
+						MFnDependencyNode dagSetMemberNode(dagSetMemberConnections[d].node());
+						if (strcmp(dagSetMemberNode.name().asChar(), "shaderBallGeom1") != 0) {
+
+							MGlobal::displayInfo("mesh name: " + dagSetMemberNode.name());
+							MFnMesh mesh(dagSetMemberNode.object());
+
+							char MeshName[256];
+							memcpy(&MeshName, mesh.name().asChar(), sizeof(char[256]));
+							meshes.push_back(MeshName);
+							matHeader.amountOfMeshes += 1;
+						}
+					}
+					
+				}
+			}
+		}
+	}
+
 
 	offset = 0;
 
@@ -231,11 +268,13 @@ void GetMaterial(MObject &iteratorNode)
 	memcpy(message, &Type, sizeof(int));
 	offset += sizeof(int);
 
-///*	memcpy(&matHeader, .asChar(), sizeof(const char[256]))*/;
-	memcpy(&matHeader, materialNode.name().asChar(), sizeof(const char[256]));
 
+	memcpy(&matHeader.materialName, materialNode.name().asChar(), sizeof(const char[256]));
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
 	offset += sizeof(HeaderTypeMaterial);
+	memcpy(&message + offset, meshes.data(), sizeof(char[256])*meshes.size());
+
+	
 
 	circPtr->push(message, offset);
 

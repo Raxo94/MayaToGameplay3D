@@ -40,8 +40,10 @@ struct HeaderTypeCamera
 
 struct HeaderTypeMaterial
 {
-	char messageType[256];
-	/*char meshName[256];*/
+	int amountOfMeshes;
+	char materialName;
+	char textureFilepath[256];
+	float diffuse;
 	float color[3];
 };
 
@@ -77,3 +79,5 @@ MDagPath camera;
 MFloatMatrix projMatrix;
 MObject parentCamera;
 MObject parentMesh;
+
+vector<const char[256]> meshes;
