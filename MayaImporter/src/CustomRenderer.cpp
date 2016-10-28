@@ -18,26 +18,15 @@ CustomRenderer::~CustomRenderer()
 
 void CustomRenderer::initialize()
 {
-	//AllocConsole();
-   // _scene = Scene::load("res/demo.scene");  // Load game scene from file
 	_scene = Scene::create();
 	setVsync(false);
-    // Get the box model and initialize its material parameter values and bindings
-	//Node* boxNode = _scene->findNode("box");
-
-	
-
+ 
 	//Light
 
-	Light* light = Light::createDirectional(1.0f, 1.0f, 1.0f);
-	Node* lightNode = _scene->addNode("DirectionalLightShape1");
-	lightNode->setLight(light);
-	SAFE_RELEASE(light); 	// Release the light because the node now holds a reference to it.
-	
 	Node* lightNode2 = Node::create("pointLightShape1");
 	Light* light2 = Light::createPoint(Vector3(1.0f, 1.0f, 1.0f), 100);
 	lightNode2->setLight(light2);
-	lightNode2->translate(Vector3(0, 0, 0));
+	lightNode2->translate(Vector3(-10, 20, 10));
 	_scene->addNode(lightNode2);
 	lightNode2->release();
 	light2->release();
@@ -105,7 +94,7 @@ void CustomRenderer::update(float elapsedTime)
 		}
 		else if (mayaData->messageType == MessageType::MayaTransform)
 		{
-			Node* meshNode = _scene->findNode("Mesh1"); //change back here
+			Node* meshNode = _scene->findNode(mayaData->transform->meshName); 
 			if (meshNode)
 			{
 				meshNode->setTranslationX(mayaData->transform->translation[0]);
