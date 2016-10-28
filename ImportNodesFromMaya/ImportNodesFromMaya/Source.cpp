@@ -252,6 +252,7 @@ void GetMaterial(MObject &iteratorNode)
 							memcpy(&meshStruct, mesh.name().asChar(), sizeof(Meshes));
 							meshVector.push_back(meshStruct);
 							matHeader.amountOfMeshes += 1;
+
 						}
 					}
 					
@@ -266,11 +267,12 @@ void GetMaterial(MObject &iteratorNode)
 	memcpy(message, &Type, sizeof(int));
 	offset += sizeof(int);
 
+	matHeader.diffuse = 0.0;
 
 	memcpy(&matHeader.materialName, materialNode.name().asChar(), sizeof(const char[256]));
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
 	offset += sizeof(HeaderTypeMaterial);
-	memcpy(&message + offset, meshVector.data(), sizeof(char[256]) * meshVector.size());
+	memcpy(&message + offset, meshVector.data(), sizeof(Meshes) * meshVector.size());
 
 	
 

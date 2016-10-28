@@ -41,7 +41,7 @@ struct HeaderTypeCamera
 struct HeaderTypeMaterial
 {
 	int amountOfMeshes;
-	char materialName;
+	char materialName[256];
 	char textureFilepath[256];
 	float diffuse;
 	float color[3];

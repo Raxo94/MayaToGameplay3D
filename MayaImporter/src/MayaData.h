@@ -1,6 +1,7 @@
 #pragma once
 #include "CircBuffer.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 enum MessageType { MayaMesh, MayaCamera, MayaTransform, MayaMaterial, MayaNodeDelete };
@@ -48,13 +49,23 @@ struct HeaderTypeTransform
 
 struct HeaderTypeMaterial
 {
-	char messageType[256];
+	int amountOfMeshes;
+	char materialName[256];
+	char textureFilepath[256];
+	float diffuse;
 	float color[3];
+};
+
+struct Meshes
+{
+	char meshName[256];
 };
 
 class MayaData
 {
 private:
+
+	//std::vector<char[256]> Meshes;
 	char* NodeName;
 	
 	//Mesh
@@ -74,7 +85,7 @@ public:
 	HeaderTypeMesh* mesh;
 	HeaderTypeTransform* transform;
 	HeaderTypeMaterial* material;
-
+	Meshes* meshName;
 
 	bool read();
 	int messageType;

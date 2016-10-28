@@ -22,7 +22,6 @@ void CustomRenderer::initialize()
 	setVsync(false);
  
 	//Light
-
 	Node* lightNode2 = Node::create("pointLightShape1");
 	Light* light2 = Light::createPoint(Vector3(1.0f, 1.0f, 1.0f), 100);
 	lightNode2->setLight(light2);

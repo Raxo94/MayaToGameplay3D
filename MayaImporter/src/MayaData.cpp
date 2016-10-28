@@ -34,6 +34,14 @@ bool MayaData::read()
 		else if(messageType == MessageType::MayaMaterial)
 		{
 			material = (HeaderTypeMaterial*)(message + offset);
+			offset += sizeof(HeaderTypeMaterial);
+
+			for (size_t i = 0; i < material->amountOfMeshes; i++)
+			{
+				memcpy(meshName, message + offset, sizeof(Meshes));
+				offset += sizeof(Meshes);
+			}
+
 		}
 
 	}
