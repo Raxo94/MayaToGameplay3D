@@ -85,8 +85,9 @@ public:
 	HeaderTypeMesh* mesh;
 	HeaderTypeTransform* transform;
 	HeaderTypeMaterial* material;
-	Meshes* meshName;
+	Meshes meshName;
 
+	std::vector<Meshes> materialMeshes;
 	bool read();
 	int messageType;
 	Vertex* GetVertexArray();

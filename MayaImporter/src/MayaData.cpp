@@ -38,8 +38,11 @@ bool MayaData::read()
 
 			for (size_t i = 0; i < material->amountOfMeshes; i++)
 			{
-				memcpy(meshName, message + offset, sizeof(Meshes));
+				memcpy(&meshName, message + offset, sizeof(Meshes));
+				meshName.meshName;
 				offset += sizeof(Meshes);
+
+				materialMeshes.push_back(meshName);
 			}
 
 		}

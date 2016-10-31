@@ -71,8 +71,8 @@ void CustomRenderer::update(float elapsedTime)
 
 			else
 				meshNode = Node::create(mayaData->mesh->Name);
-			
-			
+
+
 			Model* model = createMayaMesh(mayaData->mesh);
 
 
@@ -80,12 +80,12 @@ void CustomRenderer::update(float elapsedTime)
 			model->setMaterial(createDefaultMaterial(_scene));
 			meshNode->setDrawable(model);
 			model->release();
-			
+
 		}
 		else if (mayaData->messageType == MessageType::MayaCamera)
 		{
 			Node* camera = createMayaCamera(mayaData->cam);
-			
+
 			_scene->addNode(camera);
 			Camera* cam = camera->getCamera();
 			_scene->setActiveCamera(cam);
@@ -93,7 +93,7 @@ void CustomRenderer::update(float elapsedTime)
 		}
 		else if (mayaData->messageType == MessageType::MayaTransform)
 		{
-			Node* meshNode = _scene->findNode(mayaData->transform->meshName); 
+			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
 			if (meshNode)
 			{
 				meshNode->setTranslationX(mayaData->transform->translation[0]);
@@ -107,34 +107,43 @@ void CustomRenderer::update(float elapsedTime)
 
 				meshNode->setScale(mayaData->transform->scale[0], mayaData->transform->scale[1], mayaData->transform->scale[2]);
 				_scene->addNode(meshNode);
-				
+
 			}
 		}
 		else if (mayaData->messageType == MessageType::MayaMaterial)
 		{
 			mayaData->material;
 			Node* meshNode = _scene->findNode("Mesh1");
-			
+
 			char * asd = "Mesh1";
 			if (meshNode)
 			{
 				_scene->removeNode(meshNode);
-			/*	Model* model = static_cast<Model*>(meshNode->getDrawable());
-				model->setMaterial(createMayaMaterial(_scene, mayaData->material));
-				meshNode->setDrawable(model);
-				model->release();
-				_scene->addNode(meshNode);*/
-
-				Node* meshNode = Node::create("Mesh1");
-				Model* model = createCubeMesh();
-				_scene->addNode(meshNode);
-				model->setMaterial(createMayaMaterial(_scene,mayaData->material));
-				meshNode->setDrawable(model);
-				model->release();
-				
 			}
 
+			for (size_t i = 0; i < mayaData->material->amountOfMeshes; i++)
+			{
+				Node* meshNode = _scene->findNode(mayaData->materialMeshes[i].meshName);
+				if (meshNode)
+				{
+					//Model* model = static_cast<Model*>(meshNode->getDrawable()); //this right here is the issue
+					Model* model = createCubeMesh();
+					_scene->addNode(meshNode);
+					model->setMaterial(createMayaMaterial(_scene, mayaData->material));
+					meshNode->setDrawable(model);
+					model->release();
+				}
+			}
+
+			/*Node* meshNode = Node::create("Mesh1");
+			Model* model = createCubeMesh();
+			_scene->addNode(meshNode);
+			model->setMaterial(createMayaMaterial(_scene,mayaData->material));
+			meshNode->setDrawable(model);
+			model->release();*/
+
 		}
+
 	
 	}
    

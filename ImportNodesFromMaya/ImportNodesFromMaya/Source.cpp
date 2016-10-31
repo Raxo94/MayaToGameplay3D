@@ -202,6 +202,8 @@ void GetCamera()
 
 void GetMaterial(MObject &iteratorNode)
 {
+	matHeader = HeaderTypeMaterial(); // reseting matheader
+	
 	MPlugArray shadingGoupArray;
 	MPlugArray dagSetMemberConnections;
 	MPlugArray objInstArray;
@@ -272,12 +274,14 @@ void GetMaterial(MObject &iteratorNode)
 	memcpy(&matHeader.materialName, materialNode.name().asChar(), sizeof(const char[256]));
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
 	offset += sizeof(HeaderTypeMaterial);
-	memcpy(&message + offset, meshVector.data(), sizeof(Meshes) * meshVector.size());
 
+
+	memcpy(message + offset, meshVector.data(), sizeof(Meshes) * meshVector.size());
+	offset += sizeof(Meshes) * meshVector.size();
 	
 
 	circPtr->push(message, offset);
-
+	meshVector.clear();
 }
 void UpdateMaterial(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
