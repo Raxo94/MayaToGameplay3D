@@ -113,34 +113,39 @@ void CustomRenderer::update(float elapsedTime)
 		else if (mayaData->messageType == MessageType::MayaMaterial)
 		{
 			mayaData->material;
-			Node* meshNode = _scene->findNode("Mesh1");
+			/*Node* meshNode = _scene->findNode("Mesh1");
 
 			char * asd = "Mesh1";
 			if (meshNode)
 			{
 				_scene->removeNode(meshNode);
-			}
+			}*/
 
 			for (size_t i = 0; i < mayaData->material->amountOfMeshes; i++)
 			{
-				Node* meshNode = _scene->findNode(mayaData->materialMeshes[i].meshName);
+				Node* meshNode = _scene->findNode(mayaData->materialMeshes[i].meshName); //this is what errors
 				if (meshNode)
 				{
+
+					_scene->removeNode(meshNode);
+
 					//Model* model = static_cast<Model*>(meshNode->getDrawable()); //this right here is the issue
 					Model* model = createCubeMesh();
 					_scene->addNode(meshNode);
 					model->setMaterial(createMayaMaterial(_scene, mayaData->material));
+					//model->setMaterial(createDefaultMaterial(_scene));
 					meshNode->setDrawable(model);
 					model->release();
+
+					mayaData->materialMeshes.clear();
 				}
 			}
-
-			/*Node* meshNode = Node::create("Mesh1");
-			Model* model = createCubeMesh();
-			_scene->addNode(meshNode);
+		/*	Model* model = createCubeMesh();
+			Node* meshNode = _scene->findNode("Mesh1");
 			model->setMaterial(createMayaMaterial(_scene,mayaData->material));
 			meshNode->setDrawable(model);
-			model->release();*/
+			model->release();
+			_scene->addNode(meshNode);*/
 
 		}
 
