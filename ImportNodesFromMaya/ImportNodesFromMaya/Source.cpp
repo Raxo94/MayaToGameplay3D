@@ -204,6 +204,7 @@ void GetMaterial(MObject &iteratorNode)
 {
 	matHeader = HeaderTypeMaterial(); // reseting matheader
 	
+	MPlugArray textureGroup;
 	MPlugArray shadingGoupArray;
 	MPlugArray dagSetMemberConnections;
 	MPlugArray objInstArray;
@@ -213,10 +214,25 @@ void GetMaterial(MObject &iteratorNode)
 
 	MGlobal::displayInfo("material name: " + materialName);
 
-	MPlug color = materialNode.findPlug("outColor", &res);
+	MPlug outColor = materialNode.findPlug("outColor", &res); //to go further in the plugs
+	MPlug color = materialNode.findPlug("color", &res); //to get the color values
+
+	//color.connectedTo(textureGroup, false, true, &res);
 
 	if (iteratorNode.hasFn(MFn::kTextureList)) {
-		//if the node has a texture
+	//	//if the node has a texture	
+
+	//	MObject data;
+	//	outColor.getValue(data);
+	//	MFnNumericData nData(data);
+	//	nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+
+	//	for (int i = 0; i < textureGroup.length(); i++)
+	//	{
+	//		MFnDependencyNode textureNode();
+	//	}
+
+	//	matHeader.hasTexture = true;
 	}
 
 	else {
@@ -225,10 +241,12 @@ void GetMaterial(MObject &iteratorNode)
 		color.getValue(data);
 		MFnNumericData nData(data);
 		nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+
+		//matHeader.hasTexture = false;
 	}
 
 	//find surfaceShader of the material
-	color.connectedTo(shadingGoupArray, false, true, &res); //true = connection to source (outColor) 
+	outColor.connectedTo(shadingGoupArray, false, true, &res); //true = connection to source (outColor) 
 
 	for (int i = 0; i < shadingGoupArray.length(); i++) {
 		if (shadingGoupArray[i].node().hasFn(MFn::kShadingEngine)) {
