@@ -56,7 +56,7 @@ struct HeaderTypeMaterial
 	float color[3];
 };
 
-struct Meshes
+struct MeshName
 {
 	char meshName[256];
 };
@@ -85,9 +85,10 @@ public:
 	HeaderTypeMesh* mesh;
 	HeaderTypeTransform* transform;
 	HeaderTypeMaterial* material;
-	Meshes meshName;
+	MeshName* meshName;
 
-	std::vector<Meshes> materialMeshes;
+	//std::vector<Meshes> materialMeshes;
+
 	bool read();
 	int messageType;
 	Vertex* GetVertexArray();

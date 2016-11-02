@@ -231,7 +231,7 @@ static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMateria
 		// Set the ambient color of the material.
 		material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
 		//material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2], 1.0f));
-		material->getParameter("u_diffuseColor")->setValue(Vector4(1,1,1, 1.0f));
+		material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2], 1.0f));
 		Node* lightNode = scene->findNode("pointLightShape1");
 		material->getParameter("u_pointLightColor[0]")->bindValue(lightNode->getLight(), &Light::getColor);
 		material->getParameter("u_pointLightRangeInverse[0]")->bindValue(lightNode->getLight(), &Light::getRangeInverse);

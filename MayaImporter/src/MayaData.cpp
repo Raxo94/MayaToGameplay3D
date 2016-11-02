@@ -36,16 +36,12 @@ bool MayaData::read()
 			material = (HeaderTypeMaterial*)(message + offset);
 			offset += sizeof(HeaderTypeMaterial);
 
-			for (size_t i = 0; i < material->amountOfMeshes; i++)
-			{
-				memcpy(&meshName, message + offset, sizeof(Meshes));
-				meshName.meshName;
-				offset += sizeof(Meshes);
-
-				materialMeshes.push_back(meshName);
-			}
+			memcpy(meshName, message + offset, sizeof(MeshName) * material->amountOfMeshes);
+			meshName->meshName;
+			sizeof(MeshName) * material->amountOfMeshes;
 
 		}
+
 
 	}
 	else
@@ -75,6 +71,8 @@ MayaData::MayaData()
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
 	//this->cam = new HeaderTypeCamera;
 	this->mesh = new HeaderTypeMesh;
+	this->meshName = new MeshName[1000];
+	
 	//this->transform = new HeaderTypeTransform;
 }
 
@@ -85,5 +83,6 @@ MayaData::~MayaData()
 	delete   this->circBuffer;
 	//delete   this->cam;
 	delete   this->mesh;
+	delete[] this->meshName;
 	//delete   this->transform;
 }
