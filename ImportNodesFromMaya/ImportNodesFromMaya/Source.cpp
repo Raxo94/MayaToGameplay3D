@@ -214,35 +214,31 @@ void GetMaterial(MObject &iteratorNode)
 
 	MGlobal::displayInfo("material name: " + materialName);
 
-	MPlug outColor = materialNode.findPlug("outColor", &res); //to go further in the plugs
-	MPlug color = materialNode.findPlug("color", &res); //to get the color values
+	MPlug outColor = materialNode.findPlug("outColor"); //to go further in the plugs
+	MPlug color = materialNode.findPlug("color"); //to get the color values
+	MPlug diffuse = materialNode.findPlug("diffuse"); //to get the diffuse of the material
+	color.connectedTo(textureGroup, true, false, &res); //color is connected to a destination
 
-	//color.connectedTo(textureGroup, false, true, &res);
-
-	if (iteratorNode.hasFn(MFn::kTextureList)) {
 	//	//if the node has a texture	
 
-	//	MObject data;
-	//	outColor.getValue(data);
-	//	MFnNumericData nData(data);
-	//	nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+	MObject data;
+	color.getValue(data);
+	MFnNumericData nData(data);
+	nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+	diffuse.getValue(matHeader.diffuse);
 
-	//	for (int i = 0; i < textureGroup.length(); i++)
-	//	{
-	//		MFnDependencyNode textureNode();
-	//	}
+	matHeader.hasTexture = false;
 
-	//	matHeader.hasTexture = true;
-	}
+	for (int i = 0; i < textureGroup.length(); i++)
+	{
+		MFnDependencyNode textureNode(textureGroup[i].node());
 
-	else {
+		MString filename;
+		textureNode.findPlug("fileTextureName").getValue(filename);
 
-		MObject data;
-		color.getValue(data);
-		MFnNumericData nData(data);
-		nData.getData(matHeader.color[0], matHeader.color[1], matHeader.color[2]);
+		MGlobal::displayInfo("filename: " + filename);
 
-		//matHeader.hasTexture = false;
+		matHeader.hasTexture = true;
 	}
 
 	//find surfaceShader of the material
@@ -286,8 +282,6 @@ void GetMaterial(MObject &iteratorNode)
 	int Type = MessageType::MayaMaterial;
 	memcpy(message, &Type, sizeof(int));
 	offset += sizeof(int);
-
-	matHeader.diffuse = 0.0;
 
 	memcpy(&matHeader.materialName, materialNode.name().asChar(), sizeof(const char[256]));
 	memcpy((message + offset), &matHeader, sizeof(HeaderTypeMaterial));
