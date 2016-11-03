@@ -390,7 +390,9 @@ EXPORT MStatus initializePlugin(MObject obj)
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag it(MItDag::kBreadthFirst);
+	MItDag it(MItDag::kDepthFirst);
+	MObject parent;
+	//MItDag parent(MItDag::kDepthFirst);
 	while (it.isDone() == false)
 	{
 		if (it.currentItem().hasFn(MFn::kMesh))
@@ -400,13 +402,15 @@ EXPORT MStatus initializePlugin(MObject obj)
 			MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(it.currentItem(), CreateMeshCallback, &res);
 			isCallbackaSuccess(res, meshCreateId);
 
-			/*if (parent.hasFn(MFn::kTransform))
+			
+			if (parent.hasFn(MFn::kTransform))
 			{
-				MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), GetTransform, &res);
-			}*/
+				MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent, GetTransform, &res);
+				isCallbackaSuccess(res, transformId);
+			}
 
 		}
-
+		parent = it.currentItem();
 		it.next();
 	}
 
