@@ -88,3 +88,5 @@ MObject parentMesh;
 
 vector<Meshes> meshVector;
 Meshes meshStruct;
+
+bool isCallbackaSuccess(MStatus result, MCallbackId MplugId);

@@ -114,6 +114,31 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 	}
 }
 
+void GetTransform(MFnTransform &transform,MFnMesh &mesh)
+{
+
+	transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+	transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+	transformHeader.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+
+	transform.getScale(transformHeader.scale);
+
+	transform.getRotationQuaternion(transformHeader.rotation[0], transformHeader.rotation[1], transformHeader.rotation[2], transformHeader.rotation[3], MSpace::kTransform);
+
+	offset = 0;
+
+	int Type = MessageType::MayaTransform;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&transformHeader.meshName, mesh.name().asChar(), sizeof(const char[256]));
+
+	memcpy((message + offset), &transformHeader, sizeof(HeaderTypeTransform));
+	offset += sizeof(HeaderTypeTransform);
+	circPtr->push(message, offset);
+	
+}
+
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
@@ -132,31 +157,21 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 {
 	if (child.hasFn(MFn::kMesh)) {
 		
-		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback);
+		MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(child.node(), CreateMeshCallback,&res);
+		isCallbackaSuccess(res, meshCreateId);
 
 		if (parent.hasFn(MFn::kTransform))
 		{
-			MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), GetTransform);
+			MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent.node(), GetTransform,&res);
+			isCallbackaSuccess(res, transformId);
 
-			if (res == MS::kSuccess) {
-				idList.append(transformId);
-				MGlobal::displayInfo("mesh callback Succeeded");
-			}
-			else {
-				MGlobal::displayInfo("mesh callback Failed");
-			}
-
-		}
-
-		if (res == MS::kSuccess) {
-			idList.append(meshCreateId);
-			MGlobal::displayInfo("mesh callback Succeeded");
-		}
-		else {
-			MGlobal::displayInfo("mesh callback Failed");
 		}
 
 	}
+	/*else if (child.has)
+	{
+
+	}*/
 
 }
 
@@ -398,14 +413,30 @@ EXPORT MStatus initializePlugin(MObject obj)
 		CHECK_MSTATUS(res);
 	}
 
-	MItDag it(MItDag::kBreadthFirst);
+	MItDag it(MItDag::kDepthFirst);
+	MObject parent;
+	//MItDag parent(MItDag::kDepthFirst);
 	while (it.isDone() == false)
 	{
-		if (it.currentItem().hasFn(MFn::kMesh)) {
+		if (it.currentItem().hasFn(MFn::kMesh))
+		{
 			MFnMesh mesh(it.currentItem());
 			GetMeshes(mesh);
-		}
+			MCallbackId meshCreateId = MNodeMessage::addAttributeChangedCallback(it.currentItem(), CreateMeshCallback, &res);
+			isCallbackaSuccess(res, meshCreateId);
 
+			
+			if (parent.hasFn(MFn::kTransform))
+			{
+				MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent, GetTransform, &res);
+				isCallbackaSuccess(res, transformId);
+				
+				MFnTransform transform(parent);
+				GetTransform(transform, mesh);
+			}
+
+		}
+		parent = it.currentItem();
 		it.next();
 	}
 
@@ -417,15 +448,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 		GetMaterial(mNode);
 
-		MCallbackId MplugId = MNodeMessage::addAttributeChangedCallback(mNode, UpdateMaterial);
-
-		if (res == MS::kSuccess) {
-			idList.append(MplugId);
-			MGlobal::displayInfo("mesh callback Succeeded");
-		}
-		else {
-			MGlobal::displayInfo("mesh callback Failed");
-		}
+		MCallbackId MplugId = MNodeMessage::addAttributeChangedCallback(mNode, UpdateMaterial, &res);
+		isCallbackaSuccess(res, MplugId);
 
 		itDepNode.next();
 	}
@@ -433,14 +457,8 @@ EXPORT MStatus initializePlugin(MObject obj)
 	GetCamera();
 
 	MCallbackId nodeId = MDagMessage::addChildAddedCallback(MNodeFunction, NULL, &res);
+	isCallbackaSuccess(res, nodeId);
 
-	if (res == MS::kSuccess) {
-		idList.append(nodeId);
-		MGlobal::displayInfo("node callback Succeeded");
-	}
-	else {
-		MGlobal::displayInfo("node callback Failed");
-	}
 
 	MCallbackId viewId1 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel1", UpdateCamera, NULL, &res);
 	MCallbackId viewId2 = MUiMessage::add3dViewPreRenderMsgCallback("modelPanel2", UpdateCamera, NULL, &res);
@@ -474,4 +492,19 @@ EXPORT MStatus uninitializePlugin(MObject obj)
 	MMessage::removeCallbacks(idList);
 
 	return MS::kSuccess;
+}
+
+
+bool isCallbackaSuccess(MStatus result, MCallbackId MplugId)
+{
+	if (res == MS::kSuccess) {
+		idList.append(MplugId);
+		MGlobal::displayInfo("mesh callback Succeeded");
+		return true;
+
+	}
+	else {
+		MGlobal::displayInfo("mesh callback Failed");
+		return false;
+	}
 }
