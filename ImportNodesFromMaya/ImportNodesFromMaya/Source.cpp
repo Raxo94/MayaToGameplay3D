@@ -114,6 +114,31 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 	}
 }
 
+void GetTransform(MFnTransform &transform,MFnMesh &mesh)
+{
+
+	transformHeader.translation[0] = transform.getTranslation(MSpace::kTransform).x;
+	transformHeader.translation[1] = transform.getTranslation(MSpace::kTransform).y;
+	transformHeader.translation[2] = transform.getTranslation(MSpace::kTransform).z;
+
+	transform.getScale(transformHeader.scale);
+
+	transform.getRotationQuaternion(transformHeader.rotation[0], transformHeader.rotation[1], transformHeader.rotation[2], transformHeader.rotation[3], MSpace::kTransform);
+
+	offset = 0;
+
+	int Type = MessageType::MayaTransform;
+	memcpy(message, &Type, sizeof(int));
+	offset += sizeof(int);
+
+	memcpy(&transformHeader.meshName, mesh.name().asChar(), sizeof(const char[256]));
+
+	memcpy((message + offset), &transformHeader, sizeof(HeaderTypeTransform));
+	offset += sizeof(HeaderTypeTransform);
+	circPtr->push(message, offset);
+	
+}
+
 void CreateMeshCallback(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherPlug, void* clientData)
 {
 
@@ -143,6 +168,10 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 		}
 
 	}
+	/*else if (child.has)
+	{
+
+	}*/
 
 }
 
@@ -407,6 +436,9 @@ EXPORT MStatus initializePlugin(MObject obj)
 			{
 				MCallbackId transformId = MNodeMessage::addAttributeChangedCallback(parent, GetTransform, &res);
 				isCallbackaSuccess(res, transformId);
+				
+				MFnTransform transform(parent);
+				GetTransform(transform, mesh);
 			}
 
 		}
