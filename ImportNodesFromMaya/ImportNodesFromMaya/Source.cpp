@@ -251,10 +251,11 @@ void GetMaterial(MObject &iteratorNode)
 		MString filename;
 		textureNode.findPlug("fileTextureName").getValue(filename);
 
-		MGlobal::displayInfo("filename: " + filename);
+		memcpy(&matHeader.textureFilepath, filename.asChar(), sizeof(const char[256]));
 
 		matHeader.hasTexture = true;
 	}
+
 
 	//find surfaceShader of the material
 	outColor.connectedTo(shadingGoupArray, false, true, &res); //true = connection to source (outColor) 
@@ -266,7 +267,7 @@ void GetMaterial(MObject &iteratorNode)
 
 			if (strcmp(shadingNode.name().asChar(), "initialParticleSE") != 0) {
 
-				MGlobal::displayInfo("Shading name: " + shadingNode.name()); //initialShadingGroup
+				//ShadingNode = initialShadingGroup if lambert1 and Blinn1SG if blinn
 
 				MPlug dagSetMember = shadingNode.findPlug("dagSetMembers", &res);
 
@@ -277,7 +278,6 @@ void GetMaterial(MObject &iteratorNode)
 						MFnDependencyNode dagSetMemberNode(dagSetMemberConnections[d].node());
 						if (strcmp(dagSetMemberNode.name().asChar(), "shaderBallGeom1") != 0) {
 
-							MGlobal::displayInfo("mesh name: " + dagSetMemberNode.name());
 							MFnMesh mesh(dagSetMemberNode.object());
 
 							memcpy(&meshStruct, mesh.name().asChar(), sizeof(Meshes));
