@@ -197,8 +197,8 @@ static Material* createDefaultMaterial(Scene* scene)
 
 static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMaterial)
 {
-	bool texture = false; 
-	if (texture == true)
+	
+	if (mayaMaterial->hasTexture == true)
 	{
 		Material* material = Material::create("res/shaders/textured.vert", "res/shaders/textured.frag", "POINT_LIGHT_COUNT 1"); //REMOVED"DIRECTIONAL_LIGHT_COUNT 1"
 		material->setParameterAutoBinding("u_worldViewMatrix", RenderState::AutoBinding::WORLD_VIEW_MATRIX);
@@ -206,8 +206,11 @@ static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMateria
 		material->setParameterAutoBinding("u_inverseTransposeWorldViewMatrix", "INVERSE_TRANSPOSE_WORLD_VIEW_MATRIX");
 
 		// Set the ambient color of the material.
-		material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
-		Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true); 	// Load the texture from file.
+		material->getParameter("u_ambientColor")->setValue(Vector3(0.3f, 0.3f, 0.3f));
+
+		string texture = mayaMaterial->textureFilepath;
+		//Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue("res/png/crate.png", true); 	// Load the texture from file.
+		Texture::Sampler* sampler = material->getParameter("u_diffuseTexture")->setValue(mayaMaterial->textureFilepath, true); 	// Load the texture from file.
 		sampler->setFilterMode(Texture::LINEAR_MIPMAP_LINEAR, Texture::LINEAR);
 
 
@@ -230,8 +233,7 @@ static Material* createMayaMaterial(Scene* scene,HeaderTypeMaterial* mayaMateria
 
 		// Set the ambient color of the material.
 		material->getParameter("u_ambientColor")->setValue(Vector3(0.2f, 0.2f, 0.2f));
-		//material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2], 1.0f));
-		material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0], mayaMaterial->color[1], mayaMaterial->color[2], 1.0f));
+		material->getParameter("u_diffuseColor")->setValue(Vector4(mayaMaterial->color[0]* mayaMaterial->diffuse, mayaMaterial->color[1] * mayaMaterial->diffuse, mayaMaterial->color[2] * mayaMaterial->diffuse, 1.0f));
 		Node* lightNode = scene->findNode("pointLightShape1");
 		material->getParameter("u_pointLightColor[0]")->bindValue(lightNode->getLight(), &Light::getColor);
 		material->getParameter("u_pointLightRangeInverse[0]")->bindValue(lightNode->getLight(), &Light::getRangeInverse);
