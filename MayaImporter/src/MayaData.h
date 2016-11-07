@@ -50,6 +50,7 @@ struct HeaderTypeTransform
 struct HeaderTypeMaterial
 {
 	int amountOfMeshes;
+	bool hasTexture;
 	char materialName[256];
 	char textureFilepath[256];
 	float diffuse;
