@@ -28,7 +28,7 @@ class CircBufferFixed
 	
 private:
 	
-	Mutex mutex;
+	Mutex mutex; 
 	LPCWSTR buffName;
 	size_t buffSize;
 	size_t MessageCount;

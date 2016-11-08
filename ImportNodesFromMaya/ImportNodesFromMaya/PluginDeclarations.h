@@ -66,11 +66,13 @@ HeaderTypeMaterial matHeader;
 
 MFloatPointArray pts;
 std::vector<vertices> points;
-MIntArray triangleCounts;
-MIntArray triangleVertexIDs;
+MIntArray vertexCounts;
+MIntArray polygonVertexIDs;
 MVector vertexNormal;
 MIntArray normalList, normalCount;
 MFloatArray u, v;
+MIntArray uvCounts;
+MIntArray uvIDs;
 MFloatVectorArray normals;
 
 MIntArray triangleCountsOffsets;

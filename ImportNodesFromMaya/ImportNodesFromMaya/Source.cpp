@@ -30,28 +30,29 @@ void GetMeshes(MFnMesh &mesh)
 
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
+	mesh.getAssignedUVs(uvCounts, uvIDs); //indices for UV:s
 
 	mesh.getTriangleOffsets(triangleCountsOffsets, triangleIndices);
-	mesh.getTriangles(triangleCounts, triangleVertexIDs);
+	mesh.getVertices(vertexCounts, polygonVertexIDs); //get vertex polygon indices
 	mesh.getNormals(normals, MSpace::kObject);
 
-	points.resize(triangleVertexIDs.length());
+	points.resize(triangleIndices.length());
 	
 	mesh.getNormalIds(normalCount, normalList);
 	
 
-	for (i = 0; i < triangleVertexIDs.length(); i++) {
+	for (i = 0; i < triangleIndices.length(); i++) { //for each triangle index (36)
 
-		points.at(i).pos[0] = pts[triangleVertexIDs[i]].x;
-		points.at(i).pos[1] = pts[triangleVertexIDs[i]].y;
-		points.at(i).pos[2] = pts[triangleVertexIDs[i]].z;
+		points.at(i).pos[0] = pts[polygonVertexIDs[triangleIndices[i]]].x;
+		points.at(i).pos[1] = pts[polygonVertexIDs[triangleIndices[i]]].y;
+		points.at(i).pos[2] = pts[polygonVertexIDs[triangleIndices[i]]].z;
 
-		points.at(i).nor[0] = normals[triangleVertexIDs[i]].x;
-		points.at(i).nor[1] = normals[triangleVertexIDs[i]].y;
-		points.at(i).nor[2] = normals[triangleVertexIDs[i]].z;
+		points.at(i).nor[0] = normals[normalList[triangleIndices[i]]].x;
+		points.at(i).nor[1] = normals[normalList[triangleIndices[i]]].y;
+		points.at(i).nor[2] = normals[normalList[triangleIndices[i]]].z;
 
-		points.at(i).uv[0] = u[triangleVertexIDs[i]];
-		points.at(i).uv[1] = v[triangleVertexIDs[i]];
+		points.at(i).uv[0] = u[uvIDs[triangleIndices[i]]];
+		points.at(i).uv[1] = v[uvIDs[triangleIndices[i]]];
 
 	}
 	

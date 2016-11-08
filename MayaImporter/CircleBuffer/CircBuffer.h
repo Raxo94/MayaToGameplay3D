@@ -7,7 +7,7 @@
 
 
 using namespace std;
-class CircBufferFixed
+class CircBufferFixed 
 {
 	enum { HEAD, TAIL, CLIENTCOUNT };
 
