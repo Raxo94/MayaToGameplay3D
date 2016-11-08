@@ -80,7 +80,6 @@ MIntArray triangleIndices;
 
 unsigned int i;
 
-int currentView;
 M3dView camView;
 MDagPath camera;
 

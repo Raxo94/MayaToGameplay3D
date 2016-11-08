@@ -3,31 +3,8 @@
 #include "CircBuffer.h"
 #include "PluginDeclarations.h"
 
-#define	kVectorEpsilon 1.0e-3
-#define     TOP         0
-#define     FRONT       1
-#define     SIDE        2
-#define     PERSP       3
-
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_export_2_maya_mesh_writer_8cpp_example_html
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_mesh_op_cmd_2mesh_op_fty_action_8cpp_example_html
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_obj_export_2obj_export_8cpp_example_html
-
-//camera links
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m_ui_message_html
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_class_m3d_view_html
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_move_tool_2move_tool_8cpp_example_html
-
-//materail links
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__d3_d_viewport_renderer_2_d3_d_texture_item_8cpp_example_html //texture
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_file_texture_2file_texture_8cpp_example_html //attributes
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref_gpu_cache_2gpu_cache_material_nodes_8h_example_html //surface material (blinn, lambert..)
-//http://help.autodesk.com/view/MAYAUL/2016/ENU/?guid=__cpp_ref__abc_bullet_2_attributes_writer_8cpp_example_html //hoe to use findplug
-
 void GetMeshes(MFnMesh &mesh)
 {
-	//MGlobal::displayInfo("current mesh: " + mesh.name());
-
 	mesh.getPoints(pts, MSpace::kObject);
 	mesh.getUVs(u, v, 0);
 	mesh.getAssignedUVs(uvCounts, uvIDs); //indices for UV:s
@@ -62,7 +39,6 @@ void GetMeshes(MFnMesh &mesh)
 	memcpy(message, &Type, sizeof(int));
 	offset += sizeof(int);
 
-	 //{ "sad", points.size() * sizeof(vertices), points.size() };
 	memcpy(&meshHeader, mesh.name().asChar(), sizeof(const char[256]));
 	meshHeader.vertexArray = nullptr;
 	meshHeader.vertexCount = points.size();
@@ -83,7 +59,6 @@ void GetTransform(MNodeMessage::AttributeMessage msg, MPlug &plug, MPlug &otherP
 	{
 
 		MFnTransform transform(plug.node(), &res);
-		//MFnMesh mesh(plug.node());
 
 		if (res == MS::kSuccess)
 		{
@@ -169,11 +144,6 @@ void MNodeFunction(MDagPath &child, MDagPath &parent, void* clientData)
 		}
 
 	}
-	/*else if (child.has)
-	{
-
-	}*/
-
 }
 
 void GetCamera()
@@ -190,26 +160,8 @@ void GetCamera()
 	MVector rightDirection = fnCam.rightDirection(space);
 	if (fnCam.isOrtho()) {
 		camHeader.isPerspective = false;
-		MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
-
-		if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
-			currentView = TOP;
-
-			MGlobal::displayInfo("TOP view");
-		}
-		else if (rightDirection.isEquivalent(MVector::xAxis, kVectorEpsilon)) {
-			currentView = FRONT;
-
-			MGlobal::displayInfo("FRONT view");
-		}
-		else {
-			currentView = SIDE;
-			MGlobal::displayInfo("SIDE view");
-		}
 	}
 	else {
-		currentView = PERSP;
-		MGlobal::displayInfo("PERSPECTIVE VIEW");
 		camHeader.isPerspective = true;
 
 	}
@@ -235,8 +187,6 @@ void GetMaterial(MObject &iteratorNode)
 	MPlug diffuse = materialNode.findPlug("diffuse"); //to get the diffuse of the material
 	color.connectedTo(textureGroup, true, false, &res); //color is connected to a destination
 
-	//	//if the node has a texture	
-
 	MObject data;
 	color.getValue(data);
 	MFnNumericData nData(data);
@@ -245,6 +195,7 @@ void GetMaterial(MObject &iteratorNode)
 
 	matHeader.hasTexture = false;
 
+	//if the length is not 0 then we have a texture
 	for (int i = 0; i < textureGroup.length(); i++)
 	{
 		MFnDependencyNode textureNode(textureGroup[i].node());
@@ -340,26 +291,10 @@ void UpdateCamera(const MString &panelName, void* clientdata)
 
 		if (fnCam.isOrtho()) {
 			camHeader.isPerspective = false;
-			MGlobal::displayInfo("ORTHOGRAPHIC VIEW");
 
-			if (upDirection.isEquivalent(MVector::zNegAxis, kVectorEpsilon)) {
-				currentView = TOP;
-
-				MGlobal::displayInfo("TOP view");
-			}
-			else if (rightDirection.isEquivalent(MVector::xAxis, kVectorEpsilon)) {
-				currentView = FRONT;
-
-				MGlobal::displayInfo("FRONT view");
-			}
-			else {
-				currentView = SIDE;
-				MGlobal::displayInfo("SIDE view");
-			}
 		}
 		else {
-			currentView = PERSP;
-			MGlobal::displayInfo("PERSPECTIVE VIEW");
+
 			camHeader.isPerspective = true;
 
 		}
