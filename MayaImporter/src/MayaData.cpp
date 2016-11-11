@@ -12,7 +12,7 @@ bool MayaData::read()
 		
 		if (messageType == MessageType::MayaMesh)
 		{
-			memcpy(mesh, (message + offset), sizeof(HeaderTypeMesh));
+			mesh = (HeaderTypeMesh*)(message + offset);
 			offset += sizeof(HeaderTypeMesh);
 			memcpy(this->vertexArray, (message + offset), sizeof(Vertex) *  mesh->vertexCount);
 			mesh->vertexArray = this->vertexArray;
@@ -21,14 +21,12 @@ bool MayaData::read()
 		}
 		else if (messageType == MessageType::MayaCamera)
 		{
-			//memcpy(cam, (message + offset), sizeof(HeaderTypeCamera));
 			cam = (HeaderTypeCamera*)(message + offset);
 			return true;
 
 		}
 		else if (messageType == MessageType::MayaTransform)
 		{
-			//memcpy(transform, (message + offset), sizeof(HeaderTypeTransform));
 			transform = (HeaderTypeTransform*)(message + offset);
 		}
 		else if(messageType == MessageType::MayaMaterial)
@@ -53,15 +51,7 @@ Vertex * MayaData::GetVertexArray()
 	return vertexArray;
 }
 
-unsigned int MayaData::GetVertexCount()
-{
-	return vertexCount;
-}
 
-char* MayaData::GetNodeName()
-{
-	return NodeName;
-}
 
 MayaData::MayaData()
 {
@@ -69,11 +59,7 @@ MayaData::MayaData()
 	this->message = new char[messageSize];
 	this->vertexArray = new Vertex[messageSize];
 	this->circBuffer = new CircBufferFixed(L"buff", false, 1 << 20, 256);
-	//this->cam = new HeaderTypeCamera;
-	this->mesh = new HeaderTypeMesh;
 	this->meshName = new MeshName[1000];
-	
-	//this->transform = new HeaderTypeTransform;
 }
 
 MayaData::~MayaData()
@@ -81,8 +67,6 @@ MayaData::~MayaData()
 	delete[] this->message;
 	delete[] this-> vertexArray;
 	delete   this->circBuffer;
-	//delete   this->cam;
-	delete   this->mesh;
 	delete[] this->meshName;
-	//delete   this->transform;
+
 }

@@ -66,5 +66,8 @@ public:
     // this function.
     // The variable length will be changed to reflect the size of the msg just read.
 	bool pop(char* message);
+
+	void setHead(size_t pos);
+	void setTail(size_t pos);
 };
 

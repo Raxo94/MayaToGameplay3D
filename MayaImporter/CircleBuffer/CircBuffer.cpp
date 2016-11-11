@@ -168,6 +168,8 @@ bool CircBufferFixed::push(const char * message, size_t length)
 
 bool CircBufferFixed::pop(char * message)
 {
+	ClientPosition = ControlPointer[TAIL];
+
 	if (this->ClientPosition == ControlPointer[HEAD]) //CONSUMER HAS READ ALL MESSAGES
 		return false;
 

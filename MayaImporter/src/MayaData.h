@@ -24,8 +24,6 @@ struct HeaderTypeMesh
 };
 
 
-
-
 struct HeaderTypeCamera
 {
 	char messageType[256];
@@ -65,36 +63,23 @@ struct MeshName
 class MayaData
 {
 private:
-
-	//std::vector<char[256]> Meshes;
-	char* NodeName;
-	
-	//Mesh
-	Vertex* vertexArray;
-	unsigned int vertexCount;
-
-	//Camera
-	bool isPerspective;
-	float projectionMatrix[16];
-
-	char* message;
+	Vertex* vertexArray; //used to store vertices of current mesh. pointer since vertexcount can vary
+	char* message; //allocated space for saving pop messages
 	CircBufferFixed* circBuffer;
 
 
 public:
-	HeaderTypeCamera* cam;
-	HeaderTypeMesh* mesh;
-	HeaderTypeTransform* transform;
-	HeaderTypeMaterial* material;
-	MeshName* meshName;
+	
+	HeaderTypeCamera* cam; //pointer to buffer
+	HeaderTypeMesh* mesh; //pointer to buffer
+	HeaderTypeTransform* transform; //pointer to buffer
+	HeaderTypeMaterial* material; //pointer to buffer
 
-	//std::vector<Meshes> materialMeshes;
+	MeshName* meshName; //Array For storing the names of meshes bound to material
 
-	bool read();
-	int messageType;
-	Vertex* GetVertexArray();
-	unsigned int GetVertexCount();
-	char* GetNodeName();
+	bool read(); //getMessageData
+	int messageType; //used in determening what kind of message MayaData has gotten/ enum MessageType
+	Vertex* GetVertexArray(); //gets the vertexData of the latest mesh
 
 
 	MayaData();

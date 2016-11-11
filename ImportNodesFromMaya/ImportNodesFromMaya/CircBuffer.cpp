@@ -21,7 +21,7 @@ CircBufferFixed::CircBufferFixed(LPCWSTR buffName, const bool & isProducer, cons
 
 CircBufferFixed::~CircBufferFixed()
 {
-	if (isProducer=false)
+	if (isProducer==false)
 		ControlPointer[CLIENTCOUNT] -= 1;
 
 	UnmapViewOfFile(MapPointer);
@@ -194,6 +194,16 @@ bool CircBufferFixed::pop(char * message)
 	
 	return true;
 	
+}
+
+void CircBufferFixed::setHead(size_t pos)
+{
+	ControlPointer[HEAD] = pos;
+}
+
+void CircBufferFixed::setTail(size_t pos)
+{
+	ControlPointer[TAIL] = pos;
 }
 
 

@@ -66,7 +66,6 @@ void CustomRenderer::update(float elapsedTime)
 
 			Node* meshNode = _scene->findNode(mayaData->mesh->Name); // check if the mesh already exists
 			Model* model;
-
 			if (meshNode)
 			{
 				Model* oldModel = static_cast<Model*>(meshNode->getDrawable()); //use the old model to get the old material
@@ -80,7 +79,6 @@ void CustomRenderer::update(float elapsedTime)
 				model->release();
 
 			}
-
 			else
 			{
 				meshNode = Node::create(mayaData->mesh->Name); //make a new node
@@ -90,27 +88,27 @@ void CustomRenderer::update(float elapsedTime)
 				_scene->addNode(meshNode);
 				meshNode->setDrawable(model);
 				model->release();
-			}
-			
-			
+			}	
+		} //END OF MESH 
 
-			
 
-		}
 		else if (mayaData->messageType == MessageType::MayaCamera)
 		{
-			Node* camera = createMayaCamera(mayaData->cam);
+			Node* camera = createMayaCamera(mayaData->cam); //createGameplayCamera from MayaCamera
 
-			_scene->addNode(camera);
+			_scene->addNode(camera); 
 			Camera* cam = camera->getCamera();
-			_scene->setActiveCamera(cam);
+			_scene->setActiveCamera(cam); //Set newCamera as the currentCamera
 			cam->release();
-		}
+		}//END OF CAMERA 
+
+
 		else if (mayaData->messageType == MessageType::MayaTransform)
 		{
-			Node* meshNode = _scene->findNode(mayaData->transform->meshName);
-			if (meshNode)
+			Node* meshNode = _scene->findNode(mayaData->transform->meshName); //check if the transform's mesh exists in gameplay
+			if (meshNode) //only then do we act
 			{
+				_scene->removeNode(meshNode); //Make node inactive
 				meshNode->setTranslationX(mayaData->transform->translation[0]);
 				meshNode->setTranslationY(mayaData->transform->translation[1]);
 				meshNode->setTranslationZ(mayaData->transform->translation[2]);
@@ -121,37 +119,35 @@ void CustomRenderer::update(float elapsedTime)
 				meshNode->setRotation(roationMatrix);
 
 				meshNode->setScale(mayaData->transform->scale[0], mayaData->transform->scale[1], mayaData->transform->scale[2]);
-				_scene->addNode(meshNode);
+				_scene->addNode(meshNode); //re-activate Node
 
 			}
-		}
+		} //END OF TRANSFORM
+
+
 		else if (mayaData->messageType == MessageType::MayaMaterial)
 		{
-			mayaData->material;
-			
-			for (size_t i = 0; i < mayaData->material->amountOfMeshes; i++)
+			for (size_t i = 0; i < mayaData->material->amountOfMeshes; i++) //for all meshes bound to material
 			{
-				Node* meshNode = _scene->findNode(mayaData->meshName[i].meshName); //this is what errors
+				Node* meshNode = _scene->findNode(mayaData->meshName[i].meshName); //se if mesh exists in gameplay
 				if (meshNode)
 				{
 
-					_scene->removeNode(meshNode);
+					_scene->removeNode(meshNode); //Make node inactive
 
-					Model* model = static_cast<Model*>(meshNode->getDrawable()); //this right here is the issue
-					Model* model2 = createCubeMesh();
-					
-					model->setMaterial(createMayaMaterial(_scene, mayaData->material));
+					Model* model = static_cast<Model*>(meshNode->getDrawable()); //get the model 
+
+					model->setMaterial(createMayaMaterial(_scene, mayaData->material)); //replace the material
 					meshNode->setDrawable(model);
-					_scene->addNode(meshNode);
-					
+					_scene->addNode(meshNode); //re-activate Node
+
 				}
-				
+
 			}
 
 		}
-
 	
-	}
+	}//END OF MATERIAL 
    
 }
 

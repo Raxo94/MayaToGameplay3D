@@ -419,6 +419,9 @@ EXPORT MStatus initializePlugin(MObject obj)
 
 EXPORT MStatus uninitializePlugin(MObject obj)
 {
+	circPtr->setHead(0);
+	circPtr->setTail(0);
+	delete circPtr;
 	delete[] message;
 
 	MFnPlugin plugin(obj);
