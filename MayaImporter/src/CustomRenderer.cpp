@@ -64,22 +64,37 @@ void CustomRenderer::update(float elapsedTime)
 		if (mayaData->messageType == MessageType::MayaMesh)
 		{
 
-			Node* meshNode = _scene->findNode(mayaData->mesh->Name);
+			Node* meshNode = _scene->findNode(mayaData->mesh->Name); // check if the mesh already exists
+			Model* model;
 
 			if (meshNode)
-				_scene->removeNode(_scene->findNode(mayaData->mesh->Name));
+			{
+				Model* oldModel = static_cast<Model*>(meshNode->getDrawable()); //use the old model to get the old material
+				
+				model = createMayaMesh(mayaData->mesh); // create the new mesh
+				model->setMaterial(oldModel->getMaterial()); //we set the old material
+				_scene->removeNode(_scene->findNode(mayaData->mesh->Name)); //remove the the old model
+				
+				_scene->addNode(meshNode);
+				meshNode->setDrawable(model);
+				model->release();
+
+			}
 
 			else
-				meshNode = Node::create(mayaData->mesh->Name);
+			{
+				meshNode = Node::create(mayaData->mesh->Name); //make a new node
+				Model* model = createMayaMesh(mayaData->mesh); // create the new mesh
+				model->setMaterial(createDefaultMaterial(_scene)); 
+				
+				_scene->addNode(meshNode);
+				meshNode->setDrawable(model);
+				model->release();
+			}
+			
+			
 
-
-			Model* model = createMayaMesh(mayaData->mesh);
-
-
-			_scene->addNode(meshNode);
-			model->setMaterial(createDefaultMaterial(_scene));
-			meshNode->setDrawable(model);
-			model->release();
+			
 
 		}
 		else if (mayaData->messageType == MessageType::MayaCamera)
