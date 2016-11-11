@@ -46,10 +46,6 @@ bool MayaData::read()
 		return false;
 }
 
-Vertex * MayaData::GetVertexArray()
-{
-	return vertexArray;
-}
 
 
 

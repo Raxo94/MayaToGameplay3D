@@ -19,14 +19,14 @@ struct Vertex
 struct HeaderTypeMesh
 {
 	char   Name[256];
-	Vertex* vertexArray;
+	Vertex* vertexArray; //pointer to allocated vertexArray Memory
 	size_t vertexCount;
 };
 
 
 struct HeaderTypeCamera
 {
-	char messageType[256];
+	char CameraName[256];
 	bool isPerspective;
 	float projectionMatrix[16];
 	float translation[3];
@@ -39,7 +39,7 @@ struct HeaderTypeCamera
 
 struct HeaderTypeTransform
 {
-	char meshName[256];
+	char meshName[256]; //what mesh will suffer the transformation
 	float translation[3];
 	double scale[3];
 	double rotation[4];
@@ -79,7 +79,6 @@ public:
 
 	bool read(); //getMessageData
 	int messageType; //used in determening what kind of message MayaData has gotten/ enum MessageType
-	Vertex* GetVertexArray(); //gets the vertexData of the latest mesh
 
 
 	MayaData();

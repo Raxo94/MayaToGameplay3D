@@ -46,7 +46,7 @@ inline Node* getManualCamera()
 
 inline Node* createMayaCamera(HeaderTypeCamera* Mcamera)
 {
-	Node* cameraNode = Node::create(Mcamera->messageType);
+	Node* cameraNode = Node::create(Mcamera->CameraName);
 
 	cameraNode->setTranslationX(Mcamera->translation[0]);
 	cameraNode->setTranslationY(Mcamera->translation[1]);
