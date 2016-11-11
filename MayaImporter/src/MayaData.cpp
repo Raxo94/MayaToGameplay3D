@@ -28,6 +28,7 @@ bool MayaData::read()
 		else if (messageType == MessageType::MayaTransform)
 		{
 			transform = (HeaderTypeTransform*)(message + offset);
+			return true;
 		}
 		else if(messageType == MessageType::MayaMaterial)
 		{
@@ -37,6 +38,7 @@ bool MayaData::read()
 			memcpy(meshName, message + offset, sizeof(MeshName) * material->amountOfMeshes);
 			meshName->meshName;
 			sizeof(MeshName) * material->amountOfMeshes;
+			return true;
 
 		}
 
